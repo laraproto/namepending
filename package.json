@@ -1,0 +1,16 @@
+{
+  "name": "namepending",
+  "type": "module",
+  "private": true,
+  "catalog": {
+    "@types/bun": "^1.3.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "workspaces": [
+    "web",
+    "api"
+    
+  ]
+}
