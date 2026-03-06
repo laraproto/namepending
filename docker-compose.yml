@@ -1,0 +1,58 @@
+version: "3"
+services:
+  garage:
+    image: dxflrs/garage:v2.2.0
+    restart: unless-stopped
+    expose:
+      - 3900
+      - 3901
+      - 3902
+      - 3903
+    volumes:
+      - ./conf/garage.toml:/etc/garage.toml
+      - garage:/var/lib/garage/meta
+      - garage:/var/lib/garage/data
+    labels:
+      - "traefik.http.routers.garageapi.rule=Host(`s3.garage.localhost`) || HostRegexp(`^.+.s3.garage.localhost$`)"
+      - "traefik.http.routers.garageapi.service=garageapi-service"
+      - "traefik.http.services.garageapi-service.loadbalancer.server.port=3900"
+      - "traefik.http.routers.garageweb.rule=Host(`web.garage.localhost`) || HostRegexp(`^.+.web.garage.localhost$`)"
+      - "traefik.http.routers.garageweb.service=garageweb-service"
+      - "traefik.http.services.garageweb-service.loadbalancer.server.port=3902"
+  garage-webui:
+    image: khairul169/garage-webui:latest
+    restart: unless-stopped
+    expose:
+      - 3909
+    volumes:
+      - ./conf/garage.toml:/etc/garage.toml:ro
+    environment:
+      API_BASE_URL: "http://garage:3903"
+      S3_ENDPOINT_URL: "http://garage:3900"
+    labels:
+      - "traefik.http.routers.garage-webui.rule=Host(`admin.garage.localhost`)"
+  traefik:
+    image: traefik:v3.6
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "8080:80"
+      - "8090:8080"
+    volumes:
+      - /var/run/user/1000/podman/podman.sock:/var/run/docker.sock
+  db:
+    image: postgres:18
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
+    volumes:
+      - pgdata:/var/lib/postgresql
+volumes:
+  garage:
+  pgdata:
