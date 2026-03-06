@@ -1,0 +1,22 @@
+version: "3"
+services:
+  garage:
+    image: dxflrs/garage:v2.2.0
+    restart: unless-stopped
+    volumes:
+      - ./conf/garage.toml:/etc/garage.toml
+      - garage:/var/lib/garage/meta
+      - garage:/var/lib/garage/data
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
+    volumes:
+      - pgdata:/var/lib/postgresql
+volumes:
+  garage:
