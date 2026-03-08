@@ -15,7 +15,8 @@
 	},
 	"workspaces": [
 		"web",
-		"api"
+		"api",
+		"cli"
 	],
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",
