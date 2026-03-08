@@ -10,8 +10,8 @@ services:
     volumes:
       - minio:/data
     environment:
-      MINIO_ROOT_USER: 'minioadmin'
-      MINIO_ROOT_PASSWORD: 'minioadmin'
+      MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASS:?Please set the MINIO_PASS environment variable or run setup tool}
     labels:
       - 'traefik.http.routers.minio.rule=Host(`s3.localhost`)'
       - 'traefik.http.routers.minio.service=minio-service'
@@ -22,13 +22,13 @@ services:
   traefik:
     image: docker.io/traefik:v3.6
     command:
-      - '--api.insecure=true'
+      - '--api.insecure=${TRAEFIK_DASHBOARD:-false}'
       - '--providers.docker=true'
       - '--entrypoints.web.address=:80'
       - '--entrypoints.web.forwardedHeaders.trustedIPs=10.88.0.0/8,127.0.0.1/32,172.18.0.1/32'
     ports:
-      - '8778:80'
-      - '8781:8080'
+      - '${TRAEFIK_WEB_PORT:-8778}:80'
+      - '${TRAEFIK_DASHBOARD_PORT:-8781}:8080'
     volumes:
       - /var/run/user/1000/podman/podman.sock:/var/run/docker.sock
   db:
@@ -37,7 +37,7 @@ services:
     expose:
       - 5432
     environment:
-      POSTGRES_PASSWORD: 'thisshouldntmatterbecauseitsnotpubliclyaccessible'
+      POSTGRES_PASSWORD: ${POSTGRES_PASS:?Please set the POSTGRES_PASS environment variable or run setup tool}
     volumes:
       - pgdata:/var/lib/postgresql
       - postgres-socket:/var/run/postgresql
@@ -76,6 +76,10 @@ services:
       - PGHOST=/var/run/postgresql
       - PGUSER=root
       - PGDATABASE=namepending
+      - APP_SECRET=${APP_SECRET:?Please set the APP_SECRET environment variable or run setup tool}
+      - BETTER_AUTH_SECRET=${APP_SECRET:?Please set the APP_SECRET environment variable or run setup tool}
+      - BETTER_AUTH_URL=${URL:?Please set the URL environment variable or run setup tool}
+      - URL=${URL:?Please set the URL environment variable or run setup tool}
     volumes:
       - postgres-socket:/var/run/postgresql
     labels:
