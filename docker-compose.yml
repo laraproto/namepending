@@ -12,6 +12,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_PASS:?Please set the MINIO_PASS environment variable or run setup tool}
+      MINIO_BROWSER_REDIRECT_URL: 'http://admin.s3.localhost'
     labels:
       - 'traefik.http.routers.minio.rule=Host(`s3.localhost`)'
       - 'traefik.http.routers.minio.service=minio-service'
