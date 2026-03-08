@@ -8,6 +8,10 @@ WORKDIR /app/api
 
 RUN bun run build
 
+WORKDIR /app/web
+
+RUN bun run build
+
 FROM docker.io/oven/bun:1.3-distroless AS base
 
 EXPOSE 3000
