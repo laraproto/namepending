@@ -9,4 +9,9 @@ app.get('/', (c) => {
 
 app.route('/', router);
 
+process.on('SIGINT', () => {
+	console.log('Shutting down');
+	process.exit();
+});
+
 export default app;
