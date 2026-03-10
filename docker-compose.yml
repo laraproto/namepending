@@ -93,6 +93,8 @@ services:
     environment:
       - PROTOCOL_HEADER=x-forwarded-proto
       - HOST_HEADER=x-forwarded-host
+      - URL=${URL:?Please set the URL environment variable or run setup tool}
+      - PUBLIC_URL=${URL:?Please set the URL environment variable or run setup tool}
     labels:
       - 'traefik.http.routers.web.rule=PathPrefix(`/`)'
   whoami:

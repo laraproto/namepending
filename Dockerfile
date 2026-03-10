@@ -24,7 +24,7 @@ WORKDIR /app
 
 CMD ["run","./index.js"]
 
-FROM docker.io/oven/bun:1.3-debian as migrate
+FROM docker.io/oven/bun:1.3-alpine as migrate
 
 COPY --from=build /app /app
 
