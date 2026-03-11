@@ -9,6 +9,8 @@ services:
       - 9001
     volumes:
       - minio:/data
+    networks:
+      - proxy
     environment:
       MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_PASS:?Please set the MINIO_PASS environment variable or run setup tool}
@@ -23,7 +25,8 @@ services:
   traefik:
     image: docker.io/traefik:v3.6
     command:
-      - '--api.insecure=${TRAEFIK_DASHBOARD:-false}'
+      - '--api.dashboard=${TRAEFIK_DASHBOARD:-false}'
+      - '--api.insecure=false'
       - '--providers.docker=true'
       - '--entrypoints.web.address=:80'
       - '--entrypoints.web.forwardedHeaders.trustedIPs=10.88.0.0/8,127.0.0.1/32,172.18.0.1/32'
@@ -32,17 +35,23 @@ services:
       - '${TRAEFIK_DASHBOARD_PORT:-8781}:8080'
     volumes:
       - /var/run/user/1000/podman/podman.sock:/var/run/docker.sock
+    networks:
+      - proxy
   db:
     image: docker.io/postgres:18
     restart: unless-stopped
     expose:
       - 5432
+    ports:
+      - '8782:5432'
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASS:?Please set the POSTGRES_PASS environment variable or run setup tool}
     volumes:
       - pgdata:/var/lib/postgresql
       - postgres-socket:/var/run/postgresql
       - ./initrunner.sh:/docker-entrypoint-initdb.d/initrunner.sh:ro
+    networks:
+      - proxy
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 1s
@@ -73,6 +82,8 @@ services:
       context: .
       target: api
     restart: unless-stopped
+    networks:
+      - proxy
     environment:
       - PGHOST=/var/run/postgresql
       - PGUSER=root
@@ -90,6 +101,8 @@ services:
       context: .
       target: web
     restart: unless-stopped
+    networks:
+      - proxy
     environment:
       - PROTOCOL_HEADER=x-forwarded-proto
       - HOST_HEADER=x-forwarded-host
@@ -99,9 +112,13 @@ services:
       - 'traefik.http.routers.web.rule=PathPrefix(`/`)'
   whoami:
     image: traefik/whoami
+    networks:
+      - proxy
     labels:
       - 'traefik.http.routers.whoami.rule=Host(`whoami.localhost`)'
 volumes:
   minio:
   pgdata:
   postgres-socket:
+networks:
+  proxy:
