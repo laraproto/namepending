@@ -1,4 +1,4 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 
 import { auth } from '@modules/auth';
 import superjson from 'superjson';
@@ -17,6 +17,13 @@ export const publicProcedure = t.procedure;
 
 export const authedProcedure = publicProcedure.use(async (opts) => {
 	const { ctx } = opts;
+
+	if (!ctx.session || !ctx.session.user) {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'You must be logged in to access this resource.'
+		});
+	}
 
 	return opts.next({
 		ctx
