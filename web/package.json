@@ -25,6 +25,10 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
-		"better-auth": "catalog:"
+		"better-auth": "catalog:",
+		"@trpc/client": "catalog:",
+		"@trpc/server": "catalog:",
+		"superjson": "catalog:",
+		"zod": "catalog:"
 	}
 }

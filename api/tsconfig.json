@@ -29,7 +29,8 @@
 			"@/*": ["./src/*"],
 			"@routes/*": ["./src/routes/*"],
 			"@modules/*": ["./src/modules/*"],
-			"@utils/*": ["./src/utils/*"]
+			"@utils/*": ["./src/utils/*"],
+			"@middleware/*": ["./src/middleware/*"]
 		}
 	}
 }

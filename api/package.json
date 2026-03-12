@@ -1,5 +1,6 @@
 {
 	"name": "@namepending/api",
+	"module": "src/index.ts",
 	"scripts": {
 		"dev": "bun run --hot src/index.ts",
 		"build": "bun build src/index.ts --outdir dist --production --format esm --minify --target bun",
@@ -11,11 +12,16 @@
 	},
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "^1.5.4",
+		"@hono/trpc-server": "^0.4.2",
 		"@sidequest/postgres-backend": "^1.14.0",
+		"@trpc/client": "catalog:",
+		"@trpc/server": "catalog:",
 		"better-auth": "catalog:",
 		"drizzle-orm": "^0.45.1",
 		"hono": "^4.12.5",
-		"sidequest": "^1.14.0"
+		"sidequest": "^1.14.0",
+		"superjson": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@types/bun": "catalog:",

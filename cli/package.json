@@ -1,22 +1,22 @@
 {
-  "name": "@namepending/cli",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "scripts": {
-    "start": "bun ./index.ts",
-    "build": "bun build index.ts --outfile ../setup.js --production --format esm --minify --target=node"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@clack/prompts": "^1.1.0",
-    "commander": "^14.0.3",
-    "picocolors": "^1.1.1",
-    "zod": "^4.3.6"
-  }
+	"name": "@namepending/cli",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"scripts": {
+		"start": "bun ./index.ts",
+		"build": "bun build index.ts --outfile ../setup.js --production --format esm --minify --target=node"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@clack/prompts": "^1.1.0",
+		"commander": "^14.0.3",
+		"picocolors": "^1.1.1",
+		"zod": "catalog:"
+	}
 }
