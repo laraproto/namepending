@@ -26,8 +26,9 @@ CMD ["run","./index.js"]
 
 FROM docker.io/oven/bun:1.3-alpine as migrate
 
-COPY --from=build /app /app
+WORKDIR /app
 
+COPY --from=build /app /app
 WORKDIR /app/api
 
 CMD ["run","db:migrate"]

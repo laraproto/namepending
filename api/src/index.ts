@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
-import app from '@routes/index.ts';
+import apiRouter from '@routes/index.ts';
 
 const app = new Hono();
 
-app.route('/', app);
+app.route('/', apiRouter);
 
 process.on('SIGINT', () => {
 	console.log('Shutting down');

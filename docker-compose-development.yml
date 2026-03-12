@@ -1,9 +1,12 @@
 version: '3'
+name: namepending-development
 services:
   minio:
     image: docker.io/coollabsio/minio:RELEASE.2025-10-15T17-29-55Z
     command: server /data --console-address ":9001"
     restart: unless-stopped
+    networks:
+      - proxy
     expose:
       - 9000
       - 9001
@@ -38,6 +41,8 @@ services:
   db:
     image: docker.io/postgres:18
     restart: unless-stopped
+    networks:
+      - proxy
     expose:
       - 5432
     ports:
@@ -59,7 +64,21 @@ services:
         condition: service_healthy
     build:
       context: .
+      dockerfile: development.Dockerfile
       target: migrate
+    develop:
+      watch:
+        - action: sync
+          path: ./api
+          target: /app/api
+          initial_sync: true
+          ignore:
+            - node_modules
+            - dist
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: drizzle/meta/_journal.json
     environment:
       - PGHOST=/var/run/postgresql
       - PGUSER=root
@@ -76,8 +95,22 @@ services:
         condition: service_healthy
     build:
       context: .
+      dockerfile: development.Dockerfile
       target: api
+    develop:
+      watch:
+        - action: sync
+          path: ./api
+          target: /app/api
+          initial_sync: true
+          ignore:
+            - node_modules
+            - dist
+        - action: rebuild
+          path: package.json
     restart: unless-stopped
+    networks:
+      - proxy
     environment:
       - PGHOST=/var/run/postgresql
       - PGUSER=root
@@ -93,8 +126,23 @@ services:
   web:
     build:
       context: .
+      dockerfile: development.Dockerfile
       target: web
     restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./web
+          target: /app/web
+          initial_sync: true
+          ignore:
+            - node_modules
+            - .svelte-kit
+            - build
+        - action: rebuild
+          path: package.json
+    networks:
+      - proxy
     environment:
       - PROTOCOL_HEADER=x-forwarded-proto
       - HOST_HEADER=x-forwarded-host
@@ -102,9 +150,14 @@ services:
       - 'traefik.http.routers.web.rule=PathPrefix(`/`)'
   whoami:
     image: traefik/whoami
+    restart: unless-stopped
+    networks:
+      - proxy
     labels:
       - 'traefik.http.routers.whoami.rule=Host(`whoami.localhost`)'
 volumes:
   minio:
   pgdata:
   postgres-socket:
+networks:
+  proxy:
