@@ -61,6 +61,7 @@
       "name": "@namepending/web",
       "version": "0.0.1",
       "dependencies": {
+        "@namepending/api": "workspace:*",
         "@trpc/client": "catalog:",
         "@trpc/server": "catalog:",
         "better-auth": "catalog:",

@@ -29,6 +29,7 @@
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
 		"superjson": "catalog:",
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"@namepending/api": "workspace:*"
 	}
 }

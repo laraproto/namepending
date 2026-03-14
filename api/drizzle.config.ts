@@ -10,6 +10,7 @@ export default defineConfig({
 			}
 		: {
 				host: process.env.PGHOST!,
+				port: parseInt(process.env.PGPORT!, 10) || 5432,
 				user: process.env.PGUSER!,
 				database: process.env.PGDATABASE!,
 				ssl: false
