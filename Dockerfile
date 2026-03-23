@@ -2,6 +2,7 @@ FROM docker.io/oven/bun:1.3 AS build
 
 WORKDIR /app
 COPY . .
+
 RUN bun install --frozen-lockfile
 
 WORKDIR /app/api
