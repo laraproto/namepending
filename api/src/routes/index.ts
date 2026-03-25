@@ -15,7 +15,7 @@ const app = new Hono<{
 
 app.use('*', sessionMiddleware);
 
-app.use(
+/* app.use(
 	'/auth/*',
 	cors({
 		origin: URL!,
@@ -25,7 +25,7 @@ app.use(
 		maxAge: 600,
 		credentials: true
 	})
-);
+); */
 
 app.on(['POST', 'GET'], '/auth/*', (c) => {
 	return auth.handler(c.req.raw);

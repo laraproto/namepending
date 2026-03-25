@@ -12,3 +12,5 @@
 {:catch error}
 	<p>TRPC Query Error: {error.message}</p>
 {/await}
+
+<a href="/api/auth/steam/redirect" rel="external">Test Steam Link</a>
