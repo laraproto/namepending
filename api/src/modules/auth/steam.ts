@@ -1,10 +1,15 @@
 import type { BetterAuthPlugin } from 'better-auth';
-import { createAuthEndpoint, getSessionFromCtx } from 'better-auth/api';
+import { createAuthEndpoint, createAuthMiddleware, getSessionFromCtx } from 'better-auth/api';
+import { setSessionCookie } from 'better-auth/cookies';
+import { parseUserOutput } from 'better-auth/db';
 
 const STEAM_OPENID_URL = 'https://steamcommunity.com/openid/login';
 
 export interface SteamOpenIdPluginOptions {
 	steamApiKey: string;
+	failureRedirect: string;
+	successRedirect: string;
+	allowSignIn?: boolean;
 }
 
 enum PersonaState {
@@ -21,13 +26,13 @@ enum VisibilityState {
 	Public = 3
 }
 
-interface SteamProfileSummaryResponse {
+export interface SteamProfileSummaryResponse {
 	response: {
 		players: SteamProfileSummaryPlayers[];
 	};
 }
 
-interface SteamProfileSummaryPlayers {
+export interface SteamProfileSummaryPlayers {
 	steamid: string;
 	personaname: string;
 	profileurl: string;
@@ -42,7 +47,7 @@ interface SteamProfileSummaryPlayers {
 }
 
 export const steamOpenId = (options: SteamOpenIdPluginOptions): BetterAuthPlugin => ({
-	id: 'steam-openid',
+	id: 'steam',
 
 	endpoints: {
 		steamLink: createAuthEndpoint(
@@ -82,44 +87,84 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions): BetterAuthPlugin
 
 				const verifyText = await verifyRes.text();
 				if (!verifyText.includes('is_valid:true')) {
-					return ctx.redirect(`${process.env.WEBSITE_URL}/panel?error=steam_invalid`);
+					return ctx.redirect(`${options.failureRedirect}?error=steam_invalid`);
 				}
 
 				// Extract Steam ID
 				const steamId = params['openid.claimed_id']?.split('/').pop();
 				console.log('Steam ID from OpenID:', steamId);
 				if (!steamId) {
-					return ctx.redirect(`${process.env.WEBSITE_URL}/panel?error=steam_no_id`);
+					return ctx.redirect(`${options.failureRedirect}?error=steam_no_id`);
 				}
 
 				// Get session from cookie
 				const session = await getSessionFromCtx(ctx);
 				if (!session?.user) {
-					return ctx.redirect(`${process.env.WEBSITE_URL}/panel?error=no_session`);
+					if (!options.allowSignIn) {
+						return ctx.redirect(`${options.failureRedirect}?error=no_session`);
+					}
+
+					const linkedAccount = await ctx.context.internalAdapter.findAccountByProviderId(
+						steamId,
+						'steam'
+					);
+					if (linkedAccount) {
+						const sessionProper = await ctx.context.internalAdapter.createSession(
+							linkedAccount.userId
+						);
+						const sessionUser = await ctx.context.internalAdapter.findUserById(
+							linkedAccount.userId
+						);
+						await setSessionCookie(ctx, {
+							session: sessionProper,
+							user: sessionUser!
+						});
+
+						return ctx.json({
+							token: sessionProper.token,
+							user: parseUserOutput(ctx.context.options, sessionUser!)
+						});
+					}
 				}
 
-				// Fetch Steam profile
-				const steamProfileRes = await fetch(
-					`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${options.steamApiKey}&steamids=${steamId}`
-				);
-				const steamProfile = (await steamProfileRes.json()) as SteamProfileSummaryResponse;
-				const steamPlayer = steamProfile?.response?.players?.[0];
-				const steamName = steamPlayer?.personaname ?? 'Unknown';
-				const steamAvatar = steamPlayer?.avatarfull ?? null;
-
-				await ctx.context.adapter.create({
-					model: 'account',
-					data: {
-						userId: session.user.id,
-						accountId: steamId,
-						providerId: 'steam',
-						createdAt: new Date(),
-						updatedAt: new Date()
-					}
+				await ctx.context.internalAdapter.linkAccount({
+					createdAt: new Date(),
+					updatedAt: new Date(),
+					userId: session!.user.id,
+					providerId: 'steam',
+					accountId: steamId
 				});
 
-				return ctx.redirect(`${process.env.WEBSITE_URL}/panel?link=true`);
+				return ctx.redirect(`${options.successRedirect}?link=true`);
 			}
 		)
+	},
+
+	hooks: {
+		after: [
+			{
+				matcher: (ctx) => ctx.path === '/account-info',
+				handler: createAuthMiddleware(async (ctx) => {
+					const providedAccountId = ctx.query?.accountId as string | undefined;
+					if (!providedAccountId) return;
+
+					const accountData = await ctx.context.internalAdapter.findAccountByProviderId(
+						providedAccountId,
+						'steam'
+					);
+
+					if (!accountData) return;
+
+					const steamProfileRes = await fetch(
+						`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${options.steamApiKey}&steamids=${providedAccountId}`
+					);
+					const steamProfile = (await steamProfileRes.json()) as SteamProfileSummaryResponse;
+
+					if (!steamProfile?.response?.players?.[0]) return;
+
+					return ctx.json(steamProfile.response.players[0]);
+				})
+			}
+		]
 	}
 });
