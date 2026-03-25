@@ -16,7 +16,7 @@ const app = new Hono<{
 app.use('*', sessionMiddleware);
 
 app.use(
-	'/auth/*', // or replace with "*" to enable cors for all routes
+	'/auth/*',
 	cors({
 		origin: URL!,
 		allowHeaders: ['Content-Type', 'Authorization'],
@@ -32,7 +32,7 @@ app.on(['POST', 'GET'], '/auth/*', (c) => {
 });
 
 app.use(
-	'/trpc/*', // or replace with "*" to enable cors for all routes
+	'/trpc/*',
 	cors({
 		origin: URL!,
 		allowHeaders: ['Content-Type', 'Authorization'],

@@ -7,6 +7,9 @@
 		},
 		"./trpc": {
 			"import": "./src/routes/trpc/index.ts"
+		},
+		"./auth-plugins": {
+			"import": "./src/modules/auth/plugins/index.ts"
 		}
 	},
 	"scripts": {

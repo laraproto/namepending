@@ -1,7 +1,6 @@
 import type { BetterAuthPlugin } from 'better-auth';
 import { createAuthEndpoint, createAuthMiddleware, getSessionFromCtx } from 'better-auth/api';
 import { setSessionCookie } from 'better-auth/cookies';
-import { parseUserOutput } from 'better-auth/db';
 
 const STEAM_OPENID_URL = 'https://steamcommunity.com/openid/login';
 
@@ -120,10 +119,7 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions): BetterAuthPlugin
 							user: sessionUser!
 						});
 
-						return ctx.json({
-							token: sessionProper.token,
-							user: parseUserOutput(ctx.context.options, sessionUser!)
-						});
+						return ctx.redirect(`${options.successRedirect}?code=login_linked`);
 					}
 				}
 
@@ -135,7 +131,7 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions): BetterAuthPlugin
 					accountId: steamId
 				});
 
-				return ctx.redirect(`${options.successRedirect}?link=true`);
+				return ctx.redirect(`${options.successRedirect}?code=linked`);
 			}
 		)
 	},
