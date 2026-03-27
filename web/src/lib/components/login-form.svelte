@@ -8,6 +8,7 @@
 		FieldLabel,
 		FieldDescription,
 	} from "$lib/components/ui/field/index.js";
+	import { resolve } from "$app/paths";
 
 	const id = $props.id();
 </script>
@@ -27,7 +28,7 @@
 				<Field>
 					<div class="flex items-center">
 						<FieldLabel for="password-{id}">Password</FieldLabel>
-						<a href="##" class="ms-auto inline-block text-sm underline">
+						<a href={resolve("/auth/forgot-password")} class="ms-auto inline-block text-sm underline">
 							Forgot your password?
 						</a>
 					</div>
@@ -45,7 +46,7 @@
 						Login with Google
 					</Button>
 					<FieldDescription class="text-center">
-						Don't have an account? <a href="##">Sign up</a>
+						Don't have an account? <a href={resolve("/auth/register")}>Sign up</a>
 					</FieldDescription>
 				</Field>
 			</FieldGroup>

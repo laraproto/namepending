@@ -1,8 +1,5 @@
 <script lang="ts" module>
 	import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
-	import BotIcon from '@lucide/svelte/icons/bot';
-	import BookOpenIcon from '@lucide/svelte/icons/book-open';
-	import Settings2Icon from '@lucide/svelte/icons/settings-2';
 	import LifeBuoyIcon from '@lucide/svelte/icons/life-buoy';
 	import SendIcon from '@lucide/svelte/icons/send';
 	import FrameIcon from '@lucide/svelte/icons/frame';
@@ -34,71 +31,6 @@
 					{
 						title: 'Staff list',
 						url: '/staff'
-					}
-				]
-			},
-			{
-				title: 'Models',
-				url: '#',
-				icon: BotIcon,
-				items: [
-					{
-						title: 'Genesis',
-						url: '#'
-					},
-					{
-						title: 'Explorer',
-						url: '#'
-					},
-					{
-						title: 'Quantum',
-						url: '#'
-					}
-				]
-			},
-			{
-				title: 'Documentation',
-				url: '#',
-				icon: BookOpenIcon,
-				items: [
-					{
-						title: 'Introduction',
-						url: '#'
-					},
-					{
-						title: 'Get Started',
-						url: '#'
-					},
-					{
-						title: 'Tutorials',
-						url: '#'
-					},
-					{
-						title: 'Changelog',
-						url: '#'
-					}
-				]
-			},
-			{
-				title: 'Settings',
-				url: '#',
-				icon: Settings2Icon,
-				items: [
-					{
-						title: 'General',
-						url: '#'
-					},
-					{
-						title: 'Team',
-						url: '#'
-					},
-					{
-						title: 'Billing',
-						url: '#'
-					},
-					{
-						title: 'Limits',
-						url: '#'
 					}
 				]
 			}

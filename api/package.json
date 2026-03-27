@@ -24,18 +24,18 @@
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "^1.5.4",
 		"@hono/trpc-server": "^0.4.2",
-		"@sidequest/postgres-backend": "^1.14.0",
+		"@sidequest/postgres-backend": "^1.14.1",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
 		"better-auth": "catalog:",
-		"drizzle-orm": "^0.45.1",
-		"hono": "^4.12.5",
-		"sidequest": "^1.14.0",
+		"drizzle-orm": "^0.45.2",
+		"hono": "^4.12.9",
+		"sidequest": "^1.14.1",
 		"superjson": "catalog:",
 		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@types/bun": "catalog:",
-		"drizzle-kit": "^0.31.9"
+		"drizzle-kit": "^0.31.10"
 	}
 }
