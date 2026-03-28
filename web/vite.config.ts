@@ -3,6 +3,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
+console.log(process.env.URL);
+
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 	server: {
@@ -12,6 +14,7 @@ export default defineConfig({
 				changeOrigin: false,
 				secure: false
 			}
-		}
+		},
+		allowedHosts: [new URL(process.env.URL!).host]
 	}
 });

@@ -10,21 +10,17 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import Button from './ui/button/button.svelte';
-	import authClient from '$lib/auth-client';
 	import { resolve } from '$app/paths';
-
-	let {
-		user
-	}: {
-		user: typeof authClient.$Infer.Session.user | undefined;
-	} = $props();
+	import authClient from '$lib/auth-client';
 
 	const sidebar = Sidebar.useSidebar();
+
+	const session = authClient.useSession();
 </script>
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
-		{#if user}
+		{#if $session.data}
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
@@ -34,12 +30,11 @@
 							{...props}
 						>
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={user.image} alt={user.name} />
-								<Avatar.Fallback class="rounded-lg">{user.name}</Avatar.Fallback>
+								<Avatar.Image src={$session.data?.user.image} alt={$session.data?.user.name} />
+								<Avatar.Fallback class="rounded-lg">{$session.data?.user.name}</Avatar.Fallback>
 							</Avatar.Root>
 							<div class="grid flex-1 text-start text-sm leading-tight">
-								<span class="truncate font-medium">{user.name}</span>
-								<span class="truncate text-xs">{user.email}</span>
+								<span class="truncate font-medium">{$session.data?.user.name}</span>
 							</div>
 							<ChevronsUpDownIcon class="ms-auto size-4" />
 						</Sidebar.MenuButton>
@@ -54,20 +49,24 @@
 					<DropdownMenu.Label class="p-0 font-normal">
 						<div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={user.image} alt={user.name} />
-								<Avatar.Fallback class="rounded-lg">{user.name}</Avatar.Fallback>
+								<Avatar.Image src={$session.data?.user.image} alt={$session.data?.user.name} />
+								<Avatar.Fallback class="rounded-lg">{$session.data?.user.name}</Avatar.Fallback>
 							</Avatar.Root>
 							<div class="grid flex-1 text-start text-sm leading-tight">
-								<span class="truncate font-medium">{user.name}</span>
-								<span class="truncate text-xs">{user.email}</span>
+								<span class="truncate font-medium">{$session.data?.user.name}</span>
 							</div>
 						</div>
 					</DropdownMenu.Label>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Group>
 						<DropdownMenu.Item>
-							<SparklesIcon />
-							Upgrade to Pro
+							{#snippet child({ props })}
+								<!-- eslint-disable-next-line -->
+								<a href="https://youtu.be/dQw4w9WgXcQ" {...props}>
+									<SparklesIcon />
+									Upgrade to Pro
+								</a>
+							{/snippet}
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />

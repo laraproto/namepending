@@ -102,6 +102,10 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions) => {
 						return ctx.redirect(`${options.failureRedirect}?error=no_session`);
 					}
 
+					if (await ctx.context.internalAdapter.findAccountByProviderId(steamId, 'steam')) {
+						return ctx.redirect(`${options.failureRedirect}?error=steam_already_linked`);
+					}
+
 					await ctx.context.internalAdapter.linkAccount({
 						createdAt: new Date(),
 						updatedAt: new Date(),

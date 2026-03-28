@@ -4,8 +4,6 @@
 	import SendIcon from '@lucide/svelte/icons/send';
 	import CommandIcon from '@lucide/svelte/icons/command';
 
-	const session = authClient.useSession();
-
 	const data = {
 		navMain: [
 			{
@@ -87,6 +85,6 @@
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={$session.data?.user} />
+		<NavUser />
 	</Sidebar.Footer>
 </Sidebar.Root>
