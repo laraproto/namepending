@@ -8,6 +8,13 @@
       "when": 1772972747881,
       "tag": "0000_mysterious_misty_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774711360146,
+      "tag": "0001_unusual_korath",
+      "breakpoints": true
     }
   ]
 }
