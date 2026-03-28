@@ -1,18 +1,14 @@
 <script lang="ts">
-	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import { cn, type WithElementRef } from "$lib/utils.js";
-	import type { HTMLAttributes } from "svelte/elements";
-	import {
-		SIDEBAR_COOKIE_MAX_AGE,
-		SIDEBAR_COOKIE_NAME,
-		SIDEBAR_WIDTH,
-		SIDEBAR_WIDTH_ICON,
-	} from "./constants.js";
-	import { setSidebar } from "./context.svelte.js";
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { SIDEBAR_COOKIE_NAME, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './constants.js';
+	import { setSidebar } from './context.svelte.js';
+	import { browser } from '$app/environment';
 
 	let {
 		ref = $bindable(null),
-		open = $bindable(true),
+		open = $bindable(browser ? localStorage.getItem(SIDEBAR_COOKIE_NAME) === 'true' : false),
 		onOpenChange = () => {},
 		class: className,
 		style,
@@ -30,8 +26,8 @@
 			onOpenChange(value);
 
 			// This sets the cookie to keep the sidebar state.
-			document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
-		},
+			localStorage.setItem(SIDEBAR_COOKIE_NAME, String(open));
+		}
 	});
 </script>
 
@@ -42,7 +38,7 @@
 		data-slot="sidebar-wrapper"
 		style="--sidebar-width: {SIDEBAR_WIDTH}; --sidebar-width-icon: {SIDEBAR_WIDTH_ICON}; {style}"
 		class={cn(
-			"group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
+			'group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar',
 			className
 		)}
 		bind:this={ref}

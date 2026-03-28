@@ -1,35 +1,29 @@
 <script lang="ts" module>
 	import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
-	import LifeBuoyIcon from '@lucide/svelte/icons/life-buoy';
+	import { SiDiscord } from '@icons-pack/svelte-simple-icons';
 	import SendIcon from '@lucide/svelte/icons/send';
-	import FrameIcon from '@lucide/svelte/icons/frame';
-	import PieChartIcon from '@lucide/svelte/icons/pie-chart';
-	import MapIcon from '@lucide/svelte/icons/map';
 	import CommandIcon from '@lucide/svelte/icons/command';
 
+	const session = authClient.useSession();
+
 	const data = {
-		user: {
-			name: 'shadcn',
-			email: 'm@example.com',
-			avatar: '/avatars/shadcn.jpg'
-		},
 		navMain: [
 			{
-				title: 'Info',
+				title: 'Homebase',
 				url: '/',
 				icon: SquareTerminalIcon,
 				isActive: true,
 				items: [
 					{
-						title: 'Your stats',
-						url: '/'
+						title: 'Dashboard',
+						url: '/stats'
 					},
 					{
-						title: 'Server status',
+						title: 'Server Status',
 						url: '/status'
 					},
 					{
-						title: 'Staff list',
+						title: 'Staff List',
 						url: '/staff'
 					}
 				]
@@ -37,31 +31,14 @@
 		],
 		navSecondary: [
 			{
-				title: 'Support',
+				title: 'Discord',
 				url: '#',
-				icon: LifeBuoyIcon
+				icon: SiDiscord
 			},
 			{
-				title: 'Feedback',
+				title: 'Send feedback',
 				url: '#',
 				icon: SendIcon
-			}
-		],
-		projects: [
-			{
-				name: 'Design Engineering',
-				url: '#',
-				icon: FrameIcon
-			},
-			{
-				name: 'Sales & Marketing',
-				url: '#',
-				icon: PieChartIcon
-			},
-			{
-				name: 'Travel',
-				url: '#',
-				icon: MapIcon
 			}
 		]
 	};
@@ -74,6 +51,7 @@
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
 	import { resolve } from '$app/paths';
+	import authClient from '$lib/auth-client';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
@@ -109,6 +87,6 @@
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={null} />
+		<NavUser user={$session.data?.user} />
 	</Sidebar.Footer>
 </Sidebar.Root>
