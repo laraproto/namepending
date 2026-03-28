@@ -85,7 +85,7 @@
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item>
+					<DropdownMenu.Item class="cursor-pointer" onclick={() => authClient.signOut()}>
 						<LogOutIcon />
 						Log out
 					</DropdownMenu.Item>

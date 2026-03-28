@@ -49,7 +49,7 @@
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
 	import { resolve } from '$app/paths';
-	import authClient from '$lib/auth-client';
+	import { env } from '$env/dynamic/public';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
@@ -70,9 +70,8 @@
 							>
 								<CommandIcon class="size-4" />
 							</div>
-							<div class="grid flex-1 text-start text-sm leading-tight">
-								<span class="truncate font-medium">Placeholder af</span>
-								<span class="truncate text-xs">Meow</span>
+							<div class="grid flex-1 text-start text-lg leading-tight">
+								<span class="truncate font-medium">{env.PUBLIC_NAME ?? 'Namepending'}</span>
 							</div>
 						</a>
 					{/snippet}

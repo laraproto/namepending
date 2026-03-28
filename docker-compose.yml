@@ -92,6 +92,7 @@ services:
       - BETTER_AUTH_SECRET=${APP_SECRET:?Please set the APP_SECRET environment variable or run setup tool}
       - BETTER_AUTH_URL=${URL:?Please set the URL environment variable or run setup tool}
       - URL=${URL:?Please set the URL environment variable or run setup tool}
+      - NAME=${NAME:-namepending}
     volumes:
       - postgres-socket:/var/run/postgresql
     labels:
@@ -108,6 +109,8 @@ services:
       - HOST_HEADER=x-forwarded-host
       - URL=${URL:?Please set the URL environment variable or run setup tool}
       - PUBLIC_URL=${URL:?Please set the URL environment variable or run setup tool}
+      - NAME=${NAME:-namepending}
+      - PUBLIC_NAME=${NAME:-namepending}
     labels:
       - 'traefik.http.routers.web.rule=PathPrefix(`/`)'
   whoami:

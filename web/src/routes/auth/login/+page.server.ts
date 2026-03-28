@@ -5,7 +5,11 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import authServer from '$lib/server/auth-server';
 import { redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+	if (locals.session) {
+		redirect(303, '/');
+	}
+
 	return {
 		form: await superValidate(zod4(loginSchema))
 	};

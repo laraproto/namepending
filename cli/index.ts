@@ -6,6 +6,7 @@ import * as p from '@clack/prompts';
 import * as fs from 'node:fs/promises';
 
 const envSchema = z.object({
+	name: z.string().min(1).default('namepending'),
 	url: z.url({
 		protocol: /^https?$/,
 		hostname: z.regexes.domain
@@ -39,6 +40,19 @@ program.parse();
 
 async function main() {
 	p.intro(pc.inverse('Namepending Setup'));
+
+	const name = await p.text({
+		message: 'What is the name of your project?',
+		validate(value) {
+			const errorValidate = envSchema.shape.name.safeParse(value);
+			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
+		}
+	});
+
+	if (p.isCancel(name)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
 
 	const url = await p.text({
 		message: 'What is the URL of the project',
