@@ -16,4 +16,12 @@
 	<p>TRPC Query Error: {error.message}</p>
 {/await}
 
+{#await trpc.panel.hello.query({ name: 'world' })}
+	<p>Waiting for promise on authed query...</p>
+{:then data}
+	<p>{data}</p>
+{:catch error}
+	<p>TRPC Query Error: {error.message}</p>
+{/await}
+
 <a href="/api/auth/steam/redirect" rel="external">Test Steam Link</a>

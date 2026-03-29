@@ -5,10 +5,11 @@ import { cors } from 'hono/cors';
 import { trpcServer } from '@hono/trpc-server';
 import sessionMiddleware from '@middleware/sessionMiddleware';
 import { appRouter } from './trpc';
+import type { UserSelect } from '@/modules/db/schema';
 
 const app = new Hono<{
 	Variables: {
-		user: typeof auth.$Infer.Session.user | null;
+		user: UserSelect | null;
 		session: typeof auth.$Infer.Session.session | null;
 	};
 }>().basePath('/api');
