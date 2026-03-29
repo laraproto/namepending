@@ -1,5 +1,5 @@
 import { IsMobile } from '$lib/hooks/is-mobile.svelte.js';
-import { getContext, setContext } from 'svelte';
+import { getContext, setContext, type Snippet } from 'svelte';
 import { SIDEBAR_KEYBOARD_SHORTCUT } from './constants.js';
 import { replaceState } from '$app/navigation';
 import { resolve } from '$app/paths';
@@ -33,6 +33,7 @@ class SidebarState {
 	setOpen: SidebarStateProps['setOpen'];
 	#isMobile: IsMobile;
 	state = $derived.by(() => (this.open ? 'expanded' : 'collapsed'));
+	toolbar: Snippet | null = $state(null);
 
 	constructor(props: SidebarStateProps) {
 		this.setOpen = props.setOpen;
@@ -60,6 +61,10 @@ class SidebarState {
 
 	setShowSearch = (value: boolean) => {
 		this.showSearch = value;
+	};
+
+	setToolbar = (snippet: Snippet | null) => {
+		this.toolbar = snippet;
 	};
 
 	setSearchValue = (value: string) => {

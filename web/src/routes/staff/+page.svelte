@@ -6,10 +6,16 @@
 	const sidebar = Sidebar.useSidebar();
 
 	sidebar.setShowSearch(true);
+	sidebar.setToolbar(filterSnippet);
 
 	onDestroy(() => {
 		sidebar.setShowSearch(false);
+		sidebar.setToolbar(null);
 	});
 </script>
+
+{#snippet filterSnippet()}
+	<p>Hi!</p>
+{/snippet}
 
 <Head title="Staff List" />

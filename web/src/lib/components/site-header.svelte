@@ -14,6 +14,9 @@
 			<SidebarIcon />
 		</Button>
 		<Separator orientation="vertical" class="me-2 h-4" />
+		<div class="w-full sm:ms-auto sm:w-auto">
+			{@render sidebar.toolbar?.()}
+		</div>
 		{#if sidebar.showSearch}
 			<SearchForm class="w-full sm:ms-auto sm:w-auto" />
 		{/if}
