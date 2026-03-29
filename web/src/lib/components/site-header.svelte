@@ -18,7 +18,7 @@
 			{@render sidebar.toolbar?.()}
 		</div>
 		{#if sidebar.showSearch}
-			<SearchForm class="w-full sm:ms-auto sm:w-auto" />
+			<SearchForm class="ms-auto w-auto" />
 		{/if}
 	</div>
 </header>

@@ -2,7 +2,7 @@
 	import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
 	import { SiDiscord } from '@icons-pack/svelte-simple-icons';
 	import SendIcon from '@lucide/svelte/icons/send';
-	import CommandIcon from '@lucide/svelte/icons/command';
+	import lara from '$lib/assets/lara.png';
 
 	const data = {
 		navMain: [
@@ -68,7 +68,7 @@
 							<div
 								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
-								<CommandIcon class="size-4" />
+								<img src={lara} class="size-8" alt="logo" />
 							</div>
 							<div class="grid flex-1 text-start text-lg leading-tight">
 								<span class="truncate font-medium">{env.PUBLIC_NAME ?? 'Namepending'}</span>
