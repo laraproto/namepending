@@ -1,0 +1,19 @@
+{
+	"name": "@namepending/shared",
+	"module": "index.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./index.ts"
+		},
+		"./user": {
+			"import": "./src/common/user.ts"
+		}
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}

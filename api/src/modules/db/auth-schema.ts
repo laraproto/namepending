@@ -1,5 +1,6 @@
-import { relations } from 'drizzle-orm';
-import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { relations, sql } from 'drizzle-orm';
+import { pgTable, text, uuid, timestamp, boolean, index, bigint } from 'drizzle-orm/pg-core';
+import { panelGroups, player } from './schema';
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -10,7 +11,11 @@ export const user = pgTable('user', {
 	createdAt: timestamp('created_at').notNull(),
 	updatedAt: timestamp('updated_at')
 		.$onUpdate(() => new Date())
+		.notNull(),
+	flags: bigint({ mode: 'bigint' })
 		.notNull()
+		.default(sql`0::bigint`),
+	groupId: uuid('group_id').references(() => panelGroups.uuid, { onDelete: 'set null' })
 });
 
 export const session = pgTable(
@@ -71,9 +76,14 @@ export const verification = pgTable(
 	(table) => [index('verification_identifier_idx').on(table.identifier)]
 );
 
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ one, many }) => ({
 	sessions: many(session),
-	accounts: many(account)
+	accounts: many(account),
+	players: many(player),
+	group: one(panelGroups, {
+		fields: [user.groupId],
+		references: [panelGroups.uuid]
+	})
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({

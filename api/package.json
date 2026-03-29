@@ -24,11 +24,13 @@
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "^1.5.4",
 		"@hono/trpc-server": "^0.4.2",
+		"@namepending/shared": "workspace:*",
 		"@sidequest/postgres-backend": "^1.14.1",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
 		"better-auth": "catalog:",
 		"drizzle-orm": "^0.45.2",
+		"drizzle-zod": "^0.8.3",
 		"hono": "^4.12.9",
 		"sidequest": "^1.14.1",
 		"superjson": "catalog:",

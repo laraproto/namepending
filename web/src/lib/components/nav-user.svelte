@@ -2,7 +2,6 @@
 	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
 	import BellIcon from '@lucide/svelte/icons/bell';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
-	import CreditCardIcon from '@lucide/svelte/icons/credit-card';
 	import LogOutIcon from '@lucide/svelte/icons/log-out';
 	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 
@@ -72,14 +71,15 @@
 					<DropdownMenu.Separator />
 					<DropdownMenu.Group>
 						<DropdownMenu.Item>
-							<BadgeCheckIcon />
-							Account
+							{#snippet child({ props })}
+								<!-- eslint-disable-next-line -->
+								<a href={resolve('/profile/[id]', { id: $session.data?.user.id! })} {...props}>
+									<BadgeCheckIcon />
+									Account
+								</a>
+							{/snippet}
 						</DropdownMenu.Item>
-						<DropdownMenu.Item>
-							<CreditCardIcon />
-							Billing
-						</DropdownMenu.Item>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item disabled>
 							<BellIcon />
 							Notifications
 						</DropdownMenu.Item>

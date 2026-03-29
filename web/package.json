@@ -37,6 +37,7 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
+		"@namepending/shared": "workspace:*",
 		"@namepending/api": "workspace:*",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",

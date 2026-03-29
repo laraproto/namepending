@@ -11,6 +11,7 @@ import {
 	jsonb,
 	bigint
 } from 'drizzle-orm/pg-core';
+import { createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
 
 const timeData = {
@@ -251,5 +252,21 @@ export const serversRelations = relations(servers, ({ one }) => ({
 		references: [auth.user.id]
 	})
 }));
+
+export const userSelectMinimal = createSelectSchema(auth.user);
+
+export const panelGroupSelectMinimal = createSelectSchema(panelGroups);
+
+export const gameGroupSelectMinimal = createSelectSchema(gameGroups);
+
+export const panelGroupSelect = {
+	...panelGroupSelectMinimal.shape,
+	gameGroup: gameGroupSelectMinimal
+};
+
+export const userSelect = {
+	...userSelectMinimal.shape,
+	group: panelGroupSelect
+};
 
 export * from './auth-schema';
