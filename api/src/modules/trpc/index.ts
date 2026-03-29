@@ -4,10 +4,11 @@ import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
 
 import { auth } from '@modules/auth';
 import superjson from 'superjson';
+import type { UserSelect } from '../db/schema';
 
 interface TRPCContext {
-	session: typeof auth.$Infer.Session;
-	user: (typeof auth.$Infer.Session)['user'];
+	session: typeof auth.$Infer.Session.session | null;
+	user: UserSelect | null;
 }
 
 interface Meta {
@@ -24,7 +25,7 @@ export const publicProcedure = t.procedure;
 export const authedProcedure = publicProcedure.use(async (opts) => {
 	const { ctx } = opts;
 
-	if (!ctx.session || !ctx.session.user) {
+	if (!ctx.session || !ctx.user) {
 		throw new TRPCError({
 			code: 'UNAUTHORIZED',
 			message: 'You must be logged in to access this resource.'
@@ -38,6 +39,13 @@ export const authedProcedure = publicProcedure.use(async (opts) => {
 
 export const permsProcedure = authedProcedure.use(async (opts) => {
 	const { ctx, meta } = opts;
+
+	if (!ctx.session || !ctx.user) {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'You must be logged in to access this resource.'
+		});
+	}
 
 	if ((ctx.user.flags & JointFlags.SUPERADMIN) !== 0n) {
 		return opts.next({

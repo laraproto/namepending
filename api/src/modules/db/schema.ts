@@ -13,6 +13,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
+import z from 'zod';
 
 const timeData = {
 	createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
@@ -259,14 +260,16 @@ export const panelGroupSelectMinimal = createSelectSchema(panelGroups);
 
 export const gameGroupSelectMinimal = createSelectSchema(gameGroups);
 
-export const panelGroupSelect = {
+export const panelGroupSelect = z.object({
 	...panelGroupSelectMinimal.shape,
 	gameGroup: gameGroupSelectMinimal
-};
+});
 
-export const userSelect = {
+export const userSelect = z.object({
 	...userSelectMinimal.shape,
-	group: panelGroupSelect
-};
+	group: panelGroupSelect.nullable()
+});
+
+export type UserSelect = z.infer<typeof userSelect>;
 
 export * from './auth-schema';

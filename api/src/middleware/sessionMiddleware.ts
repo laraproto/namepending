@@ -1,10 +1,11 @@
 import { createMiddleware } from 'hono/factory';
 import { auth } from '@/modules/auth';
+import db, { schema } from '@modules/db';
 
 const sessionMiddleware = createMiddleware<{
 	Variables: {
 		session: typeof auth.$Infer.Session.session | null;
-		user: typeof auth.$Infer.Session.user | null;
+		user: schema.UserSelect | null;
 	};
 }>(async (c, next) => {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
@@ -14,7 +15,26 @@ const sessionMiddleware = createMiddleware<{
 		await next();
 		return;
 	}
-	c.set('user', session.user);
+
+	const user = await db.query.user.findFirst({
+		where: (user, { eq }) => eq(user.id, session.user.id),
+		with: {
+			group: {
+				with: {
+					gameGroup: true
+				}
+			}
+		}
+	});
+
+	if (!user) {
+		c.set('user', null);
+		c.set('session', null);
+		await next();
+		return;
+	}
+
+	c.set('user', user);
 	c.set('session', session.session);
 	await next();
 });
