@@ -14,7 +14,7 @@ export const user = pgTable('user', {
 		.notNull(),
 	flags: bigint({ mode: 'bigint' })
 		.notNull()
-		.default(sql`0::bigint`),
+		.default(sql`1::bigint`),
 	groupId: uuid('group_id').references(() => panelGroups.uuid, { onDelete: 'set null' })
 });
 

@@ -24,4 +24,12 @@
 	<p>TRPC Query Error: {error.message}</p>
 {/await}
 
+{#await trpc.permsDebug.query()}
+	<p>Waiting for perms debug query...</p>
+{:then data}
+	<p>{JSON.stringify(data, undefined, 2)}</p>
+{:catch error}
+	<p>TRPC Query Error: {error.message}</p>
+{/await}
+
 <a href="/api/auth/steam/redirect" rel="external">Test Steam Link</a>
