@@ -13,6 +13,6 @@ export const panelRouter = router({
 		)
 		.output(z.string())
 		.query(({ input }) => {
-			return `Hello ${input.name ?? 'world'}`;
+			return `Hello ${input.name ?? 'world'}, you've got the VIEW_USERS flag`;
 		})
 });
