@@ -32,8 +32,6 @@ export const panelRouter = router({
 		})
 		.input(z.string())
 		.query(async ({ ctx, input }) => {
-			console.log(input, ctx.user.id);
-
 			if (input === ctx.user.id) {
 				return ctx.user;
 			}

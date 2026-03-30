@@ -9,14 +9,20 @@
 </script>
 
 <header class="sticky top-0 z-50 flex w-full items-center border-b bg-background">
-	<div class="flex h-(--header-height) w-full items-center gap-2 px-4">
-		<Button class="size-8" variant="ghost" size="icon" onclick={sidebar.toggle}>
-			<SidebarIcon />
-		</Button>
-		<Separator orientation="vertical" class="me-2 h-4" />
-		<div class="w-full sm:ms-auto sm:w-auto">
-			{@render sidebar.toolbar?.()}
+	<div class="relative flex h-(--header-height) w-full items-center gap-2 px-4">
+		<div class="flex items-center gap-2">
+			<Button class="size-8" variant="ghost" size="icon" onclick={sidebar.toggle}>
+				<SidebarIcon />
+			</Button>
+			<Separator orientation="vertical" class="me-2 h-4" />
 		</div>
+
+		<div class="pointer-events-none absolute inset-x-0 flex justify-center px-16">
+			<div class="pointer-events-auto max-w-full">
+				{@render sidebar.toolbar?.()}
+			</div>
+		</div>
+
 		{#if sidebar.showSearch}
 			<SearchForm class="ms-auto w-auto" />
 		{/if}

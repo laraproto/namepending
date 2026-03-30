@@ -1,12 +1,14 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import Head from '$lib/components/Head.svelte';
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	const sidebar = Sidebar.useSidebar();
 
-	sidebar.setShowSearch(true);
-	sidebar.setToolbar(filterSnippet);
+	onMount(() => {
+		sidebar.setShowSearch(true);
+		sidebar.setToolbar(filterToolbar);
+	});
 
 	onDestroy(() => {
 		sidebar.setShowSearch(false);
@@ -14,7 +16,7 @@
 	});
 </script>
 
-{#snippet filterSnippet()}
+{#snippet filterToolbar()}
 	<p>Hi!</p>
 {/snippet}
 
