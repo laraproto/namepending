@@ -1,0 +1,1 @@
+ALTER TABLE "user" ALTER COLUMN "flags" SET DEFAULT 1::bigint;

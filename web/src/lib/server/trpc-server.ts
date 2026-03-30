@@ -11,7 +11,7 @@ const trpc = createTRPCClient<AppRouter>({
 			transformer: superjson,
 			headers() {
 				return {
-					Authorization: getRequestEvent().cookies.get('__Secure-namepending.session_token')
+					Authorization: `Bearer ${getRequestEvent().cookies.get('__Secure-namepending.session_token')}`
 				};
 			}
 		})

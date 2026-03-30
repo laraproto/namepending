@@ -12,7 +12,10 @@ interface TRPCContext {
 }
 
 interface Meta {
-	permissionsRequired?: JointFlagKeys | JointFlagKeys[] | ((ctx: TRPCContext) => Promise<boolean>);
+	permissionsRequired?:
+		| JointFlagKeys
+		| JointFlagKeys[]
+		| ((ctx: TRPCContext, input: unknown) => Promise<boolean>);
 }
 
 const t = initTRPC.context<TRPCContext>().meta<Meta>().create({
@@ -33,12 +36,16 @@ export const authedProcedure = publicProcedure.use(async (opts) => {
 	}
 
 	return opts.next({
-		ctx
+		ctx: {
+			...ctx,
+			user: ctx.user,
+			session: ctx.session
+		}
 	});
 });
 
 export const permsProcedure = authedProcedure.use(async (opts) => {
-	const { ctx, meta } = opts;
+	const { ctx, meta, input } = opts;
 
 	if (!ctx.session || !ctx.user) {
 		throw new TRPCError({
@@ -86,7 +93,7 @@ export const permsProcedure = authedProcedure.use(async (opts) => {
 			throw new TRPCError({ code: 'FORBIDDEN' });
 		}
 		case 'function': {
-			if (await meta.permissionsRequired(ctx)) break;
+			if (await meta.permissionsRequired(ctx, input)) break;
 			throw new TRPCError({ code: 'FORBIDDEN' });
 		}
 		case 'bigint': {

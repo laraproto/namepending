@@ -3,3 +3,5 @@
 
 	let { data }: PageProps = $props();
 </script>
+
+{JSON.stringify(data.user, undefined, 2)}
