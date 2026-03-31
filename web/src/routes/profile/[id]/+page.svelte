@@ -11,8 +11,8 @@
 
 {#if data.user}
 	<div class="container mx-auto my-8 flex flex-col gap-4 px-4">
-		<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-			<div class="md:col-span-1">
+		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+			<div class="lg:col-span-1">
 				<Card.Root>
 					<Card.Content>
 						<div class="flex flex-col items-center space-y-4">
@@ -28,7 +28,7 @@
 					>
 				</Card.Root>
 			</div>
-			<div class="md:col-span-2">
+			<div class="lg:col-span-2">
 				<Card.Root class="h-full">
 					<Card.Content>Statistics stuff</Card.Content>
 				</Card.Root>

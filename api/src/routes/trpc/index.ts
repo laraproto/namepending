@@ -28,6 +28,9 @@ export const appRouter = router({
 
 		return flagList;
 	}),
+	getSelf: authedProcedure.query(async ({ ctx }) => {
+		return ctx.user;
+	}),
 	panel: panelRouter
 });
 

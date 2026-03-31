@@ -9,6 +9,7 @@
 	let {
 		ref = $bindable(null),
 		open = $bindable(browser ? localStorage.getItem(SIDEBAR_COOKIE_NAME) === 'true' : false),
+		user = null,
 		onOpenChange = () => {},
 		class: className,
 		style,
@@ -16,6 +17,7 @@
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		open?: boolean;
+		user?: import('@namepending/api/db').UserSelect | null;
 		onOpenChange?: (open: boolean) => void;
 	} = $props();
 
@@ -27,7 +29,8 @@
 
 			// This sets the cookie to keep the sidebar state.
 			localStorage.setItem(SIDEBAR_COOKIE_NAME, String(open));
-		}
+		},
+		user: () => user
 	});
 </script>
 

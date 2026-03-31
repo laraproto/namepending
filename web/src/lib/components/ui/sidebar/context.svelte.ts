@@ -5,6 +5,7 @@ import { replaceState } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import type { Pathname } from '$app/types';
+import type { UserSelect } from '@namepending/api/db';
 
 type Getter<T> = () => T;
 
@@ -15,6 +16,8 @@ export type SidebarStateProps = {
 	 * component.
 	 */
 	open: Getter<boolean>;
+
+	user: Getter<UserSelect | null>;
 
 	/**
 	 * A function that sets the open state of the sidebar. To support `bind:open`, we need
@@ -30,6 +33,7 @@ class SidebarState {
 	showSearch = $state(false);
 	searchValue = $state(page.url.searchParams.get('q') ?? '');
 	openMobile = $state(false);
+	user: UserSelect | null = $derived.by(() => this.props.user());
 	setOpen: SidebarStateProps['setOpen'];
 	#isMobile: IsMobile;
 	state = $derived.by(() => (this.open ? 'expanded' : 'collapsed'));

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Component } from "svelte";
-	import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import * as Collapsible from "$lib/components/ui/collapsible/index.js";
+	import type { Component } from 'svelte';
+	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 
 	let {
-		items,
+		items
 	}: {
 		items: {
 			title: string;
@@ -18,6 +18,8 @@
 			}[];
 		}[];
 	} = $props();
+
+	const sidebar = Sidebar.useSidebar();
 </script>
 
 <Sidebar.Group>
@@ -28,7 +30,7 @@
 					<Sidebar.MenuItem {...props}>
 						<Sidebar.MenuButton tooltipContent={item.title}>
 							{#snippet child({ props })}
-						<!-- eslint-disable-next-line -->
+								<!-- eslint-disable-next-line -->
 								<a href={item.url} {...props}>
 									<item.icon />
 									<span>{item.title}</span>
@@ -38,10 +40,7 @@
 						{#if item.items?.length}
 							<Collapsible.Trigger>
 								{#snippet child({ props })}
-									<Sidebar.MenuAction
-										{...props}
-										class="data-[state=open]:rotate-90"
-									>
+									<Sidebar.MenuAction {...props} class="data-[state=open]:rotate-90">
 										<ChevronRightIcon />
 										<span class="sr-only">Toggle</span>
 									</Sidebar.MenuAction>
@@ -53,7 +52,7 @@
 										<Sidebar.MenuSubItem>
 											<Sidebar.MenuSubButton>
 												{#snippet child({ props })}
-												<!-- eslint-disable-next-line -->
+													<!-- eslint-disable-next-line -->
 													<a href={subItem.url} {...props}>
 														<span>{subItem.title}</span>
 													</a>

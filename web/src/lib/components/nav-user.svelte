@@ -11,15 +11,14 @@
 	import Button from './ui/button/button.svelte';
 	import { resolve } from '$app/paths';
 	import authClient from '$lib/auth-client';
+	import { invalidateAll } from '$app/navigation';
 
 	const sidebar = Sidebar.useSidebar();
-
-	const session = authClient.useSession();
 </script>
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
-		{#if $session.data}
+		{#if sidebar.user}
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
@@ -29,11 +28,11 @@
 							{...props}
 						>
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={$session.data?.user.image} alt={$session.data?.user.name} />
-								<Avatar.Fallback class="rounded-lg">{$session.data?.user.name}</Avatar.Fallback>
+								<Avatar.Image src={sidebar.user!.image} alt={sidebar.user!.name} />
+								<Avatar.Fallback class="rounded-lg">{sidebar.user!.name}</Avatar.Fallback>
 							</Avatar.Root>
 							<div class="grid flex-1 text-start text-sm leading-tight">
-								<span class="truncate font-medium">{$session.data?.user.name}</span>
+								<span class="truncate font-medium">{sidebar.user!.name}</span>
 							</div>
 							<ChevronsUpDownIcon class="ms-auto size-4" />
 						</Sidebar.MenuButton>
@@ -48,11 +47,11 @@
 					<DropdownMenu.Label class="p-0 font-normal">
 						<div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={$session.data?.user.image} alt={$session.data?.user.name} />
-								<Avatar.Fallback class="rounded-lg">{$session.data?.user.name}</Avatar.Fallback>
+								<Avatar.Image src={sidebar.user!.image} alt={sidebar.user!.name} />
+								<Avatar.Fallback class="rounded-lg">{sidebar.user!.name}</Avatar.Fallback>
 							</Avatar.Root>
 							<div class="grid flex-1 text-start text-sm leading-tight">
-								<span class="truncate font-medium">{$session.data?.user.name}</span>
+								<span class="truncate font-medium">{sidebar.user!.name}</span>
 							</div>
 						</div>
 					</DropdownMenu.Label>
@@ -73,7 +72,7 @@
 						<DropdownMenu.Item>
 							{#snippet child({ props })}
 								<!-- eslint-disable-next-line -->
-								<a href={resolve('/profile/[id]', { id: $session.data?.user.id! })} {...props}>
+								<a href={resolve('/profile/[id]', { id: sidebar.user!.id! })} {...props}>
 									<BadgeCheckIcon />
 									Account
 								</a>
@@ -85,7 +84,13 @@
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item class="cursor-pointer" onclick={() => authClient.signOut()}>
+					<DropdownMenu.Item
+						class="cursor-pointer"
+						onclick={async () => {
+							authClient.signOut();
+							await invalidateAll();
+						}}
+					>
 						<LogOutIcon />
 						Log out
 					</DropdownMenu.Item>
