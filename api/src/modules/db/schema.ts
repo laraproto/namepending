@@ -270,6 +270,33 @@ export const userSelect = z.object({
 	group: panelGroupSelect.nullable()
 });
 
+export const playerSelectMinimal = createSelectSchema(player);
+
+export const bansSelectMinimal = createSelectSchema(playerBans);
+export const warnsSelectMinimal = createSelectSchema(playerWarns);
+
+export const playerSelect = z.object({
+	...playerSelectMinimal.shape,
+	bans: bansSelectMinimal.array(),
+	warns: warnsSelectMinimal.array(),
+	user: userSelect.nullable()
+});
+
+export const bansSelect = z.object({
+	...bansSelectMinimal.shape,
+	banAuthor: userSelect.nullable(),
+	banVictim: playerSelectMinimal.nullable()
+});
+
+export const warnsSelect = z.object({
+	...warnsSelectMinimal.shape,
+	warnAuthor: userSelect.nullable(),
+	warnVictim: playerSelectMinimal.nullable()
+});
+
 export type UserSelect = z.infer<typeof userSelect>;
+export type PlayerSelect = z.infer<typeof playerSelect>;
+export type BansSelect = z.infer<typeof bansSelect>;
+export type WarnsSelect = z.infer<typeof warnsSelect>;
 
 export * from './auth-schema';

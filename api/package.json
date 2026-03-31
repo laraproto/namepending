@@ -10,6 +10,9 @@
 		},
 		"./auth-plugins": {
 			"import": "./src/modules/auth/plugins/index.ts"
+		},
+		"./db": {
+			"types": "./src/modules/db/schema.ts"
 		}
 	},
 	"scripts": {
