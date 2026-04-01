@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth/minimal';
 import { bearer } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import db, { schema } from '@modules/db';
-import { APP_SECRET, URL } from '../config';
+import { APP_SECRET, APP_URL } from '../config';
 import { steamOpenId } from './plugins/steam/server';
 import { createAuthMiddleware } from 'better-auth/api';
 import { count, eq } from 'drizzle-orm';
@@ -12,9 +12,9 @@ export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: 'pg'
 	}),
-	baseURL: URL,
+	baseURL: APP_URL,
 	secret: APP_SECRET,
-	trustedOrigins: [URL!],
+	trustedOrigins: [APP_URL!],
 	emailAndPassword: {
 		enabled: true
 	},
@@ -37,20 +37,66 @@ export const auth = betterAuth({
 	},
 	hooks: {
 		after: createAuthMiddleware(async (ctx) => {
-			if (!ctx.path.startsWith('/sign-up') && !ctx.path.startsWith('/callback')) {
-				return;
-			}
+			switch (true) {
+				case ctx.path.startsWith('/sign-up') && ctx.path.startsWith('/callback'): {
+					const userCount = await db.select({ count: count() }).from(schema.user);
+					if (userCount[0]?.count === 1) {
+						if (!ctx.context.newSession) {
+							break;
+						}
 
-			const userCount = await db.select({ count: count() }).from(schema.user);
-			if (userCount[0]?.count === 1) {
-				if (!ctx.context.newSession) {
-					return;
+						await db
+							.update(schema.user)
+							.set({ flags: UserFlags.SUPERADMIN })
+							.where(eq(schema.user.id, ctx.context.newSession.user.id));
+					}
+					break;
 				}
+				case ctx.path.startsWith('/steam/link-callback'): {
+					if (!ctx.context.session) {
+						break;
+					}
 
-				await db
-					.update(schema.user)
-					.set({ flags: UserFlags.SUPERADMIN })
-					.where(eq(schema.user.id, ctx.context.newSession.user.id));
+					if (!ctx.request) {
+						break;
+					}
+
+					const params = Object.fromEntries(new URL(ctx.request.url).searchParams);
+
+					const steamId = params['openid.claimed_id']?.split('/').pop();
+
+					const account = ctx.context.internalAdapter.findAccountByProviderId(steamId!, 'steam');
+
+					if (!account) {
+						console.log(
+							`No account found with provider id ${steamId}, cannot link steam account to user ${ctx.context.session.user.id}`
+						);
+						break;
+					}
+
+					const player = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, `${steamId!}@steam`)
+					});
+
+					if (!player) {
+						console.log(
+							`No player found with platform id ${steamId}@steam, cannot link steam account to user ${ctx.context.session.user.id}`
+						);
+						break;
+					}
+
+					await db
+						.update(schema.player)
+						.set({
+							userId: ctx.context.session.user.id
+						})
+						.where(eq(schema.player.platformId, `${steamId!}@steam`));
+
+					break;
+				}
+				default: {
+					break;
+				}
 			}
 		})
 	}

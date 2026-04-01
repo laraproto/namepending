@@ -29,6 +29,7 @@
 		"better-auth": "catalog:",
 		"bits-ui": "^2.16.4",
 		"clsx": "^2.1.1",
+		"date-fns": "^4.1.0",
 		"formsnap": "^2.0.1",
 		"mode-watcher": "^1.1.0",
 		"sass-embedded": "^1.98.0",

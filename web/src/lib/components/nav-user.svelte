@@ -57,7 +57,7 @@
 					</DropdownMenu.Label>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Group>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item class="cursor-pointer">
 							{#snippet child({ props })}
 								<!-- eslint-disable-next-line -->
 								<a href="https://youtu.be/dQw4w9WgXcQ" {...props}>
@@ -69,7 +69,7 @@
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Group>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item class="cursor-pointer">
 							{#snippet child({ props })}
 								<!-- eslint-disable-next-line -->
 								<a href={resolve('/profile/[id]', { id: sidebar.user!.id! })} {...props}>

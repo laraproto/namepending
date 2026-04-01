@@ -1,6 +1,6 @@
 import db from '@modules/db';
 import { permsProcedure, router } from '@modules/trpc';
-import { JointFlags } from '@namepending/shared/user';
+import { JointFlags, platformRegex } from '@namepending/shared/user';
 import { z } from 'zod';
 
 export const panelRouter = router({
@@ -39,7 +39,8 @@ export const panelRouter = router({
 			const user = await db.query.user.findFirst({
 				where: (user, { eq }) => eq(user.id, input),
 				with: {
-					group: true
+					group: true,
+					players: true
 				},
 				columns: {
 					email: false
@@ -51,5 +52,55 @@ export const panelRouter = router({
 			}
 
 			return user;
+		}),
+	getPlayer: permsProcedure
+		.meta({
+			permissionsRequired: async (ctx, input) => {
+				if (
+					(ctx.user!.group !== null &&
+						(ctx.user!.group?.permissions & JointFlags.VIEW_USERS) !== 0n) ||
+					(ctx.user!.flags & JointFlags.VIEW_USERS) !== 0n ||
+					ctx.user!.players!.some((player) => player.uuid === input)
+				)
+					return true;
+				return false;
+			}
+		})
+		.input(z.string())
+		.query(async ({ input }) => {
+			switch (true) {
+				case platformRegex.test(input): {
+					const player = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, input),
+						with: {
+							user: true,
+							bans: true,
+							warns: true
+						}
+					});
+
+					if (!player) {
+						return null;
+					}
+
+					return player;
+				}
+				default: {
+					const player = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.uuid, input),
+						with: {
+							user: true,
+							bans: true,
+							warns: true
+						}
+					});
+
+					if (!player) {
+						return null;
+					}
+
+					return player;
+				}
+			}
 		})
 });

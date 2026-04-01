@@ -23,7 +23,8 @@ const sessionMiddleware = createMiddleware<{
 				with: {
 					gameGroup: true
 				}
-			}
+			},
+			players: true
 		}
 	});
 

@@ -1,5 +1,5 @@
 import { auth } from '@/modules/auth';
-import { URL } from '@/modules/config';
+import { APP_URL } from '@/modules/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { trpcServer } from '@hono/trpc-server';
@@ -35,7 +35,7 @@ app.on(['POST', 'GET'], '/auth/*', (c) => {
 app.use(
 	'/trpc/*',
 	cors({
-		origin: URL!,
+		origin: APP_URL!,
 		allowHeaders: ['Content-Type', 'Authorization'],
 		allowMethods: ['POST', 'GET', 'OPTIONS'],
 		exposeHeaders: ['Content-Length'],

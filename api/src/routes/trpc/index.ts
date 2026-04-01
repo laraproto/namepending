@@ -2,6 +2,7 @@ import { authedProcedure, publicProcedure, router } from '@modules/trpc';
 import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
 import { z } from 'zod';
 import { panelRouter } from './panel';
+import db from '@modules/db';
 
 export const appRouter = router({
 	hello: publicProcedure
@@ -30,6 +31,23 @@ export const appRouter = router({
 	}),
 	getSelf: authedProcedure.query(async ({ ctx }) => {
 		return ctx.user;
+	}),
+	listStaff: publicProcedure.input(z.string()).query(async ({ input }) => {
+		const staff = await db.query.user.findMany({
+			where: (user, { isNotNull, ilike, and }) =>
+				and(ilike(user.name, `%${input}%`), isNotNull(user.groupId), ilike(user.id, `%${input}%`)),
+			columns: {
+				email: false,
+				emailVerified: false,
+				flags: false,
+				image: false
+			},
+			with: {
+				group: true
+			}
+		});
+
+		return staff;
 	}),
 	panel: panelRouter
 });

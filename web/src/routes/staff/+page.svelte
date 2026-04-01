@@ -2,22 +2,40 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import Head from '$lib/components/Head.svelte';
 	import { onMount, onDestroy } from 'svelte';
+	import trpc from '$lib/trpc-client';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import StaffTable from '$lib/components/tables/staff-table.svelte';
+
+	let { data } = $props();
+
+	let staffList = $derived(data.staff);
 
 	const sidebar = Sidebar.useSidebar();
 
+	$effect(() => {
+		trpc.listStaff.query(sidebar.searchValue).then((staff) => {
+			staffList = staff;
+		});
+	});
+
 	onMount(() => {
 		sidebar.setShowSearch(true);
-		sidebar.setToolbar(filterToolbar);
 	});
 
 	onDestroy(() => {
 		sidebar.setShowSearch(false);
-		sidebar.setToolbar(null);
 	});
 </script>
 
-{#snippet filterToolbar()}
-	<p>Hi!</p>
-{/snippet}
-
 <Head title="Staff List" />
+
+<div class="mx-auto my-8 w-full px-4">
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Staff List</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<StaffTable data={staffList} />
+		</Card.Content>
+	</Card.Root>
+</div>

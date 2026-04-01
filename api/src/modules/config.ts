@@ -7,7 +7,7 @@ const isUndefinedOrEmpty = (value: string | undefined, replace_value?: string) =
 
 export const NODE_ENV = isUndefinedOrEmpty(Bun.env.NODE_ENV, 'development');
 
-export const URL = isUndefinedOrEmpty(Bun.env.URL, 'http://localhost:3000');
+export const APP_URL = isUndefinedOrEmpty(Bun.env.URL, 'http://localhost:5173');
 
 export const APP_SECRET = (() => {
 	if (!isUndefinedOrEmpty(Bun.env.APP_SECRET))

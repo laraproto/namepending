@@ -264,16 +264,16 @@ export const panelGroupSelect = z.object({
 	...panelGroupSelectMinimal.shape,
 	gameGroup: gameGroupSelectMinimal
 });
-
-export const userSelect = z.object({
-	...userSelectMinimal.shape,
-	group: panelGroupSelect.nullable()
-});
-
 export const playerSelectMinimal = createSelectSchema(player);
 
 export const bansSelectMinimal = createSelectSchema(playerBans);
 export const warnsSelectMinimal = createSelectSchema(playerWarns);
+
+export const userSelect = z.object({
+	...userSelectMinimal.shape,
+	group: panelGroupSelect.nullable(),
+	players: playerSelectMinimal.array().optional()
+});
 
 export const playerSelect = z.object({
 	...playerSelectMinimal.shape,
@@ -295,6 +295,7 @@ export const warnsSelect = z.object({
 });
 
 export type UserSelect = z.infer<typeof userSelect>;
+export type PlayerSelectMinimal = z.infer<typeof playerSelectMinimal>;
 export type PlayerSelect = z.infer<typeof playerSelect>;
 export type BansSelect = z.infer<typeof bansSelect>;
 export type WarnsSelect = z.infer<typeof warnsSelect>;
