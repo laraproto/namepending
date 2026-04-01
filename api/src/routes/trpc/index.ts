@@ -34,8 +34,8 @@ export const appRouter = router({
 	}),
 	listStaff: publicProcedure.input(z.string()).query(async ({ input }) => {
 		const staff = await db.query.user.findMany({
-			where: (user, { isNotNull, ilike, and }) =>
-				and(ilike(user.name, `%${input}%`), isNotNull(user.groupId), ilike(user.id, `%${input}%`)),
+			where: (user, { isNotNull, ilike, or }) =>
+				or(ilike(user.name, `%${input}%`), isNotNull(user.groupId), ilike(user.id, `%${input}%`)),
 			columns: {
 				email: false,
 				emailVerified: false,
