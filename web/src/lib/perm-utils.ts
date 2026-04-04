@@ -1,10 +1,13 @@
 import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
 import type { UserSelect } from '@namepending/api/db';
 
-export async function hasPerm(
-	user: UserSelect | null,
-	permRequired: JointFlagKeys | JointFlagKeys[] | ((user: UserSelect) => Promise<boolean>)
-) {
+export type PermRequired =
+	| JointFlagKeys
+	| JointFlagKeys[]
+	| ((user: UserSelect) => Promise<boolean>)
+	| bigint;
+
+export async function hasPerm(user: UserSelect | null, permRequired: PermRequired) {
 	if (user === null) return false;
 
 	if ((user.flags & JointFlags.SUPERADMIN) !== 0n) {

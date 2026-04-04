@@ -22,6 +22,7 @@
 					},
 					{
 						title: 'Staff List',
+						permRequired: 'VIEW_USERS',
 						url: '/staff'
 					}
 				]
@@ -39,13 +40,21 @@
 				icon: SendIcon
 			}
 		]
+	} satisfies {
+		navMain: NavMainProps['items'];
+		navSecondary: {
+			title: string;
+			url: string;
+			icon: Component;
+			isActive?: boolean;
+		}[];
 	};
 </script>
 
 <script lang="ts">
-	import type { ComponentProps } from 'svelte';
+	import type { Component, ComponentProps } from 'svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import NavMain from './nav-main.svelte';
+	import NavMain, { type NavMainProps } from './nav-main.svelte';
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
 	import { resolve } from '$app/paths';
