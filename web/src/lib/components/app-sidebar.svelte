@@ -22,7 +22,6 @@
 					},
 					{
 						title: 'Staff List',
-						permRequired: 'VIEW_USERS',
 						url: '/staff'
 					}
 				]
