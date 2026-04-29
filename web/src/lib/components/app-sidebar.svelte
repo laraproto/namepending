@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
-	import { SiDiscord } from '@icons-pack/svelte-simple-icons';
 	import SendIcon from '@lucide/svelte/icons/send';
 	import lara from '$lib/assets/lara.png';
 
@@ -28,11 +27,6 @@
 			}
 		],
 		navSecondary: [
-			{
-				title: 'Discord',
-				url: '#',
-				icon: SiDiscord
-			},
 			{
 				title: 'Send feedback',
 				url: '#',

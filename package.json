@@ -12,7 +12,8 @@
 	},
 	"scripts": {
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"dev": "bun -b run --parallel --filter \"*\" dev"
 	},
 	"peerDependencies": {
 		"typescript": "^6.0.2"

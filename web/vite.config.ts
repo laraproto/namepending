@@ -15,6 +15,9 @@ export default defineConfig({
 				secure: false
 			}
 		},
-		allowedHosts: [new URL(process.env.URL!).host]
+		allowedHosts: [new URL(process.env.URL!).host],
+		watch: {
+			ignored: ['../api']
+		}
 	}
 });
