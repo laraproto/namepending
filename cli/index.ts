@@ -42,7 +42,7 @@ async function main() {
 	p.intro(pc.inverse('Namepending Setup'));
 
 	const name = await p.text({
-		message: 'What is the name of your project?',
+		message: 'What is the name of your panel?',
 		validate(value) {
 			const errorValidate = envSchema.shape.name.safeParse(value);
 			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
@@ -55,7 +55,7 @@ async function main() {
 	}
 
 	const url = await p.text({
-		message: 'What is the URL of the project',
+		message: 'What is the URL of the panel',
 		validate(value) {
 			const errorValidate = envSchema.shape.url.safeParse(value);
 			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
