@@ -7,14 +7,11 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { SiDiscord } from '@icons-pack/svelte-simple-icons';
 	import { loginSchema, type LoginSchema } from '../schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { type ComponentProps } from 'svelte';
 	import authClient from '$lib/auth-client';
-
-	const id = $props.id();
 
 	let {
 		data,
@@ -78,7 +75,6 @@
 						class="w-full"
 						onclick={() => authClient.signIn.social({ provider: 'discord' })}
 					>
-						<SiDiscord />
 						Login with Discord
 					</Button>
 					<Field.Description class="text-center">

@@ -7,7 +7,6 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { SiDiscord } from '@icons-pack/svelte-simple-icons';
 	import { registerSchema, type RegisterSchema } from '../schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
@@ -100,7 +99,6 @@
 										provider: 'discord'
 									})}
 							>
-								<SiDiscord />
 								Sign up with Discord
 							</Button>
 							<Field.Description class="px-6 text-center">

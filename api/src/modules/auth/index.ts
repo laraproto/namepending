@@ -38,7 +38,7 @@ export const auth = betterAuth({
 	hooks: {
 		after: createAuthMiddleware(async (ctx) => {
 			switch (true) {
-				case ctx.path.startsWith('/sign-up') && ctx.path.startsWith('/callback'): {
+				case ctx.path.startsWith('/sign-up') || ctx.path.startsWith('/callback'): {
 					const userCount = await db.select({ count: count() }).from(schema.user);
 					if (userCount[0]?.count === 1) {
 						if (!ctx.context.newSession) {
@@ -47,7 +47,7 @@ export const auth = betterAuth({
 
 						await db
 							.update(schema.user)
-							.set({ flags: UserFlags.SUPERADMIN })
+							.set({ flags: UserFlags.SUPERADMIN | UserFlags.USER })
 							.where(eq(schema.user.id, ctx.context.newSession.user.id));
 					}
 					break;
