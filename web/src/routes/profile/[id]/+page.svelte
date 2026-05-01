@@ -4,6 +4,7 @@
 	import Head from '$lib/components/Head.svelte';
 	import type { PageProps } from './$types';
 	import PlayerTable from '$lib/components/tables/player-table.svelte';
+	import { columns } from '$lib/components/tables/player-table';
 
 	let { data }: PageProps = $props();
 </script>
@@ -40,7 +41,7 @@
 				<Card.Title>Player Profiles</Card.Title>
 			</Card.Header>
 			<Card.Content>
-				<PlayerTable data={data.user.players || []} />
+				<PlayerTable data={data.user.players || []} {columns} />
 			</Card.Content>
 		</Card.Root>
 	</div>

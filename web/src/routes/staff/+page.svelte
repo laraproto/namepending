@@ -5,6 +5,7 @@
 	import trpc from '$lib/trpc-client';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import StaffTable from '$lib/components/tables/staff-table.svelte';
+	import { columns } from '$lib/components/tables/staff-table.js';
 
 	let { data } = $props();
 
@@ -35,7 +36,7 @@
 			<Card.Title>Staff List</Card.Title>
 		</Card.Header>
 		<Card.Content>
-			<StaffTable data={staffList} />
+			<StaffTable data={staffList} {columns} />
 		</Card.Content>
 	</Card.Root>
 </div>
