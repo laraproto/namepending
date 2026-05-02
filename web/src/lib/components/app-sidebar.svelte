@@ -24,6 +24,26 @@
 						url: '/staff'
 					}
 				]
+			},
+			{
+				title: 'Moderation',
+				url: '/moderation',
+				icon: SquareTerminalIcon,
+				isActive: true,
+				items: [
+					{
+						title: 'Warnings',
+						url: '/moderation/warnings'
+					},
+					{
+						title: 'Bans',
+						url: '/moderation/bans'
+					},
+					{
+						title: 'Player Search',
+						url: '/moderation/search'
+					}
+				]
 			}
 		],
 		navSecondary: [
