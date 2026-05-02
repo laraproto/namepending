@@ -16,14 +16,6 @@
 	<p>TRPC Query Error: {error.message}</p>
 {/await}
 
-{#await trpc.panel.hello.query({ name: 'world' })}
-	<p>Waiting for promise on authed query...</p>
-{:then data}
-	<p>{data}</p>
-{:catch error}
-	<p>TRPC Query Error: {error.message}</p>
-{/await}
-
 {#await trpc.permsDebug.query()}
 	<p>Waiting for perms debug query...</p>
 {:then data}

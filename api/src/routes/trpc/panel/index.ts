@@ -2,21 +2,10 @@ import db from '@modules/db';
 import { permsProcedure, router } from '@modules/trpc';
 import { JointFlags, platformRegex } from '@namepending/shared/user';
 import { z } from 'zod';
+import { moderationRouter } from './moderation';
 
 export const panelRouter = router({
-	hello: permsProcedure
-		.meta({
-			permissionsRequired: 'VIEW_USERS'
-		})
-		.input(
-			z.object({
-				name: z.string().nullish()
-			})
-		)
-		.output(z.string())
-		.query(async ({ input }) => {
-			return `Hello ${input.name ?? 'world'}, you've got the VIEW_USERS flag`;
-		}),
+	moderation: moderationRouter,
 	getProfile: permsProcedure
 		.meta({
 			permissionsRequired: async (ctx, input: unknown) => {

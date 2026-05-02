@@ -32,6 +32,7 @@ class SidebarState {
 	open = $derived.by(() => this.props.open());
 	showSearch = $state(false);
 	searchValue = $state(page.url.searchParams.get('q') ?? '');
+	page = $state(Number(page.url.searchParams.get('page') ?? 0));
 	openMobile = $state(false);
 	user: UserSelect | null = $derived.by(() => this.props.user());
 	setOpen: SidebarStateProps['setOpen'];
@@ -77,6 +78,11 @@ class SidebarState {
 			resolve(`${page.url.pathname}?q=${encodeURIComponent(value)}` as Pathname),
 			page.state
 		);
+	};
+
+	setPage = (value: number) => {
+		this.page = value;
+		replaceState(resolve(`${page.url.pathname}?page=${value}` as Pathname), page.state);
 	};
 
 	toggle = () => {

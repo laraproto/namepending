@@ -7,7 +7,7 @@ import type { RouterOutput } from '$lib/trpc-client';
 
 type ListStaffOutput = RouterOutput['listStaff'];
 
-export const columns: ColumnDef<ListStaffOutput[number]>[] = [
+export const columns: ColumnDef<ListStaffOutput['data'][number]>[] = [
 	{
 		accessorKey: 'name',
 		header: 'Name'

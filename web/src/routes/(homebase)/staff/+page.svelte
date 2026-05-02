@@ -6,6 +6,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import StaffTable from '$lib/components/tables/staff-table.svelte';
 	import { columns } from '$lib/components/tables/staff-table.js';
+	import type { PaginationState } from '@tanstack/table-core';
 
 	let { data } = $props();
 
@@ -14,9 +15,14 @@
 	const sidebar = Sidebar.useSidebar();
 
 	$effect(() => {
-		trpc.listStaff.query(sidebar.searchValue).then((staff) => {
-			staffList = staff;
-		});
+		trpc.listStaff
+			.query({
+				query: sidebar.searchValue,
+				page: sidebar.page + 1
+			})
+			.then((staff) => {
+				staffList = staff;
+			});
 	});
 
 	onMount(() => {
@@ -26,6 +32,18 @@
 	onDestroy(() => {
 		sidebar.setShowSearch(false);
 	});
+
+	const onPageChange = (pagination: PaginationState) => {
+		trpc.listStaff
+			.query({
+				query: sidebar.searchValue,
+				page: pagination.pageIndex + 1,
+				limit: pagination.pageSize
+			})
+			.then((staff) => {
+				staffList = staff;
+			});
+	};
 </script>
 
 <Head title="Staff List" />
@@ -36,7 +54,14 @@
 			<Card.Title>Staff List</Card.Title>
 		</Card.Header>
 		<Card.Content>
-			<StaffTable data={staffList} {columns} />
+			<StaffTable
+				data={staffList.data}
+				{columns}
+				{onPageChange}
+				pageCount={staffList.pageCount}
+				rowCount={staffList.count}
+				isManualPagination={true}
+			/>
 		</Card.Content>
 	</Card.Root>
 </div>

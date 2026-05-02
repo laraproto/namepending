@@ -42,8 +42,7 @@
 
 				const isItemVisible =
 					(visibleSubItems?.length ?? 0) > 0 ||
-					!item.permRequired ||
-					(await hasPerm(sidebar.user, item.permRequired));
+					(item.permRequired && (await hasPerm(sidebar.user, item.permRequired)));
 
 				if (!isItemVisible) return null;
 

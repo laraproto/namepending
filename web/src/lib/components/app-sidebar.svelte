@@ -33,15 +33,18 @@
 				items: [
 					{
 						title: 'Warnings',
-						url: '/moderation/warnings'
+						url: '/moderation/warnings',
+						permRequired: 'VIEW_WARNINGS'
 					},
 					{
 						title: 'Bans',
-						url: '/moderation/bans'
+						url: '/moderation/bans',
+						permRequired: 'VIEW_BANS'
 					},
 					{
 						title: 'Player Search',
-						url: '/moderation/search'
+						url: '/moderation/search',
+						permRequired: 'SEARCH_USERS'
 					}
 				]
 			}

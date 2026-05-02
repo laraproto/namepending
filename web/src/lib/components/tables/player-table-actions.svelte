@@ -14,7 +14,17 @@
 	let { id }: { id: string } = $props();
 </script>
 
-{#snippet booleanBadge({ bool, colorInverse = false }: { bool: boolean; colorInverse?: boolean })}
+{#snippet booleanBadge({
+	bool,
+	colorInverse = false,
+	trueText = 'Yes',
+	falseText = 'No'
+}: {
+	bool: boolean;
+	colorInverse?: boolean;
+	trueText?: string;
+	falseText?: string;
+})}
 	<Badge
 		variant="secondary"
 		class={colorInverse
@@ -30,7 +40,7 @@
 				]}
 	>
 		{#if bool}<BadgeCheckIcon />{:else}<BadgeXIcon />{/if}
-		{bool ? 'Yes' : 'No'}
+		{bool ? trueText : falseText}
 	</Badge>
 {/snippet}
 

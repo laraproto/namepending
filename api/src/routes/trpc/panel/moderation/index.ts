@@ -24,7 +24,7 @@ export const moderationRouter = router({
 				totalPlayers = Number(rowQuery[0].value);
 			}
 
-			const pageCount = Math.ceil(totalPlayers / input.limit);
+			const pageCount = Math.max(1, Math.ceil(totalPlayers / input.limit));
 
 			if (input.page > pageCount) {
 				input.page = pageCount;
@@ -93,7 +93,7 @@ export const moderationRouter = router({
 				totalUsers = Number(rowQuery[0].value);
 			}
 
-			const pageCount = Math.ceil(totalUsers / input.limit);
+			const pageCount = Math.max(1, Math.ceil(totalUsers / input.limit));
 
 			if (input.page > pageCount) {
 				input.page = pageCount;
@@ -156,7 +156,7 @@ export const moderationRouter = router({
 				totalBans = Number(rowQuery[0].value);
 			}
 
-			const pageCount = Math.ceil(totalBans / input.limit);
+			const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
 
 			if (input.page > pageCount) {
 				input.page = pageCount;
@@ -174,7 +174,22 @@ export const moderationRouter = router({
 									.select({ id: schema.player.uuid })
 									.from(schema.player)
 									.where(eq(schema.player.platformId, input.query))
-							)
+							),
+						with: {
+							banVictim: {
+								columns: {
+									name: true,
+									platformId: true,
+									uuid: true
+								}
+							},
+							banAuthor: {
+								columns: {
+									name: true,
+									id: true
+								}
+							}
+						}
 					});
 
 					return {
@@ -188,7 +203,22 @@ export const moderationRouter = router({
 						orderBy: [desc(schema.playerBans.createdAt)],
 						limit: input.limit,
 						offset: (input.page - 1) * input.limit,
-						where: (ban, { eq }) => eq(ban.victimId, input.query)
+						where: (ban, { eq }) => eq(ban.victimId, input.query),
+						with: {
+							banVictim: {
+								columns: {
+									name: true,
+									platformId: true,
+									uuid: true
+								}
+							},
+							banAuthor: {
+								columns: {
+									name: true,
+									id: true
+								}
+							}
+						}
 					});
 
 					return {
@@ -208,6 +238,12 @@ export const moderationRouter = router({
 									name: true,
 									platformId: true,
 									uuid: true
+								}
+							},
+							banAuthor: {
+								columns: {
+									name: true,
+									id: true
 								}
 							}
 						},
@@ -257,7 +293,7 @@ export const moderationRouter = router({
 				totalWarnings = Number(rowQuery[0].value);
 			}
 
-			const pageCount = Math.ceil(totalWarnings / input.limit);
+			const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
 
 			if (input.page > pageCount) {
 				input.page = pageCount;
@@ -275,7 +311,22 @@ export const moderationRouter = router({
 									.select({ id: schema.player.uuid })
 									.from(schema.player)
 									.where(eq(schema.player.platformId, input.query))
-							)
+							),
+						with: {
+							warnVictim: {
+								columns: {
+									name: true,
+									platformId: true,
+									uuid: true
+								}
+							},
+							warnAuthor: {
+								columns: {
+									name: true,
+									id: true
+								}
+							}
+						}
 					});
 
 					return {
@@ -289,7 +340,22 @@ export const moderationRouter = router({
 						orderBy: [desc(schema.playerWarns.createdAt)],
 						limit: input.limit,
 						offset: (input.page - 1) * input.limit,
-						where: (warn, { eq }) => eq(warn.victimId, input.query)
+						where: (warn, { eq }) => eq(warn.victimId, input.query),
+						with: {
+							warnVictim: {
+								columns: {
+									name: true,
+									platformId: true,
+									uuid: true
+								}
+							},
+							warnAuthor: {
+								columns: {
+									name: true,
+									id: true
+								}
+							}
+						}
 					});
 
 					return {
@@ -309,6 +375,12 @@ export const moderationRouter = router({
 									name: true,
 									platformId: true,
 									uuid: true
+								}
+							},
+							warnAuthor: {
+								columns: {
+									name: true,
+									id: true
 								}
 							}
 						},

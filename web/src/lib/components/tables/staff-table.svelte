@@ -23,13 +23,34 @@
 
 	const sidebar = Sidebar.useSidebar();
 
-	let { data, columns }: DataTableProps<TData, TValue> = $props();
+	let {
+		data,
+		columns,
+		pageCount = undefined,
+		rowCount = undefined,
+		onPageChange = undefined,
+		isManualPagination = false
+	}: DataTableProps<TData, TValue> & {
+		pageCount?: number;
+		rowCount?: number;
+		onPageChange?: (updater: PaginationState) => void;
+		isManualPagination?: boolean;
+	} = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({ pageIndex: sidebar.page, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 
 	const table = createSvelteTable({
+		get manualPagination() {
+			return isManualPagination;
+		},
+		get pageCount() {
+			return pageCount;
+		},
+		get rowCount() {
+			return rowCount;
+		},
 		get data() {
 			return data;
 		},
@@ -46,6 +67,10 @@
 			} else {
 				pagination = updater;
 			}
+			if (onPageChange) {
+				onPageChange(pagination);
+			}
+			sidebar.setPage(pagination.pageIndex);
 		},
 		onSortingChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -132,5 +157,23 @@
 				{/each}
 			</Table.Body>
 		</Table.Root>
+	</div>
+	<div class="flex items-center justify-end space-x-2 py-4">
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => table.previousPage()}
+			disabled={!table.getCanPreviousPage()}
+		>
+			Previous
+		</Button>
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => table.nextPage()}
+			disabled={!table.getCanNextPage()}
+		>
+			Next
+		</Button>
 	</div>
 </div>
