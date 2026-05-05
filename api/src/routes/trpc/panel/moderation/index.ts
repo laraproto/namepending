@@ -61,7 +61,7 @@ export const moderationRouter = router({
 				default: {
 					const player = await db.query.player.findMany({
 						orderBy: [desc(schema.player.createdAt)],
-						where: (player, { like }) => like(player.name, `%${input.query}%`),
+						where: (player, { ilike }) => ilike(player.name, `%${input.query}%`),
 						limit: input.limit,
 						offset: (input.page - 1) * input.limit
 					});
@@ -110,6 +110,9 @@ export const moderationRouter = router({
 									.from(schema.player)
 									.where(eq(schema.player.platformId, input.query))
 							),
+						with: {
+							group: true
+						},
 						limit: input.limit,
 						offset: (input.page - 1) * input.limit
 					});
@@ -123,8 +126,11 @@ export const moderationRouter = router({
 				default: {
 					const user = await db.query.user.findMany({
 						orderBy: [desc(schema.user.createdAt)],
-						where: (user, { like, or, eq }) =>
-							or(like(user.name, `%${input.query}%`), eq(user.id, input.query)),
+						where: (user, { ilike, or, eq }) =>
+							or(ilike(user.name, `%${input.query}%`), eq(user.id, input.query)),
+						with: {
+							group: true
+						},
 						limit: input.limit,
 						offset: (input.page - 1) * input.limit
 					});
@@ -247,21 +253,21 @@ export const moderationRouter = router({
 								}
 							}
 						},
-						where: (ban, { inArray, or, like }) =>
+						where: (ban, { inArray, or, ilike }) =>
 							or(
 								inArray(
 									ban.victimId,
 									db
 										.select({ id: schema.player.uuid })
 										.from(schema.player)
-										.where(like(schema.player.name, `%${input.query}%`))
+										.where(ilike(schema.player.name, `%${input.query}%`))
 								),
 								inArray(
 									ban.authorId,
 									db
 										.select({ id: schema.user.id })
 										.from(schema.user)
-										.where(like(schema.user.name, `%${input.query}%`))
+										.where(ilike(schema.user.name, `%${input.query}%`))
 								)
 							)
 					});
@@ -384,21 +390,21 @@ export const moderationRouter = router({
 								}
 							}
 						},
-						where: (warn, { inArray, or, like }) =>
+						where: (warn, { inArray, or, ilike }) =>
 							or(
 								inArray(
 									warn.victimId,
 									db
 										.select({ id: schema.player.uuid })
 										.from(schema.player)
-										.where(like(schema.player.name, `%${input.query}%`))
+										.where(ilike(schema.player.name, `%${input.query}%`))
 								),
 								inArray(
 									warn.authorId,
 									db
 										.select({ id: schema.user.id })
 										.from(schema.user)
-										.where(like(schema.user.name, `%${input.query}%`))
+										.where(ilike(schema.user.name, `%${input.query}%`))
 								)
 							)
 					});

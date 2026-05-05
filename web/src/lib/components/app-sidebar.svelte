@@ -15,10 +15,10 @@
 						title: 'Dashboard',
 						url: '/stats'
 					},
-					{
+					/*{
 						title: 'Server Status',
 						url: '/status'
-					},
+					},*/
 					{
 						title: 'Staff List',
 						url: '/staff'
@@ -45,14 +45,19 @@
 						title: 'Player Search',
 						url: '/moderation/search',
 						permRequired: 'SEARCH_USERS'
+					},
+					{
+						title: 'User Search',
+						url: '/moderation/user',
+						permRequired: 'SEARCH_USERS'
 					}
 				]
 			}
 		],
 		navSecondary: [
 			{
-				title: 'Send feedback',
-				url: '#',
+				title: 'Report Issues with namepending',
+				url: 'https://github.com/laraproto/namepending/issues',
 				icon: SendIcon
 			}
 		]

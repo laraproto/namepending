@@ -7,6 +7,8 @@ import * as fs from 'node:fs/promises';
 
 const envSchema = z.object({
 	name: z.string().min(1).default('namepending'),
+	public_url: z.string().default('$URL'),
+	public_name: z.string().default('$NAME'),
 	url: z.url({
 		protocol: /^https?$/,
 		hostname: z.regexes.domain
