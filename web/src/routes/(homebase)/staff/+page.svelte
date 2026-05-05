@@ -4,7 +4,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import trpc from '$lib/trpc-client';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import StaffTable from '$lib/components/tables/staff-table.svelte';
+	import StaffTable from '$lib/components/tables/player-table.svelte';
 	import { columns } from '$lib/components/tables/staff-table.js';
 	import type { PaginationState } from '@tanstack/table-core';
 

@@ -5,15 +5,15 @@ import PlayerTableActions, { booleanBadge } from './player-table-actions.svelte'
 
 import type { RouterOutput } from '$lib/trpc-client';
 
-type BansOutput = RouterOutput['panel']['moderation']['bans'];
+type WarnsOutput = RouterOutput['panel']['moderation']['warns'];
 
-export const columns: ColumnDef<BansOutput['data'][number]>[] = [
+export const columns: ColumnDef<WarnsOutput['data'][number]>[] = [
 	{
-		accessorKey: 'banVictim.name',
+		accessorKey: 'warnVictim.name',
 		header: 'Name'
 	},
 	{
-		accessorKey: 'banAuthor.name',
+		accessorKey: 'warnAuthor.name',
 		header: 'Issued By'
 	},
 	{
@@ -30,8 +30,23 @@ export const columns: ColumnDef<BansOutput['data'][number]>[] = [
 		header: 'Last Updated'
 	},
 	{
+		header: 'Type',
+		accessorFn: (row) => {
+			switch (row.type) {
+				case 'tempminor':
+					return 'Temporary Minor';
+				case 'tempmajor':
+					return 'Temporary Major';
+				case 'minor':
+					return 'Minor';
+				case 'major':
+					return 'Major';
+			}
+		}
+	},
+	{
 		accessorFn: (row) =>
-			row.type === 'temporary' && row.expiresAt
+			(row.type === 'tempminor' || row.type === 'tempmajor') && row.expiresAt
 				? formatDistance(row.expiresAt, new Date(), { addSuffix: true })
 				: 'Never',
 		header: 'Expires'
@@ -49,7 +64,7 @@ export const columns: ColumnDef<BansOutput['data'][number]>[] = [
 	{
 		id: 'actions',
 		cell: ({ row }) => {
-			return renderComponent(PlayerTableActions, { id: row.original.banVictim.platformId });
+			return renderComponent(PlayerTableActions, { id: row.original.warnVictim.platformId });
 		},
 		header: 'Actions'
 	}

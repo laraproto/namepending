@@ -8,8 +8,7 @@ export const load = (async ({ url }) => {
 
 	const bans = await trpc.panel.moderation.bans.query({
 		query,
-		page: 2,
-		limit: 10
+		page: page + 1
 	});
 
 	if (page + 1 > bans.pageCount) {
