@@ -45,7 +45,7 @@ export const authedProcedure = publicProcedure.use(async (opts) => {
 });
 
 export const permsProcedure = authedProcedure.use(async (opts) => {
-	const { ctx, meta, input } = opts;
+	const { ctx, meta } = opts;
 
 	if (!ctx.session || !ctx.user) {
 		throw new TRPCError({
@@ -93,7 +93,7 @@ export const permsProcedure = authedProcedure.use(async (opts) => {
 			throw new TRPCError({ code: 'FORBIDDEN' });
 		}
 		case 'function': {
-			if (await meta.permissionsRequired(ctx, input)) break;
+			if (await meta.permissionsRequired(ctx, await opts.getRawInput())) break;
 			throw new TRPCError({ code: 'FORBIDDEN' });
 		}
 		case 'bigint': {
