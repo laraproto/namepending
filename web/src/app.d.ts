@@ -7,7 +7,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			session: typeof authClient.$Infer.Session.session | null;
-			user: typeof authClient.$Infer.User.user | null;
+			user: typeof authClient.$Infer.Session.user | null;
 		}
 		// interface PageData {}
 		// interface PageState {}

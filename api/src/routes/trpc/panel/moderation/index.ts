@@ -3,8 +3,10 @@ import { permsProcedure, router } from '@modules/trpc';
 import { platformRegex } from '@namepending/shared/user';
 import { count, desc } from 'drizzle-orm';
 import { z } from 'zod';
+import { playerModerationRouter } from './player';
 
 export const moderationRouter = router({
+	player: playerModerationRouter,
 	searchPlayer: permsProcedure
 		.meta({
 			permissionsRequired: 'SEARCH_USERS'

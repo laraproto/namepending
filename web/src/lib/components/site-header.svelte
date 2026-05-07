@@ -19,7 +19,7 @@
 
 		<div class="pointer-events-none absolute inset-x-0 flex justify-center px-16">
 			<div class="pointer-events-auto max-w-full">
-				{@render sidebar.toolbar?.()}
+				{@render sidebar.toolbar?.(sidebar.toolbarData)}
 			</div>
 		</div>
 

@@ -38,7 +38,9 @@ class SidebarState {
 	setOpen: SidebarStateProps['setOpen'];
 	#isMobile: IsMobile;
 	state = $derived.by(() => (this.open ? 'expanded' : 'collapsed'));
-	toolbar: Snippet | null = $state(null);
+	// eslint-disable-next-line
+	toolbar: Snippet<[any]> | null = $state(null);
+	toolbarData: unknown = $state(null);
 
 	constructor(props: SidebarStateProps) {
 		this.setOpen = props.setOpen;
@@ -68,8 +70,9 @@ class SidebarState {
 		this.showSearch = value;
 	};
 
-	setToolbar = (snippet: Snippet | null) => {
+	setToolbar = <T>(snippet: Snippet<[T]> | null, data: T) => {
 		this.toolbar = snippet;
+		this.toolbarData = data;
 	};
 
 	setSearchValue = (value: string) => {

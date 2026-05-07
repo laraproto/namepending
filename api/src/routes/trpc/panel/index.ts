@@ -63,8 +63,40 @@ export const panelRouter = router({
 						where: (player, { eq }) => eq(player.platformId, input),
 						with: {
 							user: true,
-							bans: true,
-							warns: true
+							bans: {
+								with: {
+									banVictim: {
+										columns: {
+											name: true,
+											platformId: true,
+											uuid: true
+										}
+									},
+									banAuthor: {
+										columns: {
+											name: true,
+											id: true
+										}
+									}
+								}
+							},
+							warns: {
+								with: {
+									warnVictim: {
+										columns: {
+											name: true,
+											platformId: true,
+											uuid: true
+										}
+									},
+									warnAuthor: {
+										columns: {
+											name: true,
+											id: true
+										}
+									}
+								}
+							}
 						}
 					});
 
@@ -79,8 +111,40 @@ export const panelRouter = router({
 						where: (player, { eq }) => eq(player.uuid, input),
 						with: {
 							user: true,
-							bans: true,
-							warns: true
+							bans: {
+								with: {
+									banVictim: {
+										columns: {
+											name: true,
+											platformId: true,
+											uuid: true
+										}
+									},
+									banAuthor: {
+										columns: {
+											name: true,
+											id: true
+										}
+									}
+								}
+							},
+							warns: {
+								with: {
+									warnVictim: {
+										columns: {
+											name: true,
+											platformId: true,
+											uuid: true
+										}
+									},
+									warnAuthor: {
+										columns: {
+											name: true,
+											id: true
+										}
+									}
+								}
+							}
 						}
 					});
 
