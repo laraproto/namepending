@@ -7,8 +7,10 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { warnSchema } from '../schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
-export const load: PageServerLoad = async ({ parent }) => {
+export const load: PageServerLoad = async ({ parent, url }) => {
 	const { player, localUser } = await parent();
+	const page = Number(url.searchParams.get('page') ?? '0');
+	const query = url.searchParams.get('q') ?? '';
 
 	if (!localUser || !hasPermSync(localUser, 'VIEW_WARNINGS')) redirect(302, '/');
 
@@ -16,8 +18,18 @@ export const load: PageServerLoad = async ({ parent }) => {
 		redirect(302, '/');
 	}
 
+	const warns = await trpcServer.panel.moderation.player.getWarns.query({
+		uuid: player.uuid,
+		page: page + 1
+	});
+
+	if (page + 1 > warns.pageCount) {
+		redirect(302, `${url.pathname}?q=${query}&page=${warns.pageCount - 1}`);
+	}
+
 	return {
 		player,
+		warns,
 		form: await superValidate(zod4(warnSchema))
 	};
 };

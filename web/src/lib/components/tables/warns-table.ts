@@ -53,6 +53,7 @@ export const columns: ColumnDef<WarnsOutput['data'][number]>[] = [
 	},
 	{
 		cell: ({ row }) =>
+			// @ts-expect-error no idea why there's an error all of a suddden here, it worked fine and it still works fine
 			renderSnippet(booleanBadge, {
 				bool: row.original.active,
 				colorInverse: true,

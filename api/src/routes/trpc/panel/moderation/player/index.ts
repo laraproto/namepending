@@ -1,8 +1,113 @@
 import db, { schema } from '@modules/db';
 import { permsProcedure, router } from '@modules/trpc';
+import { count, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const playerModerationRouter = router({
+	getWarns: permsProcedure
+		.meta({
+			permissionsRequired: ['VIEW_USERS', 'VIEW_WARNINGS']
+		})
+		.input(
+			z.object({
+				uuid: z.uuid(),
+				limit: z.int().min(1).max(100).default(10),
+				page: z.int().min(1).default(1)
+			})
+		)
+		.query(async ({ input }) => {
+			const rowQuery = await db.select({ value: count() }).from(schema.playerWarns);
+			let totalWarnings = 0;
+
+			if (rowQuery[0]) {
+				totalWarnings = Number(rowQuery[0].value);
+			}
+
+			const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
+
+			if (input.page > pageCount) {
+				input.page = pageCount;
+			}
+			const warn = await db.query.playerWarns.findMany({
+				orderBy: [desc(schema.playerWarns.createdAt)],
+				limit: input.limit,
+				offset: (input.page - 1) * input.limit,
+				with: {
+					warnVictim: {
+						columns: {
+							name: true,
+							platformId: true,
+							uuid: true
+						}
+					},
+					warnAuthor: {
+						columns: {
+							name: true,
+							id: true
+						}
+					}
+				},
+				where: (warn, { eq }) => eq(warn.victimId, input.uuid)
+			});
+
+			return {
+				data: warn,
+				count: totalWarnings,
+				pageCount
+			};
+		}),
+	getBans: permsProcedure
+		.meta({
+			permissionsRequired: ['VIEW_USERS', 'VIEW_BANS']
+		})
+		.input(
+			z.object({
+				uuid: z.uuid(),
+				limit: z.int().min(1).max(100).default(10),
+				page: z.int().min(1).default(1)
+			})
+		)
+		.query(async ({ input }) => {
+			const rowQuery = await db.select({ value: count() }).from(schema.playerBans);
+			let totalBans = 0;
+
+			if (rowQuery[0]) {
+				totalBans = Number(rowQuery[0].value);
+			}
+
+			const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
+
+			if (input.page > pageCount) {
+				input.page = pageCount;
+			}
+			const ban = await db.query.playerBans.findMany({
+				orderBy: [desc(schema.playerBans.createdAt)],
+				limit: input.limit,
+				offset: (input.page - 1) * input.limit,
+				with: {
+					banVictim: {
+						columns: {
+							name: true,
+							platformId: true,
+							uuid: true
+						}
+					},
+					banAuthor: {
+						columns: {
+							name: true,
+							id: true
+						}
+					}
+				},
+				where: (ban, { eq }) => eq(ban.victimId, input.uuid)
+			});
+
+			return {
+				data: ban,
+				count: totalBans,
+				pageCount
+			};
+		}),
 	createWarn: permsProcedure
 		.meta({
 			permissionsRequired: ['VIEW_USERS', 'CREATE_WARNINGS']

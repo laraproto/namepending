@@ -5,6 +5,7 @@
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { resolve } from '$app/paths';
+	import { hasPermSync } from '$lib/perm-utils';
 
 	const sidebar = Sidebar.useSidebar();
 
@@ -37,30 +38,34 @@
 						{/snippet}
 					</NavigationMenu.Link>
 				</NavigationMenu.Item>
-				<NavigationMenu.Item>
-					<NavigationMenu.Link>
-						{#snippet child()}
-							<a
-								href={resolve('/player/[id]/warns', {
-									id: player.platformId
-								})}
-								class={navigationMenuTriggerStyle()}>Warns</a
-							>
-						{/snippet}
-					</NavigationMenu.Link>
-				</NavigationMenu.Item>
-				<NavigationMenu.Item>
-					<NavigationMenu.Link>
-						{#snippet child()}
-							<a
-								href={resolve('/player/[id]/bans', {
-									id: player.platformId
-								})}
-								class={navigationMenuTriggerStyle()}>Bans</a
-							>
-						{/snippet}
-					</NavigationMenu.Link>
-				</NavigationMenu.Item>
+				{#if hasPermSync(sidebar.user, 'VIEW_WARNINGS')}
+					<NavigationMenu.Item>
+						<NavigationMenu.Link>
+							{#snippet child()}
+								<a
+									href={resolve('/player/[id]/warns', {
+										id: player.platformId
+									})}
+									class={navigationMenuTriggerStyle()}>Warns</a
+								>
+							{/snippet}
+						</NavigationMenu.Link>
+					</NavigationMenu.Item>
+				{/if}
+				{#if hasPermSync(sidebar.user, 'VIEW_BANS')}
+					<NavigationMenu.Item>
+						<NavigationMenu.Link>
+							{#snippet child()}
+								<a
+									href={resolve('/player/[id]/bans', {
+										id: player.platformId
+									})}
+									class={navigationMenuTriggerStyle()}>Bans</a
+								>
+							{/snippet}
+						</NavigationMenu.Link>
+					</NavigationMenu.Item>
+				{/if}
 			</NavigationMenu.List>
 		</NavigationMenu.Root>
 	</div>

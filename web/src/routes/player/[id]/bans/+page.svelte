@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as Card from '$lib/components/ui/card';
 	import BansTable from '$lib/components/tables/player-table.svelte';
 	import { columns } from '$lib/components/tables/bans-table.js';
@@ -17,8 +18,37 @@
 	import { cn } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import Head from '$lib/components/Head.svelte';
+	import trpc from '$lib/trpc-client';
+	import type { PaginationState } from '@tanstack/table-core';
 
 	let { data }: PageProps = $props();
+
+	let banList = $derived(data.bans);
+
+	const sidebar = Sidebar.useSidebar();
+
+	$effect(() => {
+		trpc.panel.moderation.player.getBans
+			.query({
+				uuid: data.player.uuid,
+				page: sidebar.page + 1
+			})
+			.then((bans) => {
+				banList = bans;
+			});
+	});
+
+	const onPageChange = (pagination: PaginationState) => {
+		trpc.panel.moderation.player.getBans
+			.query({
+				uuid: data.player.uuid,
+				page: pagination.pageIndex + 1,
+				limit: pagination.pageSize
+			})
+			.then((bans) => {
+				banList = bans;
+			});
+	};
 
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'long'
@@ -153,7 +183,14 @@
 					<Card.Description>Bans of {data.player.name}</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					<BansTable data={data.player.bans} {columns} isManualPagination={false} />
+					<BansTable
+						data={banList.data}
+						{columns}
+						{onPageChange}
+						pageCount={banList.pageCount}
+						rowCount={banList.count}
+						isManualPagination={true}
+					/>
 				</Card.Content>
 			</Card.Root>
 		</div>

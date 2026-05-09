@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as Card from '$lib/components/ui/card';
 	import WarnsTable from '$lib/components/tables/player-table.svelte';
 	import { columns } from '$lib/components/tables/warns-table.js';
@@ -17,8 +18,37 @@
 	import { cn } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import Head from '$lib/components/Head.svelte';
+	import trpc from '$lib/trpc-client';
+	import type { PaginationState } from '@tanstack/table-core';
 
 	let { data }: PageProps = $props();
+
+	let warnList = $derived(data.warns);
+
+	const sidebar = Sidebar.useSidebar();
+
+	$effect(() => {
+		trpc.panel.moderation.player.getWarns
+			.query({
+				uuid: data.player.uuid,
+				page: sidebar.page + 1
+			})
+			.then((warns) => {
+				warnList = warns;
+			});
+	});
+
+	const onPageChange = (pagination: PaginationState) => {
+		trpc.panel.moderation.player.getWarns
+			.query({
+				uuid: data.player.uuid,
+				page: pagination.pageIndex + 1,
+				limit: pagination.pageSize
+			})
+			.then((warns) => {
+				warnList = warns;
+			});
+	};
 
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'long'
@@ -169,7 +199,14 @@
 					<Card.Description>Warnings of {data.player.name}</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					<WarnsTable data={data.player.warns} {columns} isManualPagination={false} />
+					<WarnsTable
+						data={warnList.data}
+						{columns}
+						{onPageChange}
+						pageCount={warnList.pageCount}
+						rowCount={warnList.count}
+						isManualPagination={true}
+					/>
 				</Card.Content>
 			</Card.Root>
 		</div>
