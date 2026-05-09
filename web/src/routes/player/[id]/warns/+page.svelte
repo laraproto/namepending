@@ -20,6 +20,7 @@
 	import Head from '$lib/components/Head.svelte';
 	import trpc from '$lib/trpc-client';
 	import type { PaginationState } from '@tanstack/table-core';
+	import { hasPermSync } from '$lib/perm-utils';
 
 	let { data }: PageProps = $props();
 
@@ -104,94 +105,96 @@
 
 <div class="container mx-auto my-8 flex flex-col gap-4 px-4">
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-		<div class="lg:col-span-1">
-			<Card.Root>
-				<Card.Header>
-					<Card.Title>Warn Player</Card.Title>
-					<Card.Description>Add a Warning</Card.Description>
-				</Card.Header>
-				<form method="POST" use:enhance>
-					<Card.Content>
-						<Form.Field {form} name="reason">
-							<Form.Control>
-								{#snippet children({ props })}
-									<Form.Label>Reason</Form.Label>
-									<Input {...props} bind:value={$formData.reason} />
-								{/snippet}
-							</Form.Control>
-							<Form.FieldErrors />
-						</Form.Field>
-						<Form.Field {form} name="type">
-							<Form.Control>
-								{#snippet children({ props })}
-									<Form.Label>Type</Form.Label>
-									<Select.Root type="single" bind:value={$formData.type} name={props.name}>
-										<Select.Trigger {...props}>
-											{triggerContent}
-										</Select.Trigger>
-										<Select.Content>
-											{#each warnType as type (type.value)}
-												<Select.Item value={type.value} label={type.label}>
-													{type.label}
-												</Select.Item>
-											{/each}
-										</Select.Content>
-									</Select.Root>
-								{/snippet}
-							</Form.Control>
-							<Form.FieldErrors />
-						</Form.Field>
-						{#if !($formData.type === 'major' || $formData.type === 'minor')}
-							<Form.Field {form} name="expiresAt">
+		{#if hasPermSync(sidebar.user, 'CREATE_WARNINGS')}
+			<div class="lg:col-span-1">
+				<Card.Root>
+					<Card.Header>
+						<Card.Title>Warn Player</Card.Title>
+						<Card.Description>Add a Warning</Card.Description>
+					</Card.Header>
+					<form method="POST" use:enhance>
+						<Card.Content>
+							<Form.Field {form} name="reason">
 								<Form.Control>
 									{#snippet children({ props })}
-										<Form.Label>Expiry</Form.Label>
-										<div class="flex flex-row gap-2">
-											<Popover.Root>
-												<Popover.Trigger
-													{...props}
-													class={cn(
-														buttonVariants({
-															variant: 'outline',
-															class: 'w-40 justify-start text-left font-normal'
-														}),
-														!dateValue && 'text-muted-foreground'
-													)}
-												>
-													<CalendarIcon />
-													{dateValue
-														? df.format(dateValue.toDate(getLocalTimeZone()))
-														: 'Pick a date'}
-												</Popover.Trigger>
-												<Popover.Content bind:ref={contentRef} class="w-auto p-0">
-													<Calendar
-														type="single"
-														bind:value={dateValue}
-														onchange={expiresAtChange}
-													/>
-												</Popover.Content>
-											</Popover.Root>
-											<Input
-												type="time"
-												class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-												bind:value={timeValue}
-												onchange={expiresAtChange}
-											/>
-										</div>
-
-										<Form.FieldErrors />
-										<Input hidden value={$formData.expiresAt} name={props.name} />
+										<Form.Label>Reason</Form.Label>
+										<Input {...props} bind:value={$formData.reason} />
 									{/snippet}
 								</Form.Control>
+								<Form.FieldErrors />
 							</Form.Field>
-						{/if}
-					</Card.Content>
-					<Card.Footer class="flex justify-end">
-						<Form.Button>Submit</Form.Button>
-					</Card.Footer>
-				</form>
-			</Card.Root>
-		</div>
+							<Form.Field {form} name="type">
+								<Form.Control>
+									{#snippet children({ props })}
+										<Form.Label>Type</Form.Label>
+										<Select.Root type="single" bind:value={$formData.type} name={props.name}>
+											<Select.Trigger {...props}>
+												{triggerContent}
+											</Select.Trigger>
+											<Select.Content>
+												{#each warnType as type (type.value)}
+													<Select.Item value={type.value} label={type.label}>
+														{type.label}
+													</Select.Item>
+												{/each}
+											</Select.Content>
+										</Select.Root>
+									{/snippet}
+								</Form.Control>
+								<Form.FieldErrors />
+							</Form.Field>
+							{#if !($formData.type === 'major' || $formData.type === 'minor')}
+								<Form.Field {form} name="expiresAt">
+									<Form.Control>
+										{#snippet children({ props })}
+											<Form.Label>Expiry</Form.Label>
+											<div class="flex flex-row gap-2">
+												<Popover.Root>
+													<Popover.Trigger
+														{...props}
+														class={cn(
+															buttonVariants({
+																variant: 'outline',
+																class: 'w-40 justify-start text-left font-normal'
+															}),
+															!dateValue && 'text-muted-foreground'
+														)}
+													>
+														<CalendarIcon />
+														{dateValue
+															? df.format(dateValue.toDate(getLocalTimeZone()))
+															: 'Pick a date'}
+													</Popover.Trigger>
+													<Popover.Content bind:ref={contentRef} class="w-auto p-0">
+														<Calendar
+															type="single"
+															bind:value={dateValue}
+															onchange={expiresAtChange}
+														/>
+													</Popover.Content>
+												</Popover.Root>
+												<Input
+													type="time"
+													class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+													bind:value={timeValue}
+													onchange={expiresAtChange}
+												/>
+											</div>
+
+											<Form.FieldErrors />
+											<Input hidden value={$formData.expiresAt} name={props.name} />
+										{/snippet}
+									</Form.Control>
+								</Form.Field>
+							{/if}
+						</Card.Content>
+						<Card.Footer class="flex justify-end">
+							<Form.Button>Submit</Form.Button>
+						</Card.Footer>
+					</form>
+				</Card.Root>
+			</div>
+		{/if}
 		<div class="lg:col-span-2">
 			<Card.Root>
 				<Card.Header>

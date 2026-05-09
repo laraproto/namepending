@@ -52,6 +52,29 @@
 						permRequired: 'SEARCH_USERS'
 					}
 				]
+			},
+			{
+				title: 'Administration',
+				url: '/admin',
+				icon: SquareTerminalIcon,
+				isActive: true,
+				items: [
+					{
+						title: 'Settings',
+						url: '/admin/settings',
+						permRequired: 'SUPERADMIN'
+					},
+					{
+						title: 'Role Management',
+						url: '/admin/roles',
+						permRequired: 'CREATE_EDIT_ROLES'
+					},
+					{
+						title: 'Server Configuration',
+						url: '/admin/server',
+						permRequired: 'MANAGE_SERVERS'
+					}
+				]
 			}
 		],
 		navSecondary: [
