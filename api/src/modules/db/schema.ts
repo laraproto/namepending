@@ -300,5 +300,7 @@ export type PlayerSelect = z.infer<typeof playerSelect>;
 export type BansSelectMinimal = z.infer<typeof bansSelectMinimal>;
 export type BansSelect = z.infer<typeof bansSelect>;
 export type WarnsSelect = z.infer<typeof warnsSelect>;
+export type PanelGroupSelect = z.infer<typeof panelGroupSelect>;
+export type PanelGroupSelectMinimal = z.infer<typeof panelGroupSelectMinimal>;
 
 export * from './auth-schema';

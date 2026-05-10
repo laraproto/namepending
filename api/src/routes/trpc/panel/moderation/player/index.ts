@@ -1,6 +1,7 @@
+import type { PanelGroupSelectMinimal } from '@/modules/db/schema';
 import db, { schema } from '@modules/db';
 import { permsProcedure, router } from '@modules/trpc';
-import { count, desc } from 'drizzle-orm';
+import { count, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const playerModerationRouter = router({
@@ -16,45 +17,54 @@ export const playerModerationRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const rowQuery = await db.select({ value: count() }).from(schema.playerWarns);
-			let totalWarnings = 0;
+			try {
+				const rowQuery = await db.select({ value: count() }).from(schema.playerWarns);
+				let totalWarnings = 0;
 
-			if (rowQuery[0]) {
-				totalWarnings = Number(rowQuery[0].value);
-			}
+				if (rowQuery[0]) {
+					totalWarnings = Number(rowQuery[0].value);
+				}
 
-			const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
+				const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
 
-			if (input.page > pageCount) {
-				input.page = pageCount;
-			}
-			const warn = await db.query.playerWarns.findMany({
-				orderBy: [desc(schema.playerWarns.createdAt)],
-				limit: input.limit,
-				offset: (input.page - 1) * input.limit,
-				with: {
-					warnVictim: {
-						columns: {
-							name: true,
-							platformId: true,
-							uuid: true
+				if (input.page > pageCount) {
+					input.page = pageCount;
+				}
+				const warn = await db.query.playerWarns.findMany({
+					orderBy: [desc(schema.playerWarns.createdAt)],
+					limit: input.limit,
+					offset: (input.page - 1) * input.limit,
+					with: {
+						warnVictim: {
+							columns: {
+								name: true,
+								platformId: true,
+								uuid: true
+							}
+						},
+						warnAuthor: {
+							columns: {
+								name: true,
+								id: true
+							}
 						}
 					},
-					warnAuthor: {
-						columns: {
-							name: true,
-							id: true
-						}
-					}
-				},
-				where: (warn, { eq }) => eq(warn.victimId, input.uuid)
-			});
+					where: (warn, { eq }) => eq(warn.victimId, input.uuid)
+				});
 
-			return {
-				data: warn,
-				count: totalWarnings,
-				pageCount
-			};
+				return {
+					data: warn,
+					count: totalWarnings,
+					pageCount
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					data: [],
+					count: 0,
+					pageCount: 1
+				};
+			}
 		}),
 	getBans: permsProcedure
 		.meta({
@@ -68,45 +78,54 @@ export const playerModerationRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const rowQuery = await db.select({ value: count() }).from(schema.playerBans);
-			let totalBans = 0;
+			try {
+				const rowQuery = await db.select({ value: count() }).from(schema.playerBans);
+				let totalBans = 0;
 
-			if (rowQuery[0]) {
-				totalBans = Number(rowQuery[0].value);
-			}
+				if (rowQuery[0]) {
+					totalBans = Number(rowQuery[0].value);
+				}
 
-			const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
+				const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
 
-			if (input.page > pageCount) {
-				input.page = pageCount;
-			}
-			const ban = await db.query.playerBans.findMany({
-				orderBy: [desc(schema.playerBans.createdAt)],
-				limit: input.limit,
-				offset: (input.page - 1) * input.limit,
-				with: {
-					banVictim: {
-						columns: {
-							name: true,
-							platformId: true,
-							uuid: true
+				if (input.page > pageCount) {
+					input.page = pageCount;
+				}
+				const ban = await db.query.playerBans.findMany({
+					orderBy: [desc(schema.playerBans.createdAt)],
+					limit: input.limit,
+					offset: (input.page - 1) * input.limit,
+					with: {
+						banVictim: {
+							columns: {
+								name: true,
+								platformId: true,
+								uuid: true
+							}
+						},
+						banAuthor: {
+							columns: {
+								name: true,
+								id: true
+							}
 						}
 					},
-					banAuthor: {
-						columns: {
-							name: true,
-							id: true
-						}
-					}
-				},
-				where: (ban, { eq }) => eq(ban.victimId, input.uuid)
-			});
+					where: (ban, { eq }) => eq(ban.victimId, input.uuid)
+				});
 
-			return {
-				data: ban,
-				count: totalBans,
-				pageCount
-			};
+				return {
+					data: ban,
+					count: totalBans,
+					pageCount
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					data: [],
+					count: 0,
+					pageCount: 1
+				};
+			}
 		}),
 	createWarn: permsProcedure
 		.meta({
@@ -121,33 +140,43 @@ export const playerModerationRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const delay = input.expiresAt.getTime() - Date.now();
+			try {
+				const delay = input.expiresAt.getTime() - Date.now();
 
-			const updatedWarn = await db
-				.insert(schema.playerWarns)
-				.values({
-					victimId: input.uuid,
-					authorId: ctx.user.id,
-					reason: input.reason,
-					type: input.type,
-					expiresAt:
-						input.type === 'tempmajor' || input.type === 'tempminor' ? input.expiresAt : new Date(),
-					active: input.type === 'minor' || input.type === 'major' ? true : delay > 0
-				})
-				.returning();
+				const updatedWarn = await db
+					.insert(schema.playerWarns)
+					.values({
+						victimId: input.uuid,
+						authorId: ctx.user.id,
+						reason: input.reason,
+						type: input.type,
+						expiresAt:
+							input.type === 'tempmajor' || input.type === 'tempminor'
+								? input.expiresAt
+								: new Date(),
+						active: input.type === 'minor' || input.type === 'major' ? true : delay > 0
+					})
+					.returning();
 
-			if (!updatedWarn[0]) {
+				if (!updatedWarn[0]) {
+					return {
+						success: false,
+						message: 'Failed to create warn.'
+					};
+				}
+
+				return {
+					success: !!updatedWarn[0],
+					warn: updatedWarn[0],
+					message: 'Warn created successfully'
+				};
+			} catch (err) {
+				console.error(err);
 				return {
 					success: false,
-					message: 'Failed to create warn.'
+					message: 'An error occurred while creating the warn.'
 				};
 			}
-
-			return {
-				success: !!updatedWarn[0],
-				warn: updatedWarn[0],
-				message: 'Warn created successfully'
-			};
 		}),
 	createBan: permsProcedure
 		.meta({
@@ -162,31 +191,102 @@ export const playerModerationRouter = router({
 			})
 		)
 		.mutation(async ({ input, ctx }) => {
-			const delay = input.expiresAt.getTime() - Date.now();
+			try {
+				const delay = input.expiresAt.getTime() - Date.now();
 
-			const newBan = await db
-				.insert(schema.playerBans)
-				.values({
-					victimId: input.uuid,
-					authorId: ctx.user.id,
-					reason: input.reason,
-					type: input.permanent ? 'permanent' : 'temporary',
-					expiresAt: input.permanent ? new Date() : input.expiresAt,
-					active: input.permanent ? true : delay > 0
-				})
-				.returning();
+				const newBan = await db
+					.insert(schema.playerBans)
+					.values({
+						victimId: input.uuid,
+						authorId: ctx.user.id,
+						reason: input.reason,
+						type: input.permanent ? 'permanent' : 'temporary',
+						expiresAt: input.permanent ? new Date() : input.expiresAt,
+						active: input.permanent ? true : delay > 0
+					})
+					.returning();
 
-			if (!newBan[0]) {
+				if (!newBan[0]) {
+					return {
+						success: false,
+						message: 'Failed to create ban.'
+					};
+				}
+
+				return {
+					success: !!newBan[0],
+					ban: newBan[0],
+					message: 'Ban created successfully'
+				};
+			} catch (err) {
+				console.error(err);
 				return {
 					success: false,
-					message: 'Failed to create ban.'
+					message: 'An error occurred while creating the ban.'
 				};
 			}
+		}),
+	setRole: permsProcedure
+		.meta({
+			permissionsRequired: ['VIEW_USERS', 'VIEW_ROLES', 'CREATE_EDIT_ROLES']
+		})
+		.input(
+			z.object({
+				user: z.string(),
+				role: z.uuid().nullable()
+			})
+		)
+		.mutation(async ({ input }) => {
+			try {
+				const user = await db.query.user.findFirst({
+					where: (user, { eq }) => eq(user.id, input.user)
+				});
 
-			return {
-				success: !!newBan[0],
-				ban: newBan[0],
-				message: 'Ban created successfully'
-			};
+				if (!user) {
+					return {
+						success: false,
+						message: 'User not found.'
+					};
+				}
+
+				let role: PanelGroupSelectMinimal | undefined = undefined;
+
+				if (input.role !== null) {
+					role = await db.query.panelGroups.findFirst({
+						where: (group, { eq }) => eq(group.uuid, input.role!)
+					});
+
+					if (!role) {
+						return {
+							success: false,
+							message: 'Role not found.'
+						};
+					}
+				}
+
+				const updatedUser = await db
+					.update(schema.user)
+					.set({ groupId: role?.uuid ?? null })
+					.where(eq(schema.user.id, user.id))
+					.returning();
+
+				if (!updatedUser[0]) {
+					return {
+						success: false,
+						message: 'Updated rows: 0'
+					};
+				}
+
+				return {
+					success: true,
+					message: 'Role updated successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					message: 'An error occurred while setting the role.'
+				};
+			}
 		})
 });

@@ -3,9 +3,11 @@ import { permsProcedure, router } from '@modules/trpc';
 import { JointFlags, platformRegex } from '@namepending/shared/user';
 import { z } from 'zod';
 import { moderationRouter } from './moderation';
+import { administrationRouter } from './administration';
 
 export const panelRouter = router({
 	moderation: moderationRouter,
+	administration: administrationRouter,
 	getProfile: permsProcedure
 		.meta({
 			permissionsRequired: async (ctx, input: unknown) => {
