@@ -156,14 +156,64 @@ export const administrationRouter = router({
 			})
 		)
 		.mutation(async ({ input, ctx }) => {
-			const serverToken = token.generateSessionToken();
+			try {
+				const serverToken = token.generateSessionToken();
 
-			await token.createServerApiKey(serverToken, ctx.user.id, input.description);
+				await token.createServerApiKey(serverToken, ctx.user.id, input.description);
 
-			return {
-				success: true,
-				token: serverToken,
-				message: "Server API Key created, save it now as it won't be shown again"
-			};
+				return {
+					success: true,
+					token: serverToken,
+					message: "Server API Key created, save it now as it won't be shown again"
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					message: 'An error occurred while creating the server API key.'
+				};
+			}
+		}),
+	addGameGroup: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
+		.input(
+			z.object({
+				name: z.string().max(50),
+				description: z.string().max(400),
+				permissions: z.array(z.string())
+			})
+		)
+		.mutation(async ({ input }) => {
+			try {
+				const gameGroup = await db
+					.insert(schema.gameGroups)
+					.values({
+						name: input.name,
+						description: input.description,
+						permissions: input.permissions
+					})
+					.returning();
+
+				if (!gameGroup[0]) {
+					return {
+						success: false,
+						data: null,
+						message: 'Failed to create the game group.'
+					};
+				}
+
+				return {
+					success: true,
+					data: gameGroup[0],
+					message: 'Game group created successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while creating the game group.'
+				};
+			}
 		})
 });
