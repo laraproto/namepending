@@ -8,7 +8,7 @@
 	let { data }: PageProps = $props();
 </script>
 
-<Head title={`${data.user.name}'s Profile`} />
+<Head title={`${data.user.name}'s Profile Settings`} />
 
 <div class="container mx-auto my-8 flex flex-col gap-4 px-4">
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">

@@ -31,7 +31,7 @@ export const load = (async ({ parent, params }) => {
 	return {
 		user,
 		roles,
-		updateRoleForm: await superValidate(zod4(updateRoleSchema))
+		updateRoleForm: await superValidate({ role: user.group?.uuid ?? null }, zod4(updateRoleSchema))
 	};
 }) satisfies PageServerLoad;
 
@@ -45,9 +45,9 @@ export const actions = {
 		}
 
 		try {
-			await trpc.panel.moderation.player.setRole.mutate({
+			await trpc.panel.administration.setRole.mutate({
 				user: event.params.id,
-				role: form.data.role
+				role: form.data.role === 'none' || form.data.role === '' ? null : form.data.role
 			});
 		} catch (err) {
 			console.error(err);

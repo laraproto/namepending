@@ -37,12 +37,11 @@
 	<Card.Header>
 		<Card.Title>Role Management</Card.Title>
 	</Card.Header>
-	<form method="POST" use:enhance>
+	<form method="POST" use:enhance action="?/updateRole">
 		<Card.Content class="flex flex-col items-center">
 			<Form.Field {form} name="role">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Form.Label>Role</Form.Label>
 						<Select.Root {...props} type="single" bind:value={$formData.role}>
 							<Select.Trigger class="w-60">
 								{triggerContent}
@@ -60,7 +59,9 @@
 										</Select.Item>
 									{/each}
 									<Select.Separator />
-									<Select.Item value="" label="None" disabled={!data.user.group}>None</Select.Item>
+									<Select.Item value="none" label="None" disabled={!data.user.group}
+										>None</Select.Item
+									>
 								</Select.Group>
 							</Select.Content>
 						</Select.Root>
@@ -69,8 +70,8 @@
 				<Form.FieldErrors />
 			</Form.Field>
 		</Card.Content>
-		<Card.Footer>
-			<Form.Button>Submit</Form.Button>
+		<Card.Footer class="flex flex-col items-center">
+			<Form.Button disabled={$formData.role === data.user.group?.uuid}>Submit</Form.Button>
 		</Card.Footer>
 	</form>
 </Card.Root>
