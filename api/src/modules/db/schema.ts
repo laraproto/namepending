@@ -11,7 +11,7 @@ import {
 	jsonb,
 	bigint
 } from 'drizzle-orm/pg-core';
-import { createSelectSchema } from 'drizzle-zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
 import z from 'zod';
 
@@ -294,6 +294,14 @@ export const warnsSelect = z.object({
 	warnVictim: playerSelectMinimal.nullable()
 });
 
+export const serverSelectWithoutApiKey = createSelectSchema(servers);
+export const serverInsert = createInsertSchema(servers);
+
+export const serverSelect = z.object({
+	...serverSelectWithoutApiKey.shape,
+	creator: userSelectMinimal
+});
+
 export type UserSelect = z.infer<typeof userSelect>;
 export type PlayerSelectMinimal = z.infer<typeof playerSelectMinimal>;
 export type PlayerSelect = z.infer<typeof playerSelect>;
@@ -302,5 +310,9 @@ export type BansSelect = z.infer<typeof bansSelect>;
 export type WarnsSelect = z.infer<typeof warnsSelect>;
 export type PanelGroupSelect = z.infer<typeof panelGroupSelect>;
 export type PanelGroupSelectMinimal = z.infer<typeof panelGroupSelectMinimal>;
+
+export type ServerSelectWithoutApiKey = z.infer<typeof serverSelectWithoutApiKey>;
+export type ServerInsert = z.infer<typeof serverInsert>;
+export type ServerSelect = z.infer<typeof serverSelect>;
 
 export * from './auth-schema';

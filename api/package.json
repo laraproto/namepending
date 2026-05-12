@@ -28,6 +28,8 @@
 		"@better-auth/drizzle-adapter": "^1.5.4",
 		"@hono/trpc-server": "^0.4.2",
 		"@namepending/shared": "workspace:*",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
 		"@sidequest/postgres-backend": "^1.14.1",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
