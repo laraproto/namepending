@@ -3,6 +3,7 @@ import db, { schema } from '@modules/db';
 import { z } from 'zod';
 import { permsProcedure, router } from '@modules/trpc';
 import { count, desc, eq } from 'drizzle-orm';
+import { jointFlagKeys } from '@namepending/shared/user';
 import * as token from '@modules/token';
 
 export const administrationRouter = router({
@@ -216,12 +217,14 @@ export const administrationRouter = router({
 				};
 			}
 		}),
-	addPanelRole: permsProcedure
+	addPanelGroup: permsProcedure
 		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
-		.input(z.object({
-			name: z.string().max(80),
-			description: z.string().max(400),
-				permissions: z.array(jointF)
-		))
+		.input(
+			z.object({
+				name: z.string().max(80),
+				description: z.string().max(400),
+				permissions: z.array(jointFlagKeys)
+			})
+		)
 		.mutation(async () => {})
 });

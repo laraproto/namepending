@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export const usernameRegex = /^[a-zA-Z0-9_-]+$/;
 
 export const platformRegex = /^[^@]+@[^@]+$/;
@@ -108,3 +110,5 @@ export const JointFlags = {
 } as const;
 
 export type JointFlagKeys = keyof typeof JointFlags;
+
+export const jointFlagKeys = z.enum(Object.keys(JointFlags) as JointFlagKeys[]);
