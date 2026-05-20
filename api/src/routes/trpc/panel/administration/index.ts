@@ -178,7 +178,7 @@ export const administrationRouter = router({
 		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
 		.input(
 			z.object({
-				name: z.string().max(50),
+				name: z.string().max(80),
 				description: z.string().max(400),
 				permissions: z.array(z.string())
 			})
@@ -215,5 +215,13 @@ export const administrationRouter = router({
 					message: 'An error occurred while creating the game group.'
 				};
 			}
-		})
+		}),
+	addPanelRole: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
+		.input(z.object({
+			name: z.string().max(80),
+			description: z.string().max(400),
+				permissions: z.array(jointF)
+		))
+		.mutation(async () => {})
 });
