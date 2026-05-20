@@ -3,7 +3,7 @@ import db, { schema } from '@modules/db';
 import { z } from 'zod';
 import { permsProcedure, router } from '@modules/trpc';
 import { count, desc, eq } from 'drizzle-orm';
-import { jointFlagKeys } from '@namepending/shared/user';
+import { jointFlagKeys, JointFlags } from '@namepending/shared/user';
 import * as token from '@modules/token';
 
 export const administrationRouter = router({
@@ -223,8 +223,36 @@ export const administrationRouter = router({
 			z.object({
 				name: z.string().max(80),
 				description: z.string().max(400),
-				permissions: z.array(jointFlagKeys)
+				permissions: z.array(jointFlagKeys),
+				gameGroup: z.uuid()
 			})
 		)
-		.mutation(async () => {})
+		.mutation(async ({ input }) => {
+			try {
+				const gameGroup = await db.query.gameGroups.findFirst({
+					where: (group, { eq }) => eq(group.uuid, input.gameGroup)
+				});
+
+				if (!gameGroup) {
+					return {
+						success: false,
+						data: null,
+						message: 'Game group not found.'
+					};
+				}
+				const permValue =
+					input.permissions.reduce((acc, perm) => {
+						return acc | (JointFlags[perm] as bigint);
+					}, 4n) | 4n;
+
+				console.log('Computed perm value: %d', permValue);
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while creating the panel group.'
+				};
+			}
+		})
 });
