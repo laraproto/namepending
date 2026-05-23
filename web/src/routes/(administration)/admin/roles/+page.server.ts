@@ -7,24 +7,18 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { serverFormSchema } from '../../schema';
 
-export const load: PageServerLoad = async ({ parent, url }) => {
+export const load: PageServerLoad = async ({ parent }) => {
 	const { localUser } = await parent();
-	const page = Number(url.searchParams.get('page') ?? '0');
-	const query = url.searchParams.get('q') ?? '';
 
 	if (!localUser || !hasPermSync(localUser, 'VIEW_ROLES')) redirect(302, '/');
 
-	const servers = await trpcServer.panel.administration.getServers.query({
-		query,
-		page: page + 1
-	});
+	const panelRoles = await trpcServer.panel.administration.getPanelRoles.query();
 
-	if (page + 1 > servers.pageCount) {
-		redirect(302, `${url.pathname}?q=${query}&page=${servers.pageCount - 1}`);
-	}
+	const gameRoles = await trpcServer.panel.administration.getGameRoles.query();
 
 	return {
-		servers,
+		panelRoles,
+		gameRoles,
 		form: await superValidate(zod4(serverFormSchema))
 	};
 };
@@ -39,6 +33,9 @@ export const actions: Actions = {
 		}
 
 		try {
+			if (!event.locals.localUser || !hasPermSync(event.locals.localUser, 'CREATE_EDIT_ROLES'))
+				fail(401, 'Unauthorized');
+
 			const updateResult = await trpcServer.panel.administration.addServer.mutate({
 				description: form.data.description
 			});

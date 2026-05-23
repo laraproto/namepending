@@ -27,6 +27,26 @@ export const administrationRouter = router({
 			};
 		}
 	}),
+	getGameRoles: permsProcedure.meta({ permissionsRequired: ['VIEW_ROLES'] }).query(async () => {
+		try {
+			const roles = await db.query.gameGroups.findMany({
+				orderBy: [desc(schema.gameGroups.createdAt)]
+			});
+
+			return {
+				data: roles,
+				count: roles.length,
+				pageCount: 1
+			};
+		} catch (err) {
+			console.error(err);
+			return {
+				data: [],
+				count: 0,
+				pageCount: 1
+			};
+		}
+	}),
 	setRole: permsProcedure
 		.meta({
 			permissionsRequired: ['VIEW_USERS', 'VIEW_ROLES', 'CREATE_EDIT_ROLES']
