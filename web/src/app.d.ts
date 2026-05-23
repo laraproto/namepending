@@ -1,4 +1,5 @@
 import authClient from '$lib/auth-client';
+import { type RouterOutput } from '$lib/trpc-client';
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -8,6 +9,7 @@ declare global {
 		interface Locals {
 			session: typeof authClient.$Infer.Session.session | null;
 			user: typeof authClient.$Infer.Session.user | null;
+			localUser: RouterOutput['getSelf'] | null;
 		}
 		// interface PageData {}
 		// interface PageState {}

@@ -44,6 +44,9 @@ export const actions: Actions = {
 		}
 
 		try {
+			if (!event.locals.localUser || !hasPermSync(event.locals.localUser, 'CREATE_WARNINGS'))
+				fail(401, 'Unauthorized');
+
 			const updateResult = await trpcServer.panel.moderation.player.createWarn.mutate({
 				uuid: form.data.uuid,
 				reason: form.data.reason,

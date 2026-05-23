@@ -1,5 +1,6 @@
 import authServer from '$lib/server/auth-server';
 import type { Handle } from '@sveltejs/kit';
+import trpc from '$lib/server/trpc-server';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	try {
@@ -12,9 +13,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 		if (session.data) {
 			event.locals.session = session.data.session;
 			event.locals.user = session.data.user;
+			event.locals.localUser = await trpc.getSelf.query();
 		} else {
 			event.locals.session = null;
 			event.locals.user = null;
+			event.locals.localUser = null;
 		}
 
 		const response = await resolve(event);
