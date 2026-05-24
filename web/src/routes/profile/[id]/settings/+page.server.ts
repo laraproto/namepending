@@ -31,7 +31,10 @@ export const load = (async ({ parent, params }) => {
 	return {
 		user,
 		roles,
-		updateRoleForm: await superValidate({ role: user.group?.uuid ?? null }, zod4(updateRoleSchema))
+		updateRoleForm: await superValidate(
+			{ role: user.group?.uuid ?? undefined },
+			zod4(updateRoleSchema)
+		)
 	};
 }) satisfies PageServerLoad;
 

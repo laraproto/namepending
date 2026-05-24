@@ -26,6 +26,7 @@
 
 	const triggerContent = $derived(roles.find((f) => f.value === $formData.role)?.label ?? 'None');
 
+	// svelte-ignore state_referenced_locally
 	const form = superForm(data.updateRoleForm, {
 		validators: zod4Client(updateRoleSchema)
 	});
