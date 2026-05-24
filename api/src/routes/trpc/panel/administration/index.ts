@@ -266,6 +266,12 @@ export const administrationRouter = router({
 					}, 4n) | 4n;
 
 				console.log('Computed perm value: %d', permValue);
+
+				return {
+					success: true,
+					data: null,
+					message: 'Panel group created successfully.'
+				};
 			} catch (err) {
 				console.error(err);
 				return {
