@@ -1,4 +1,4 @@
-import type { PanelGroupSelectMinimal } from '@/modules/db/schema';
+import type { PanelGroupSelectMinimal } from '@modules/db/schema';
 import db, { schema } from '@modules/db';
 import { z } from 'zod';
 import { permsProcedure, router } from '@modules/trpc';
