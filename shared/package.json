@@ -8,6 +8,9 @@
 		},
 		"./user": {
 			"import": "./src/common/user.ts"
+		},
+		"./sl": {
+			"import": "./src/common/sl.ts"
 		}
 	},
 	"devDependencies": {

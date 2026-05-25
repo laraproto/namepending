@@ -310,6 +310,7 @@ export type BansSelect = z.infer<typeof bansSelect>;
 export type WarnsSelect = z.infer<typeof warnsSelect>;
 export type PanelGroupSelect = z.infer<typeof panelGroupSelect>;
 export type PanelGroupSelectMinimal = z.infer<typeof panelGroupSelectMinimal>;
+export type GameGroupSelectMinimal = z.infer<typeof gameGroupSelectMinimal>;
 
 export type ServerSelectWithoutApiKey = z.infer<typeof serverSelectWithoutApiKey>;
 export type ServerInsert = z.infer<typeof serverInsert>;

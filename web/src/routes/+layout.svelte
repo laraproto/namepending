@@ -1,7 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import { ModeWatcher } from 'mode-watcher';
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/lara.png';
 
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import SiteHeader from '$lib/components/site-header.svelte';

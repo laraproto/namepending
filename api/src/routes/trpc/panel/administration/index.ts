@@ -3,7 +3,8 @@ import db, { schema } from '@modules/db';
 import { z } from 'zod';
 import { permsProcedure, router } from '@modules/trpc';
 import { count, desc, eq } from 'drizzle-orm';
-import { jointFlagKeys, JointFlags } from '@namepending/shared/user';
+import { jointFlagKeys, JointFlags, type JointFlagKeys } from '@namepending/shared/user';
+import { permissionSchema, type Permission } from '@namepending/shared/sl';
 import * as token from '@modules/token';
 
 export const administrationRouter = router({
@@ -195,23 +196,45 @@ export const administrationRouter = router({
 				};
 			}
 		}),
+	deleteServer: permsProcedure
+		.meta({ permissionsRequired: 'MANAGE_SERVERS' })
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ input }) => {
+			try {
+				await db.delete(schema.servers).where(eq(schema.servers.uuid, input.id));
+				return {
+					success: true,
+					message: 'Server deleted successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					message: 'An error occurred while deleting the server.'
+				};
+			}
+		}),
 	addGameGroup: permsProcedure
 		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
 		.input(
 			z.object({
 				name: z.string().max(80),
 				description: z.string().max(400),
-				permissions: z.array(z.string())
+				permissions: z.partialRecord(permissionSchema, z.boolean())
 			})
 		)
 		.mutation(async ({ input }) => {
 			try {
+				const permsValue: Permission[] = Object.keys(input.permissions).filter(
+					(key) => input.permissions[key as keyof typeof input.permissions]
+				) as Permission[];
+
 				const gameGroup = await db
 					.insert(schema.gameGroups)
 					.values({
 						name: input.name,
 						description: input.description,
-						permissions: input.permissions
+						permissions: permsValue
 					})
 					.returning();
 
@@ -243,7 +266,7 @@ export const administrationRouter = router({
 			z.object({
 				name: z.string().max(80),
 				description: z.string().max(400),
-				permissions: z.array(jointFlagKeys),
+				permissions: z.partialRecord(jointFlagKeys, z.boolean()),
 				gameGroup: z.uuid()
 			})
 		)
@@ -260,10 +283,12 @@ export const administrationRouter = router({
 						message: 'Game group not found.'
 					};
 				}
-				const permValue =
-					input.permissions.reduce((acc, perm) => {
-						return acc | (JointFlags[perm] as bigint);
-					}, 4n) | 4n;
+				const permValue: bigint =
+					Object.keys(input.permissions)
+						.filter((key) => input.permissions[key as keyof typeof input.permissions])
+						.reduce((acc, perm) => {
+							return acc | (JointFlags[perm as JointFlagKeys] as bigint);
+						}, 4n) | 4n;
 
 				console.log('Computed perm value: %d', permValue);
 

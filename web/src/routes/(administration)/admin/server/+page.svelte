@@ -5,6 +5,8 @@
 	import { columns } from '$lib/components/tables/servers-table.js';
 	import type { PageProps } from './$types';
 	import * as Alert from '$lib/components/ui/alert/index.js';
+	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
+	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
 	import { serverFormSchema } from '../../schema';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
@@ -63,7 +65,11 @@
 				<form method="POST" use:enhance>
 					<Card.Content>
 						{#if $errors._errors || $message}
-							<Alert.Root variant="default" class="mb-4">
+							<Alert.Root variant={$errors._errors ? 'destructive' : 'default'} class="mb-4">
+								{#if $errors._errors}<AlertCircleIcon />
+								{:else}
+									<CheckCircle2Icon />
+								{/if}
 								<Alert.Description>
 									<ul class="list-inside list-disc text-sm">
 										{#each $errors._errors as error (error)}
