@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { jointFlagKeys } from '@namepending/shared/user';
+import { roleFlagKeys } from '@namepending/shared/user';
 import { permissionSchema } from '@namepending/shared/sl';
 
 export const serverFormSchema = z.object({
@@ -7,17 +7,17 @@ export const serverFormSchema = z.object({
 });
 
 export const gameGroupFormSchema = z.object({
-	id: z.uuid().optional(),
+	id: z.uuid(),
 	name: z.string().max(50),
 	description: z.string().max(255),
 	permissions: z.array(permissionSchema)
 });
 
 export const panelGroupFormSchema = z.object({
-	id: z.uuid().optional(),
+	id: z.uuid(),
 	name: z.string().max(50),
 	description: z.string().max(255),
-	permissions: z.array(jointFlagKeys),
+	permissions: z.array(roleFlagKeys),
 	gameGroup: z.uuid()
 });
 

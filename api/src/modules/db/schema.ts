@@ -14,6 +14,7 @@ import {
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
 import z from 'zod';
+import { type Permission } from '@namepending/shared/sl';
 
 const timeData = {
 	createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
@@ -83,7 +84,7 @@ export const gameGroups = pgTable('gameGroups', {
 	// Only shown on panel to describe what group is for
 	description: varchar('description', { length: 400 }),
 	// While SCP: Secret Laboratory does use bitwise permissions it will be wise to compute it as needed as I don't know if they are necessarily stable or if they will reuse indexes
-	permissions: jsonb().$type<string[]>(),
+	permissions: jsonb().$type<Permission[]>(),
 	...timeData
 });
 

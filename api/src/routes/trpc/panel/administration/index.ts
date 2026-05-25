@@ -3,11 +3,73 @@ import db, { schema } from '@modules/db';
 import { z } from 'zod';
 import { permsProcedure, router } from '@modules/trpc';
 import { count, desc, eq } from 'drizzle-orm';
-import { jointFlagKeys, JointFlags, type JointFlagKeys } from '@namepending/shared/user';
-import { permissionSchema, type Permission } from '@namepending/shared/sl';
+import { roleFlagKeys, RoleFlags, type RoleFlagKeys } from '@namepending/shared/user';
+import { permissionSchema } from '@namepending/shared/sl';
 import * as token from '@modules/token';
 
 export const administrationRouter = router({
+	getPanelRole: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES'] })
+		.input(z.object({ id: z.uuid() }))
+		.query(async ({ input }) => {
+			try {
+				const role = await db.query.panelGroups.findFirst({
+					where: (group, { eq }) => eq(group.uuid, input.id)
+				});
+
+				if (!role) {
+					return {
+						success: false,
+						data: null,
+						message: 'Panel role not found.'
+					};
+				}
+
+				return {
+					success: true,
+					data: role,
+					message: 'Panel role fetched successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while fetching the panel role.'
+				};
+			}
+		}),
+	getGameRole: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES'] })
+		.input(z.object({ id: z.uuid() }))
+		.query(async ({ input }) => {
+			try {
+				const role = await db.query.gameGroups.findFirst({
+					where: (group, { eq }) => eq(group.uuid, input.id)
+				});
+
+				if (!role) {
+					return {
+						success: false,
+						data: null,
+						message: 'Game role not found.'
+					};
+				}
+
+				return {
+					success: true,
+					data: role,
+					message: 'Game role fetched successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while fetching the game role.'
+				};
+			}
+		}),
 	getPanelRoles: permsProcedure.meta({ permissionsRequired: ['VIEW_ROLES'] }).query(async () => {
 		try {
 			const roles = await db.query.panelGroups.findMany({
@@ -220,21 +282,17 @@ export const administrationRouter = router({
 			z.object({
 				name: z.string().max(80),
 				description: z.string().max(400),
-				permissions: z.partialRecord(permissionSchema, z.boolean())
+				permissions: z.array(permissionSchema)
 			})
 		)
 		.mutation(async ({ input }) => {
 			try {
-				const permsValue: Permission[] = Object.keys(input.permissions).filter(
-					(key) => input.permissions[key as keyof typeof input.permissions]
-				) as Permission[];
-
 				const gameGroup = await db
 					.insert(schema.gameGroups)
 					.values({
 						name: input.name,
 						description: input.description,
-						permissions: permsValue
+						permissions: input.permissions
 					})
 					.returning();
 
@@ -266,7 +324,7 @@ export const administrationRouter = router({
 			z.object({
 				name: z.string().max(80),
 				description: z.string().max(400),
-				permissions: z.partialRecord(jointFlagKeys, z.boolean()),
+				permissions: z.array(roleFlagKeys),
 				gameGroup: z.uuid()
 			})
 		)
@@ -284,11 +342,54 @@ export const administrationRouter = router({
 					};
 				}
 				const permValue: bigint =
-					Object.keys(input.permissions)
-						.filter((key) => input.permissions[key as keyof typeof input.permissions])
-						.reduce((acc, perm) => {
-							return acc | (JointFlags[perm as JointFlagKeys] as bigint);
-						}, 4n) | 4n;
+					input.permissions.reduce((acc, perm) => {
+						return acc | (RoleFlags[perm as RoleFlagKeys] as bigint);
+					}, 4n) | 4n;
+
+				console.log('Computed perm value: %d', permValue);
+
+				return {
+					success: true,
+					data: null,
+					message: 'Panel group created successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while creating the panel group.'
+				};
+			}
+		}),
+	editPanelGroup: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
+		.input(
+			z.object({
+				id: z.uuid(),
+				name: z.string().max(80),
+				description: z.string().max(400),
+				permissions: z.array(roleFlagKeys),
+				gameGroup: z.uuid()
+			})
+		)
+		.mutation(async ({ input }) => {
+			try {
+				const gameGroup = await db.query.gameGroups.findFirst({
+					where: (group, { eq }) => eq(group.uuid, input.gameGroup)
+				});
+
+				if (!gameGroup) {
+					return {
+						success: false,
+						data: null,
+						message: 'Game group not found.'
+					};
+				}
+				const permValue: bigint =
+					input.permissions.reduce((acc, perm) => {
+						return acc | (RoleFlags[perm as RoleFlagKeys] as bigint);
+					}, 4n) | 4n;
 
 				console.log('Computed perm value: %d', permValue);
 

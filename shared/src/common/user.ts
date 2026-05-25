@@ -112,3 +112,4 @@ export const JointFlags = {
 export type JointFlagKeys = keyof typeof JointFlags;
 
 export const jointFlagKeys = z.enum(Object.keys(JointFlags) as JointFlagKeys[]);
+export const roleFlagKeys = z.enum(Object.keys(RoleFlags) as RoleFlagKeys[]);
