@@ -159,7 +159,7 @@ export const playerBans = pgTable('playerBans', {
 		.notNull(),
 	reason: varchar('reason', { length: 1000 }),
 	type: bansEnum().notNull(),
-	expiresAt: timestamp('expires_at').notNull().defaultNow(),
+	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull().defaultNow(),
 	active: boolean('active').notNull().default(true),
 	...timeData
 });
@@ -211,7 +211,7 @@ export const playerWarnsRelations = relations(playerWarns, ({ one }) => ({
 export const lookupKeys = pgTable('lookup_keys', {
 	uuid: uuid('id').primaryKey().defaultRandom(),
 	code: varchar('code', { length: 64 }).notNull().unique(),
-	expiresAt: timestamp('expires_at').notNull().defaultNow(),
+	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull().defaultNow(),
 	playerId: uuid('player_id')
 		.references(() => player.uuid, { onDelete: 'cascade' })
 		.notNull(),
@@ -221,7 +221,7 @@ export const lookupKeys = pgTable('lookup_keys', {
 export const accountLinkCodes = pgTable('accountLinkCodes', {
 	uuid: uuid('id').primaryKey().defaultRandom(),
 	code: varchar('code', { length: 64 }).notNull().unique(),
-	expiresAt: timestamp('expires_at').notNull().defaultNow(),
+	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull().defaultNow(),
 	playerId: uuid('player_id')
 		.references(() => player.uuid, { onDelete: 'cascade' })
 		.notNull(),
@@ -244,7 +244,7 @@ export const servers = pgTable('serverApiKey', {
 		.notNull()
 		.references(() => auth.user.id, { onDelete: 'cascade' }),
 	description: varchar('description', { length: 255 }),
-	createdAt: timestamp('created_at').notNull().defaultNow()
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
 });
 
 export const serversRelations = relations(servers, ({ one }) => ({

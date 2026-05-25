@@ -62,8 +62,8 @@
 				</Card.Header>
 				<form method="POST" use:enhance>
 					<Card.Content>
-						{#if $errors._errors && $message}
-							<Alert.Root variant="destructive" class="mb-4">
+						{#if $errors._errors || $message}
+							<Alert.Root variant="default" class="mb-4">
 								<Alert.Description>
 									<ul class="list-inside list-disc text-sm">
 										{#each $errors._errors as error (error)}
