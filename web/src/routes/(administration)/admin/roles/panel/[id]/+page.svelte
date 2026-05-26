@@ -6,7 +6,7 @@
 	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import SuperDebug from 'sveltekit-superforms/SuperDebug.svelte';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { panelGroupFormSchema } from '../../../../schema';
 	import { type PageProps } from './$types';
@@ -16,6 +16,17 @@
 	import { resolve } from '$app/paths';
 
 	let { data }: PageProps = $props();
+
+	const gameRoles = $derived(
+		data.gameRoles?.data.map((role) => ({
+			value: role.uuid,
+			label: role.name
+		})) ?? []
+	);
+
+	const triggerContent = $derived(
+		gameRoles.find((f) => f.value === $formData.gameGroup)?.label ?? 'None'
+	);
 
 	// svelte-ignore state_referenced_locally
 	const form = superForm(data.panelGroupForm, {
@@ -79,6 +90,37 @@
 					</Form.Field>
 				</div>
 				<div class="grid gap-3">
+					<Form.Field {form} name="gameGroup">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Select.Root {...props} type="single" bind:value={$formData.gameGroup}>
+									<Select.Trigger class="w-60">
+										{triggerContent}
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Group>
+											<Select.Label>Roles</Select.Label>
+											{#each gameRoles as role (role.value)}
+												<Select.Item
+													value={role.value}
+													label={role.label}
+													disabled={role.value === data.role.gameGroup}
+												>
+													{role.label}
+												</Select.Item>
+											{/each}
+											<Select.Separator />
+											<Select.Item value="none" label="None">None</Select.Item>
+										</Select.Group>
+									</Select.Content>
+								</Select.Root>
+							{/snippet}
+						</Form.Control>
+						<Form.Description>Associated in-game role.</Form.Description>
+						<Form.FieldErrors />
+					</Form.Field>
+				</div>
+				<div class="grid gap-3">
 					<Form.Fieldset {form} name="permissions">
 						<Form.Legend>Permissions</Form.Legend>
 						<div class="grid grid-cols-4 gap-3">
@@ -112,9 +154,6 @@
 						</div>
 						<Form.FieldErrors />
 					</Form.Fieldset>
-				</div>
-				<div class="grid gap-3">
-					<SuperDebug data={$formData} />
 				</div>
 			</Card.Content>
 			<Card.Footer>

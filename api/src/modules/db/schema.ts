@@ -26,9 +26,7 @@ export const panelGroups = pgTable('panelGroups', {
 	name: varchar('name', { length: 80 }).notNull(),
 	// Only shown on panel to describe what group is for
 	description: varchar('description', { length: 400 }),
-	gameGroupId: uuid('game_group_id')
-		.notNull()
-		.references(() => gameGroups.uuid, { onDelete: 'cascade' }),
+	gameGroupId: uuid('game_group_id').references(() => gameGroups.uuid, { onDelete: 'set null' }),
 	permissions: bigint({ mode: 'bigint' })
 		.notNull()
 		.default(sql`4::bigint`),

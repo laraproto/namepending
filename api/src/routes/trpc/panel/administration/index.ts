@@ -1,4 +1,4 @@
-import type { PanelGroupSelectMinimal } from '@modules/db/schema';
+import type { GameGroupSelectMinimal, PanelGroupSelectMinimal } from '@modules/db/schema';
 import db, { schema } from '@modules/db';
 import { z } from 'zod';
 import { permsProcedure, router } from '@modules/trpc';
@@ -278,21 +278,14 @@ export const administrationRouter = router({
 		}),
 	addGameGroup: permsProcedure
 		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
-		.input(
-			z.object({
-				name: z.string().max(80),
-				description: z.string().max(400),
-				permissions: z.array(permissionSchema)
-			})
-		)
-		.mutation(async ({ input }) => {
+		.mutation(async () => {
 			try {
 				const gameGroup = await db
 					.insert(schema.gameGroups)
 					.values({
-						name: input.name,
-						description: input.description,
-						permissions: input.permissions
+						name: 'new group',
+						description: 'new group description',
+						permissions: []
 					})
 					.returning();
 
@@ -328,29 +321,28 @@ export const administrationRouter = router({
 				gameGroup: z.uuid()
 			})
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async () => {
 			try {
-				const gameGroup = await db.query.gameGroups.findFirst({
-					where: (group, { eq }) => eq(group.uuid, input.gameGroup)
-				});
+				const panelGroup = await db
+					.insert(schema.panelGroups)
+					.values({
+						name: 'new group',
+						description: 'new group description',
+						permissions: 4n
+					})
+					.returning();
 
-				if (!gameGroup) {
+				if (!panelGroup[0]) {
 					return {
 						success: false,
 						data: null,
-						message: 'Game group not found.'
+						message: 'Failed to create the panel group.'
 					};
 				}
-				const permValue: bigint =
-					input.permissions.reduce((acc, perm) => {
-						return acc | (RoleFlags[perm as RoleFlagKeys] as bigint);
-					}, 4n) | 4n;
-
-				console.log('Computed perm value: %d', permValue);
 
 				return {
 					success: true,
-					data: null,
+					data: panelGroup[0],
 					message: 'Panel group created successfully.'
 				};
 			} catch (err) {
@@ -370,40 +362,166 @@ export const administrationRouter = router({
 				name: z.string().max(80),
 				description: z.string().max(400),
 				permissions: z.array(roleFlagKeys),
-				gameGroup: z.uuid()
+				gameGroup: z.uuid().nullable()
 			})
 		)
 		.mutation(async ({ input }) => {
 			try {
-				const gameGroup = await db.query.gameGroups.findFirst({
-					where: (group, { eq }) => eq(group.uuid, input.gameGroup)
-				});
+				let gameGroup: GameGroupSelectMinimal | null = null;
+				if (input.gameGroup) {
+					gameGroup =
+						(await db.query.gameGroups.findFirst({
+							//@ts-expect-error types being stupid
+							where: (group, { eq }) => eq(group.uuid, input.gameGroup)
+						})) ?? null;
 
-				if (!gameGroup) {
-					return {
-						success: false,
-						data: null,
-						message: 'Game group not found.'
-					};
+					if (!gameGroup) {
+						return {
+							success: false,
+							data: null,
+							message: 'Game group not found.'
+						};
+					}
 				}
 				const permValue: bigint =
 					input.permissions.reduce((acc, perm) => {
 						return acc | (RoleFlags[perm as RoleFlagKeys] as bigint);
 					}, 4n) | 4n;
 
-				console.log('Computed perm value: ', permValue);
+				const updatedGroup = await db
+					.update(schema.panelGroups)
+					.set({
+						name: input.name,
+						description: input.description,
+						permissions: permValue,
+						gameGroupId: gameGroup?.uuid ?? null
+					})
+					.where(eq(schema.panelGroups.uuid, input.id))
+					.returning();
+
+				if (!updatedGroup[0]) {
+					return {
+						success: false,
+						data: null,
+						message: 'Failed to update the panel group.'
+					};
+				}
 
 				return {
 					success: true,
-					data: null,
-					message: 'Panel group created successfully.'
+					data: updatedGroup[0],
+					message: 'Panel group updated successfully.'
 				};
 			} catch (err) {
 				console.error(err);
 				return {
 					success: false,
 					data: null,
-					message: 'An error occurred while creating the panel group.'
+					message: 'An error occurred while updating the panel group.'
+				};
+			}
+		}),
+	editGameGroup: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
+		.input(
+			z.object({
+				id: z.uuid(),
+				name: z.string().max(80),
+				description: z.string().max(400),
+				permissions: z.array(permissionSchema)
+			})
+		)
+		.mutation(async ({ input }) => {
+			try {
+				const updatedGroup = await db
+					.update(schema.gameGroups)
+					.set({
+						name: input.name,
+						description: input.description,
+						permissions: input.permissions
+					})
+					.where(eq(schema.gameGroups.uuid, input.id))
+					.returning();
+
+				if (!updatedGroup[0]) {
+					return {
+						success: false,
+						data: null,
+						message: 'Failed to update the game group.'
+					};
+				}
+
+				return {
+					success: true,
+					data: updatedGroup[0],
+					message: 'Game group updated successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while updating the game group.'
+				};
+			}
+		}),
+	deletePanelGroup: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES', 'DELETE_ROLES'] })
+		.input(z.object({ id: z.uuid() }))
+		.mutation(async ({ input }) => {
+			try {
+				const deleted = await db
+					.delete(schema.panelGroups)
+					.where(eq(schema.panelGroups.uuid, input.id))
+					.returning();
+
+				if (!deleted[0]) {
+					return {
+						success: false,
+						message: 'Failed to delete the panel group.'
+					};
+				}
+
+				return {
+					success: true,
+					message: 'Panel group deleted successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while deleting the panel group.'
+				};
+			}
+		}),
+	deleteGameGroup: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_ROLES', 'DELETE_ROLES'] })
+		.input(z.object({ id: z.uuid() }))
+		.mutation(async ({ input }) => {
+			try {
+				const deleted = await db
+					.delete(schema.gameGroups)
+					.where(eq(schema.gameGroups.uuid, input.id))
+					.returning();
+
+				if (!deleted[0]) {
+					return {
+						success: false,
+						message: 'Failed to delete the game group.'
+					};
+				}
+
+				return {
+					success: true,
+					message: 'Game group deleted successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while deleting the game group.'
 				};
 			}
 		})

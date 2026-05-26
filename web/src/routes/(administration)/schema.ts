@@ -18,7 +18,7 @@ export const panelGroupFormSchema = z.object({
 	name: z.string().max(50),
 	description: z.string().max(255),
 	permissions: z.array(roleFlagKeys),
-	gameGroup: z.uuid()
+	gameGroup: z.string().optional()
 });
 
 export type GameGroupFormSchema = typeof gameGroupFormSchema;

@@ -19,6 +19,8 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 		redirect(302, '/admin/roles');
 	}
 
+	const gameRoles = await trpcServer.panel.administration.getGameRoles.query();
+
 	const flagList: RoleFlagKeys[] = [];
 	for (const flag in RoleFlags) {
 		const flagValue = RoleFlags[flag as RoleFlagKeys];
@@ -34,14 +36,13 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 		id: role.data.uuid,
 		description: role.data.description || '',
 		permissions: flagList,
-		gameGroup: role.data.gameGroupId
+		gameGroup: role.data.gameGroupId || undefined
 	};
-
-	console.log(roleParsed);
 
 	return {
 		panelGroupForm: await superValidate(roleParsed, zod4(panelGroupFormSchema)),
-		role: roleParsed
+		role: roleParsed,
+		gameRoles
 	};
 };
 
@@ -49,7 +50,6 @@ export const actions: Actions = {
 	default: async (event) => {
 		const form = await superValidate(event, zod4(panelGroupFormSchema));
 		if (!form.valid) {
-			console.log(form);
 			return fail(400, {
 				panelGroupForm: form
 			});
@@ -64,10 +64,9 @@ export const actions: Actions = {
 				name: form.data.name,
 				description: form.data.description,
 				permissions: form.data.permissions,
-				gameGroup: form.data.gameGroup
+				gameGroup:
+					form.data.gameGroup === 'none' || !form.data.gameGroup ? null : form.data.gameGroup
 			});
-
-			console.log(updateResult);
 
 			if (!updateResult.success) {
 				return fail(400, {

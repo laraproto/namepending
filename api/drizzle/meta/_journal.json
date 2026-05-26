@@ -36,6 +36,13 @@
       "when": 1779700627352,
       "tag": "0004_old_shatterstar",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779780201592,
+      "tag": "0005_zippy_stick",
+      "breakpoints": true
     }
   ]
 }
