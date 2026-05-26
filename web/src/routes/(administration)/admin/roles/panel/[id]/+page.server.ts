@@ -37,6 +37,8 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 		gameGroup: role.data.gameGroupId
 	};
 
+	console.log(roleParsed);
+
 	return {
 		panelGroupForm: await superValidate(roleParsed, zod4(panelGroupFormSchema)),
 		role: roleParsed
@@ -44,7 +46,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 };
 
 export const actions: Actions = {
-	panelGroup: async (event) => {
+	default: async (event) => {
 		const form = await superValidate(event, zod4(panelGroupFormSchema));
 		if (!form.valid) {
 			console.log(form);

@@ -391,7 +391,7 @@ export const administrationRouter = router({
 						return acc | (RoleFlags[perm as RoleFlagKeys] as bigint);
 					}, 4n) | 4n;
 
-				console.log('Computed perm value: %d', permValue);
+				console.log('Computed perm value: ', permValue);
 
 				return {
 					success: true,

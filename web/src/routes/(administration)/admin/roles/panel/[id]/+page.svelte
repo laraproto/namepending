@@ -13,16 +13,17 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms';
 	import { RoleFlags, type RoleFlagKeys } from '@namepending/shared/user';
+	import { resolve } from '$app/paths';
 
 	let { data }: PageProps = $props();
 
-	const form = $derived.by(() =>
-		superForm(data.panelGroupForm, {
-			validators: zod4Client(panelGroupFormSchema)
-		})
-	);
+	// svelte-ignore state_referenced_locally
+	const form = superForm(data.panelGroupForm, {
+		validators: zod4Client(panelGroupFormSchema),
+		dataType: 'json'
+	});
 
-	const { form: formData, enhance, message, errors } = $derived(form);
+	const { form: formData, enhance, message, errors } = form;
 </script>
 
 <div class="mx-auto w-full px-4">
@@ -33,7 +34,7 @@
 				>Make changes to your panel group here. Click save when you&apos;re done.</Card.Description
 			>
 		</Card.Header>
-		<form use:enhance method="POST" action="?/panelGroup">
+		<form use:enhance method="POST">
 			<Card.Content>
 				{#if $errors._errors || $message}
 					<Alert.Root variant={$errors._errors ? 'destructive' : 'default'} class="mb-4">
@@ -117,8 +118,7 @@
 				</div>
 			</Card.Content>
 			<Card.Footer>
-				<Button type="button" onclick={() => window.history.back()} variant="outline">Cancel</Button
-				>
+				<Button type="button" href={resolve('/admin/roles')} variant="outline">Cancel</Button>
 				<Button type="submit">Save changes</Button>
 			</Card.Footer>
 		</form>
