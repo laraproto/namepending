@@ -45,7 +45,8 @@ export const actions: Actions = {
 			if (!event.locals.localUser || !hasPermSync(event.locals.localUser, 'CREATE_EDIT_ROLES'))
 				fail(401, 'Unauthorized');
 
-			const updateResult = await trpcServer.panel.administration.addGameGroup.mutate({
+			const updateResult = await trpcServer.panel.administration.editGameGroup.mutate({
+				id: event.params.id,
 				name: form.data.name,
 				description: form.data.description,
 				permissions: form.data.permissions
