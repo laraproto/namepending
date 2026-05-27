@@ -1,7 +1,8 @@
 import type { ColumnDef } from '@tanstack/table-core';
 import { renderComponent, renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { formatDistance } from 'date-fns';
-import PlayerTableActions, { booleanBadge } from './player-table-actions.svelte';
+import { booleanBadge } from './player-table-actions.svelte';
+import PunishmentTableActions from './punishment-table-actions.svelte';
 
 import type { RouterOutput } from '$lib/trpc-client';
 
@@ -49,7 +50,11 @@ export const columns: ColumnDef<BansOutput['data'][number]>[] = [
 	{
 		id: 'actions',
 		cell: ({ row }) => {
-			return renderComponent(PlayerTableActions, { id: row.original.banVictim.platformId });
+			return renderComponent(PunishmentTableActions, {
+				id: row.original.banVictim.platformId,
+				punishmentId: row.original.uuid,
+				type: 'ban'
+			});
 		},
 		header: 'Actions'
 	}

@@ -1,7 +1,7 @@
 import db, { schema } from '@modules/db';
 import { permsProcedure, router } from '@modules/trpc';
 import { platformRegex } from '@namepending/shared/user';
-import { count, desc } from 'drizzle-orm';
+import { count, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { playerModerationRouter } from './player';
 
@@ -417,6 +417,66 @@ export const moderationRouter = router({
 						pageCount
 					};
 				}
+			}
+		}),
+	deleteBan: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_BANS', 'DELETE_BANS'] })
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ input }) => {
+			try {
+				const deleted = await db
+					.delete(schema.playerBans)
+					.where(eq(schema.playerBans.uuid, input.id))
+					.returning();
+
+				if (!deleted[0]) {
+					return {
+						success: false,
+						message: 'Failed to delete ban.'
+					};
+				}
+
+				return {
+					success: true,
+					message: 'Ban deleted successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while deleting ban.'
+				};
+			}
+		}),
+	deleteWarn: permsProcedure
+		.meta({ permissionsRequired: ['VIEW_WARNINGS', 'DELETE_WARNINGS'] })
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ input }) => {
+			try {
+				const deleted = await db
+					.delete(schema.playerWarns)
+					.where(eq(schema.playerWarns.uuid, input.id))
+					.returning();
+
+				if (!deleted[0]) {
+					return {
+						success: false,
+						message: 'Failed to delete warn.'
+					};
+				}
+
+				return {
+					success: true,
+					message: 'Warn deleted successfully.'
+				};
+			} catch (err) {
+				console.error(err);
+				return {
+					success: false,
+					data: null,
+					message: 'An error occurred while deleting warn.'
+				};
 			}
 		})
 });
