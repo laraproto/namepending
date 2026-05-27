@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Switch } from '$lib/components/ui/switch/index.js';
+	import Head from '$lib/components/Head.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
@@ -36,6 +37,8 @@
 
 	const { form: formData, enhance, message, errors } = form;
 </script>
+
+<Head title="Edit panel group" />
 
 <div class="mx-auto w-full px-4">
 	<Card.Root>
@@ -156,7 +159,7 @@
 					</Form.Fieldset>
 				</div>
 			</Card.Content>
-			<Card.Footer>
+			<Card.Footer class="flex justify-end space-x-2">
 				<Button type="button" href={resolve('/admin/roles')} variant="outline">Cancel</Button>
 				<Button type="submit">Save changes</Button>
 			</Card.Footer>

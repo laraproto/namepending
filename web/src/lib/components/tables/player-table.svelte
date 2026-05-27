@@ -28,11 +28,13 @@
 		pageCount = undefined,
 		rowCount = undefined,
 		onPageChange = undefined,
+		onAddNew = undefined,
 		isManualPagination = false
 	}: DataTableProps<TData, TValue> & {
 		pageCount?: number;
 		rowCount?: number;
 		onPageChange?: (updater: PaginationState) => void;
+		onAddNew?: () => void;
 		isManualPagination?: boolean;
 	} = $props();
 
@@ -101,6 +103,9 @@
 
 <div>
 	<div class="flex items-center py-4">
+		{#if onAddNew}
+			<Button variant="outline" onclick={onAddNew}>Add New</Button>
+		{/if}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}

@@ -313,14 +313,6 @@ export const administrationRouter = router({
 		}),
 	addPanelGroup: permsProcedure
 		.meta({ permissionsRequired: ['VIEW_ROLES', 'CREATE_EDIT_ROLES'] })
-		.input(
-			z.object({
-				name: z.string().max(80),
-				description: z.string().max(400),
-				permissions: z.array(roleFlagKeys),
-				gameGroup: z.uuid()
-			})
-		)
 		.mutation(async () => {
 			try {
 				const panelGroup = await db

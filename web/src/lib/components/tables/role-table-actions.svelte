@@ -4,10 +4,26 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import trpc from '$lib/trpc-client';
 	import { invalidateAll } from '$app/navigation';
+	import DeleteConfirmDialog from '$lib/components/delete-confirm-dialog.svelte';
 	import { resolve } from '$app/paths';
 
 	let { id, type }: { id: string; type: 'game' | 'panel' } = $props();
+
+	let deleteDialogOpen = $state(false);
 </script>
+
+<DeleteConfirmDialog
+	bind:open={deleteDialogOpen}
+	onConfirm={() => {
+		if (type === 'game') {
+			trpc.panel.administration.deleteGameGroup.mutate({ id });
+		} else {
+			trpc.panel.administration.deletePanelGroup.mutate({ id });
+		}
+		deleteDialogOpen = false;
+		invalidateAll();
+	}}
+/>
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>
@@ -33,12 +49,7 @@
 		<DropdownMenu.Item
 			class="cursor-pointer"
 			onclick={() => {
-				if (type === 'game') {
-					trpc.panel.administration.deleteGameGroup.mutate({ id });
-				} else {
-					trpc.panel.administration.deletePanelGroup.mutate({ id });
-				}
-				invalidateAll();
+				deleteDialogOpen = true;
 			}}
 		>
 			Delete role</DropdownMenu.Item
