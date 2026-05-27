@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const updateRoleSchema = z.object({
-	role: z.string()
+	role: z.string().optional()
 });
 
 export type UpdateRoleSchema = typeof updateRoleSchema;

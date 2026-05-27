@@ -5,9 +5,13 @@
 	import trpc from '$lib/trpc-client';
 	import { invalidateAll } from '$app/navigation';
 	import DeleteConfirmDialog from '$lib/components/delete-confirm-dialog.svelte';
+	import { hasPermSync } from '$lib/perm-utils';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { resolve } from '$app/paths';
 
 	let { id, type }: { id: string; type: 'game' | 'panel' } = $props();
+
+	const sidebar = Sidebar.useSidebar();
 
 	let deleteDialogOpen = $state(false);
 </script>
@@ -37,7 +41,10 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item class="cursor-pointer">
+			<DropdownMenu.Item
+				class="cursor-pointer"
+				disabled={!hasPermSync(sidebar.user, 'CREATE_EDIT_ROLES')}
+			>
 				{#snippet child({ props })}
 					<a href={resolve(`/(administration)/admin/roles/${type}/[id]`, { id })} {...props}
 						>Edit role</a
@@ -51,6 +58,7 @@
 			onclick={() => {
 				deleteDialogOpen = true;
 			}}
+			disabled={!hasPermSync(sidebar.user, 'DELETE_ROLES')}
 		>
 			Delete role</DropdownMenu.Item
 		>
