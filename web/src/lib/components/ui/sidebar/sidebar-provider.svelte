@@ -4,11 +4,10 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { SIDEBAR_COOKIE_NAME, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './constants.js';
 	import { setSidebar } from './context.svelte.js';
-	import { browser } from '$app/environment';
 
 	let {
 		ref = $bindable(null),
-		open = $bindable(browser ? localStorage.getItem(SIDEBAR_COOKIE_NAME) === 'true' : false),
+		open = $bindable(false),
 		user = null,
 		onOpenChange = () => {},
 		class: className,
@@ -28,7 +27,7 @@
 			onOpenChange(value);
 
 			// This sets the cookie to keep the sidebar state.
-			localStorage.setItem(SIDEBAR_COOKIE_NAME, String(open));
+			cookieStore.set(SIDEBAR_COOKIE_NAME, String(open));
 		},
 		user: () => user
 	});

@@ -16,17 +16,17 @@ const app = new Hono<{
 
 app.use('*', sessionMiddleware);
 
-/* app.use(
+app.use(
 	'/auth/*',
 	cors({
-		origin: URL!,
+		origin: APP_URL!,
 		allowHeaders: ['Content-Type', 'Authorization'],
 		allowMethods: ['POST', 'GET', 'OPTIONS'],
 		exposeHeaders: ['Content-Length'],
 		maxAge: 600,
 		credentials: true
 	})
-); */
+);
 
 app.on(['POST', 'GET'], '/auth/*', (c) => {
 	return auth.handler(c.req.raw);

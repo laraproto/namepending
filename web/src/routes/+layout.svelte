@@ -14,7 +14,7 @@
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div class="[--header-height:calc(--spacing(14))]">
-	<Sidebar.Provider class="flex flex-col" user={data.localUser}>
+	<Sidebar.Provider class="flex flex-col" user={data.localUser} open={data.sidebarOpen}>
 		<SiteHeader />
 		<div class="flex flex-1">
 			<AppSidebar />

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import apiRouter from '@routes/index.ts';
+import '@modules/cron';
 
 const app = new Hono();
 
