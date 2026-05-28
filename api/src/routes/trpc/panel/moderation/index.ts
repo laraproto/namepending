@@ -1,7 +1,7 @@
 import db, { schema } from '@modules/db';
 import { permsProcedure, router } from '@modules/trpc';
 import { platformRegex } from '@namepending/shared/user';
-import { count, desc, eq } from 'drizzle-orm';
+import { count, desc, eq, inArray, or, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { playerModerationRouter } from './player';
 
@@ -157,18 +157,6 @@ export const moderationRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const rowQuery = await db.select({ value: count() }).from(schema.playerBans);
-			let totalBans = 0;
-
-			if (rowQuery[0]) {
-				totalBans = Number(rowQuery[0].value);
-			}
-
-			const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
-
-			if (input.page > pageCount) {
-				input.page = pageCount;
-			}
 			switch (true) {
 				case platformRegex.test(input.query): {
 					const ban = await db.query.playerBans.findMany({
@@ -200,6 +188,30 @@ export const moderationRouter = router({
 						}
 					});
 
+					const rowQuery = await db
+						.select({ value: count() })
+						.from(schema.playerBans)
+						.where(
+							inArray(
+								schema.playerBans.victimId,
+								db
+									.select({ id: schema.player.uuid })
+									.from(schema.player)
+									.where(eq(schema.player.platformId, input.query))
+							)
+						);
+					let totalBans = 0;
+
+					if (rowQuery[0]) {
+						totalBans = Number(rowQuery[0].value);
+					}
+
+					const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
+
+					if (input.page > pageCount) {
+						input.page = pageCount;
+					}
+
 					return {
 						data: ban,
 						count: totalBans,
@@ -228,6 +240,22 @@ export const moderationRouter = router({
 							}
 						}
 					});
+
+					const rowQuery = await db
+						.select({ value: count() })
+						.from(schema.playerBans)
+						.where(eq(schema.playerBans.victimId, input.query));
+					let totalBans = 0;
+
+					if (rowQuery[0]) {
+						totalBans = Number(rowQuery[0].value);
+					}
+
+					const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
+
+					if (input.page > pageCount) {
+						input.page = pageCount;
+					}
 
 					return {
 						data: ban,
@@ -270,9 +298,44 @@ export const moderationRouter = router({
 										.select({ id: schema.user.id })
 										.from(schema.user)
 										.where(ilike(schema.user.name, `%${input.query}%`))
-								)
+								),
+								ilike(ban.reason, `%${input.query}%`)
 							)
 					});
+
+					const rowQuery = await db
+						.select({ value: count() })
+						.from(schema.playerBans)
+						.where(
+							or(
+								inArray(
+									schema.playerBans.victimId,
+									db
+										.select({ id: schema.player.uuid })
+										.from(schema.player)
+										.where(ilike(schema.player.name, `%${input.query}%`))
+								),
+								inArray(
+									schema.playerBans.authorId,
+									db
+										.select({ id: schema.user.id })
+										.from(schema.user)
+										.where(ilike(schema.user.name, `%${input.query}%`))
+								),
+								ilike(schema.playerBans.reason, `%${input.query}%`)
+							)
+						);
+					let totalBans = 0;
+
+					if (rowQuery[0]) {
+						totalBans = Number(rowQuery[0].value);
+					}
+
+					const pageCount = Math.max(1, Math.ceil(totalBans / input.limit));
+
+					if (input.page > pageCount) {
+						input.page = pageCount;
+					}
 
 					return {
 						data: ban,
@@ -294,18 +357,6 @@ export const moderationRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const rowQuery = await db.select({ value: count() }).from(schema.playerWarns);
-			let totalWarnings = 0;
-
-			if (rowQuery[0]) {
-				totalWarnings = Number(rowQuery[0].value);
-			}
-
-			const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
-
-			if (input.page > pageCount) {
-				input.page = pageCount;
-			}
 			switch (true) {
 				case platformRegex.test(input.query): {
 					const warn = await db.query.playerWarns.findMany({
@@ -337,6 +388,30 @@ export const moderationRouter = router({
 						}
 					});
 
+					const rowQuery = await db
+						.select({ value: count() })
+						.from(schema.playerWarns)
+						.where(
+							inArray(
+								schema.playerWarns.victimId,
+								db
+									.select({ id: schema.player.uuid })
+									.from(schema.player)
+									.where(eq(schema.player.platformId, input.query))
+							)
+						);
+					let totalWarnings = 0;
+
+					if (rowQuery[0]) {
+						totalWarnings = Number(rowQuery[0].value);
+					}
+
+					const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
+
+					if (input.page > pageCount) {
+						input.page = pageCount;
+					}
+
 					return {
 						data: warn,
 						count: totalWarnings,
@@ -365,6 +440,22 @@ export const moderationRouter = router({
 							}
 						}
 					});
+
+					const rowQuery = await db
+						.select({ value: count() })
+						.from(schema.playerWarns)
+						.where(eq(schema.playerWarns.victimId, input.query));
+					let totalWarnings = 0;
+
+					if (rowQuery[0]) {
+						totalWarnings = Number(rowQuery[0].value);
+					}
+
+					const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
+
+					if (input.page > pageCount) {
+						input.page = pageCount;
+					}
 
 					return {
 						data: warn,
@@ -407,9 +498,44 @@ export const moderationRouter = router({
 										.select({ id: schema.user.id })
 										.from(schema.user)
 										.where(ilike(schema.user.name, `%${input.query}%`))
-								)
+								),
+								ilike(warn.reason, `%${input.query}%`)
 							)
 					});
+
+					const rowQuery = await db
+						.select({ value: count() })
+						.from(schema.playerWarns)
+						.where(
+							or(
+								inArray(
+									schema.playerWarns.victimId,
+									db
+										.select({ id: schema.player.uuid })
+										.from(schema.player)
+										.where(ilike(schema.player.name, `%${input.query}%`))
+								),
+								inArray(
+									schema.playerWarns.authorId,
+									db
+										.select({ id: schema.user.id })
+										.from(schema.user)
+										.where(ilike(schema.user.name, `%${input.query}%`))
+								),
+								ilike(schema.playerWarns.reason, `%${input.query}%`)
+							)
+						);
+					let totalWarnings = 0;
+
+					if (rowQuery[0]) {
+						totalWarnings = Number(rowQuery[0].value);
+					}
+
+					const pageCount = Math.max(1, Math.ceil(totalWarnings / input.limit));
+
+					if (input.page > pageCount) {
+						input.page = pageCount;
+					}
 
 					return {
 						data: warn,

@@ -78,14 +78,19 @@ class SidebarState {
 	setSearchValue = (value: string) => {
 		this.searchValue = value;
 		replaceState(
-			resolve(`${page.url.pathname}?q=${encodeURIComponent(value)}` as Pathname),
+			resolve(`${page.url.pathname}?q=${encodeURIComponent(value)}&page=${this.page}` as Pathname),
 			page.state
 		);
 	};
 
 	setPage = (value: number) => {
 		this.page = value;
-		replaceState(resolve(`${page.url.pathname}?page=${value}` as Pathname), page.state);
+		replaceState(
+			resolve(
+				`${page.url.pathname}?q=${encodeURIComponent(this.searchValue)}&page=${value}` as Pathname
+			),
+			page.state
+		);
 	};
 
 	toggle = () => {

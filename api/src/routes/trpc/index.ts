@@ -3,7 +3,7 @@ import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
 import { z } from 'zod';
 import { panelRouter } from './panel';
 import db, { schema } from '@modules/db';
-import { count } from 'drizzle-orm';
+import { count, or, ilike, isNotNull, and } from 'drizzle-orm';
 
 export const appRouter = router({
 	hello: publicProcedure
@@ -42,7 +42,18 @@ export const appRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const rowQuery = await db.select({ value: count() }).from(schema.user);
+			const rowQuery = await db
+				.select({ value: count() })
+				.from(schema.user)
+				.where(
+					and(
+						or(
+							ilike(schema.user.name, `%${input.query}%`),
+							ilike(schema.user.id, `%${input.query}%`)
+						),
+						isNotNull(schema.user.groupId)
+					)
+				);
 			let totalStaff = 0;
 
 			if (rowQuery[0]) {
