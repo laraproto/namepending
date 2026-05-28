@@ -13,7 +13,7 @@ export const columns: ColumnDef<ListUserOutput['data'][number]>[] = [
 		header: 'Name'
 	},
 	{
-		accessorKey: 'group.name',
+		accessorFn: (row) => row.group?.name ?? 'None',
 		header: 'Group'
 	},
 	{
