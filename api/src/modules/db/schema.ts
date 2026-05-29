@@ -321,6 +321,7 @@ export const serverSelect = z.object({
 });
 
 export type UserSelect = z.infer<typeof userSelect>;
+export type UserSelectMinimal = z.infer<typeof userSelectMinimal>;
 export type PlayerSelectMinimal = z.infer<typeof playerSelectMinimal>;
 export type PlayerSelect = z.infer<typeof playerSelect>;
 export type BansSelectMinimal = z.infer<typeof bansSelectMinimal>;

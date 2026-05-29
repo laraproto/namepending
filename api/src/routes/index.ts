@@ -1,16 +1,17 @@
-import { auth } from '@/modules/auth';
-import { APP_URL } from '@/modules/config';
+import { auth } from '@modules/auth';
+import { APP_URL } from '@modules/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { trpcServer } from '@hono/trpc-server';
 import sessionMiddleware from '@middleware/sessionMiddleware';
 import { appRouter } from './trpc';
-import type { UserSelect } from '@/modules/db/schema';
+import type { UserSelect, ServerSelect } from '@modules/db/schema';
 import { yoga } from '@modules/yoga';
 
 const app = new Hono<{
 	Variables: {
 		user: UserSelect | null;
+		server: ServerSelect | null;
 		session: typeof auth.$Infer.Session.session | null;
 	};
 }>().basePath('/api');
@@ -61,7 +62,8 @@ app.use('/graphql/*', async (c) => {
 	return yoga.handle({
 		request: c.req.raw,
 		session: c.get('session'),
-		user: c.get('user')
+		user: c.get('user'),
+		server: c.get('server')
 	});
 });
 
