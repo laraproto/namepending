@@ -280,7 +280,7 @@ export const gameGroupSelectMinimal = createSelectSchema(gameGroups);
 
 export const panelGroupSelect = z.object({
 	...panelGroupSelectMinimal.shape,
-	gameGroup: gameGroupSelectMinimal
+	gameGroup: gameGroupSelectMinimal.nullable()
 });
 export const playerSelectMinimal = createSelectSchema(player);
 
