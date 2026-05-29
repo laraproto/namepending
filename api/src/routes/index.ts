@@ -6,6 +6,7 @@ import { trpcServer } from '@hono/trpc-server';
 import sessionMiddleware from '@middleware/sessionMiddleware';
 import { appRouter } from './trpc';
 import type { UserSelect } from '@/modules/db/schema';
+import { yoga } from '@modules/yoga';
 
 const app = new Hono<{
 	Variables: {
@@ -55,5 +56,7 @@ app.use(
 		})
 	})
 );
+
+app.mount('/graphql/*', yoga);
 
 export default app;
