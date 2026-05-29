@@ -5,7 +5,6 @@ import type {
 	UserSelect,
 	UserSelectMinimal,
 	PanelGroupSelect,
-	GameGroupSelectMinimal,
 	ServerSelect
 } from '@modules/db/schema';
 
