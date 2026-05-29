@@ -43,6 +43,13 @@
       "when": 1779780201592,
       "tag": "0005_zippy_stick",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1780040029944,
+      "tag": "0006_tan_eternity",
+      "breakpoints": true
     }
   ]
 }

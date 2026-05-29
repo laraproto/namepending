@@ -9,7 +9,8 @@ import {
 	boolean,
 	primaryKey,
 	jsonb,
-	bigint
+	bigint,
+	integer
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
@@ -137,13 +138,31 @@ export const player = pgTable('players', {
 	...timeData // service information, if data ever needs to be pruned at least this will tell of us any data that we can remove easily
 });
 
+export const playerStats = pgTable('playerStats', {
+	uuid: uuid('id').primaryKey().defaultRandom(),
+	playerId: uuid('player_id')
+		.notNull()
+		.references(() => player.uuid, { onDelete: 'cascade' }),
+	timeTotal: bigint('time_total', { mode: 'number' }).notNull().default(0),
+	timeThisWeek: integer('time_this_week').notNull().default(0),
+	timeLastWeek: integer('time_last_week').notNull().default(0)
+});
+
+export const playerStatsRelations = relations(playerStats, ({ one }) => ({
+	player: one(player, {
+		fields: [playerStats.playerId],
+		references: [player.uuid]
+	})
+}));
+
 export const playerRelations = relations(player, ({ one, many }) => ({
 	user: one(auth.user, {
 		fields: [player.userId],
 		references: [auth.user.id]
 	}),
 	bans: many(playerBans, { relationName: 'banVictim' }),
-	warns: many(playerWarns, { relationName: 'warnVictim' })
+	warns: many(playerWarns, { relationName: 'warnVictim' }),
+	stats: one(playerStats)
 }));
 
 export const bansEnum = pgEnum('banType', ['temporary', 'permanent']);
