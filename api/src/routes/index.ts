@@ -57,6 +57,8 @@ app.use(
 	})
 );
 
-app.mount('/graphql/*', yoga);
+app.use('/graphql/*', async (context) => {
+	return yoga.handle(context.req.raw, {});
+});
 
 export default app;
