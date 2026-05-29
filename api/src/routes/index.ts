@@ -57,8 +57,12 @@ app.use(
 	})
 );
 
-app.use('/graphql/*', async (context) => {
-	return yoga.handle(context.req.raw, {});
+app.use('/graphql/*', async (c) => {
+	return yoga.handle({
+		request: c.req.raw,
+		session: c.get('session'),
+		user: c.get('user')
+	});
 });
 
 export default app;
