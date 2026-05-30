@@ -23,7 +23,13 @@ cron('* * * * *', async () => {
 			)
 	});
 
-	console.log(`Found ${expiredWarns.length} expired warns and ${expiredBans.length} expired bans`);
+	const expiredLookups = await db.query.lookupKeys.findMany({
+		where: (lookupKeys, { lte }) => lte(lookupKeys.expiresAt, now)
+	});
+
+	console.log(
+		`Found ${expiredWarns.length} expired warns, ${expiredBans.length} expired bans and ${expiredLookups.length} expired lookup keys.`
+	);
 
 	for await (const warn of expiredWarns) {
 		await db
@@ -37,5 +43,9 @@ cron('* * * * *', async () => {
 			.update(schema.playerBans)
 			.set({ active: false })
 			.where(eq(schema.playerBans.uuid, ban.uuid));
+	}
+
+	for await (const lookup of expiredLookups) {
+		await db.delete(schema.lookupKeys).where(eq(schema.lookupKeys.uuid, lookup.uuid));
 	}
 });

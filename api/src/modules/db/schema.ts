@@ -236,6 +236,13 @@ export const lookupKeys = pgTable('lookup_keys', {
 	...timeData
 });
 
+export const lookupKeysRelations = relations(lookupKeys, ({ one }) => ({
+	player: one(player, {
+		fields: [lookupKeys.playerId],
+		references: [player.uuid]
+	})
+}));
+
 export const accountLinkCodes = pgTable('accountLinkCodes', {
 	uuid: uuid('id').primaryKey().defaultRandom(),
 	code: varchar('code', { length: 64 }).notNull().unique(),
@@ -315,6 +322,12 @@ export const warnsSelect = z.object({
 export const serverSelectWithoutApiKey = createSelectSchema(servers);
 export const serverInsert = createInsertSchema(servers);
 
+export const lookupSelect = createSelectSchema(lookupKeys);
+export const lookupInsert = createInsertSchema(lookupKeys);
+
+export const accountLinkSelect = createSelectSchema(accountLinkCodes);
+export const accountLinkInsert = createInsertSchema(accountLinkCodes);
+
 export const serverSelect = z.object({
 	...serverSelectWithoutApiKey.shape,
 	creator: userSelectMinimal
@@ -334,5 +347,9 @@ export type GameGroupSelectMinimal = z.infer<typeof gameGroupSelectMinimal>;
 export type ServerSelectWithoutApiKey = z.infer<typeof serverSelectWithoutApiKey>;
 export type ServerInsert = z.infer<typeof serverInsert>;
 export type ServerSelect = z.infer<typeof serverSelect>;
+export type LookupSelect = z.infer<typeof lookupSelect>;
+export type LookupInsert = z.infer<typeof lookupInsert>;
+export type AccountLinkSelect = z.infer<typeof accountLinkSelect>;
+export type AccountLinkInsert = z.infer<typeof accountLinkInsert>;
 
 export * from './auth-schema';

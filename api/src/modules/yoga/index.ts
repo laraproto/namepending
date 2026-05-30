@@ -1,5 +1,4 @@
 import { createYoga } from 'graphql-yoga';
-import { schema, builder } from './builder';
 
 import { auth } from '@modules/auth';
 import type { UserSelect, ServerSelect } from '@modules/db/schema';
@@ -9,6 +8,8 @@ export const yoga = createYoga<{
 	user: UserSelect | null;
 	server: ServerSelect | null;
 	session: typeof auth.$Infer.Session.session | null;
-}>({ schema, graphqlEndpoint: '/api/graphql', landingPage: false });
-
-export default builder;
+}>({
+	schema: (await import('@routes/graphql')).schema,
+	graphqlEndpoint: '/api/graphql',
+	landingPage: false
+});

@@ -1,4 +1,4 @@
-import builder from '@modules/yoga';
+import { builder } from '@modules/yoga/builder';
 
 import type {
 	UserSelect,
@@ -6,11 +6,36 @@ import type {
 	PanelGroupSelect,
 	ServerSelect
 } from '@modules/db/schema';
+import type { LookupOutput, LinkOutput } from './types';
+import * as token from '@modules/token';
 
 const GroupRef = builder.objectRef<PanelGroupSelect>('Group');
 const UserRef = builder.objectRef<UserSelect>('User');
 const UserMinimalRef = builder.objectRef<UserSelectMinimal>('UserMinimal');
 const ServerRef = builder.objectRef<ServerSelect>('Server');
+
+const LookupOutputRef = builder.objectRef<LookupOutput>('LookupOutput');
+const LinkOutputRef = builder.objectRef<LinkOutput>('LinkOutput');
+
+LookupOutputRef.implement({
+	description: 'Output of lookup key creation',
+	fields: (t) => ({
+		key: t.exposeString('key'),
+		expires: t.expose('expires', {
+			type: 'Date'
+		})
+	})
+});
+
+LinkOutputRef.implement({
+	description: 'Output of account link key creation',
+	fields: (t) => ({
+		key: t.exposeString('key'),
+		expires: t.expose('expires', {
+			type: 'Date'
+		})
+	})
+});
 
 UserRef.implement({
 	description: 'A user',
@@ -88,6 +113,61 @@ builder.mutationType({
 				// Do something with the message
 				console.log(args);
 				return true;
+			}
+		}),
+		createLookup: t.field({
+			type: LookupOutputRef,
+			authScopes: {
+				server: true
+			},
+			nullable: true,
+			args: {
+				userId: t.arg.string({
+					required: true
+				}),
+				userIp: t.arg.string({
+					required: false
+				})
+			},
+			resolve: async (root, args) => {
+				try {
+					const key = token.generateSessionToken();
+					const lookup = await token.createLookupKey(key, args.userId);
+
+					return {
+						key,
+						expires: lookup.expiresAt
+					};
+				} catch (err) {
+					console.error(err);
+					return null;
+				}
+			}
+		}),
+		createAccountLink: t.field({
+			type: LinkOutputRef,
+			authScopes: {
+				server: true
+			},
+			nullable: true,
+			args: {
+				userId: t.arg.string({
+					required: true
+				})
+			},
+			resolve: async (root, args) => {
+				try {
+					const key = token.createAccountLinkCode();
+					const link = await token.createLinkEntry(key, args.userId);
+
+					return {
+						key,
+						expires: link.expiresAt
+					};
+				} catch (err) {
+					console.error(err);
+					return null;
+				}
 			}
 		})
 	})
