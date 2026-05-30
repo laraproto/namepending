@@ -1,20 +1,11 @@
-import SchemaBuilder from '@pothos/core';
+import builder from '@modules/yoga';
 
-import { auth } from '@modules/auth';
 import type {
 	UserSelect,
 	UserSelectMinimal,
 	PanelGroupSelect,
 	ServerSelect
 } from '@modules/db/schema';
-
-const builder = new SchemaBuilder<{
-	Context: {
-		user: UserSelect | null;
-		server: ServerSelect | null;
-		session: typeof auth.$Infer.Session.session | null;
-	};
-}>({});
 
 const GroupRef = builder.objectRef<PanelGroupSelect>('Group');
 const UserRef = builder.objectRef<UserSelect>('User');
@@ -78,6 +69,26 @@ builder.queryType({
 		server: t.field({
 			type: ServerRef,
 			resolve: (_root, _args, ctx) => ctx.server
+		})
+	})
+});
+
+builder.mutationType({
+	fields: (t) => ({
+		// Add mutation that returns a simple boolean
+		post: t.boolean({
+			authScopes: {
+				user: true,
+				server: true
+			},
+			args: {
+				message: t.arg.string()
+			},
+			resolve: async (root, args) => {
+				// Do something with the message
+				console.log(args);
+				return true;
+			}
 		})
 	})
 });
