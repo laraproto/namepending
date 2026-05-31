@@ -6,6 +6,8 @@ import type {
 	PanelGroupSelect,
 	ServerSelect
 } from '@modules/db/schema';
+import * as dbschema from '@modules/db/schema';
+import db from '@modules/db';
 import type { LookupOutput, LinkOutput } from './types';
 import * as token from '@modules/token';
 
@@ -122,17 +124,17 @@ builder.mutationType({
 			},
 			nullable: true,
 			args: {
-				userId: t.arg.string({
+				platformId: t.arg.string({
 					required: true
 				}),
 				userIp: t.arg.string({
 					required: false
 				})
 			},
-			resolve: async (root, args) => {
+			resolve: async (_root, args) => {
 				try {
 					const key = token.generateSessionToken();
-					const lookup = await token.createLookupKey(key, args.userId);
+					const lookup = await token.createLookupKey(key, args.platformId);
 
 					return {
 						key,
@@ -151,14 +153,14 @@ builder.mutationType({
 			},
 			nullable: true,
 			args: {
-				userId: t.arg.string({
+				platformId: t.arg.string({
 					required: true
 				})
 			},
-			resolve: async (root, args) => {
+			resolve: async (_root, args) => {
 				try {
 					const key = token.createAccountLinkCode();
-					const link = await token.createLinkEntry(key, args.userId);
+					const link = await token.createLinkEntry(key, args.platformId);
 
 					return {
 						key,
@@ -167,6 +169,101 @@ builder.mutationType({
 				} catch (err) {
 					console.error(err);
 					return null;
+				}
+			}
+		}),
+		createPlayer: t.boolean({
+			authScopes: {
+				server: true
+			},
+			args: {
+				platformId: t.arg.string({
+					required: true
+				}),
+				name: t.arg.string({
+					required: true
+				}),
+				doNotTrack: t.arg.boolean({
+					required: true
+				})
+			},
+			resolve: async (_root, args) => {
+				try {
+					const playerQuery = await db
+						.insert(dbschema.player)
+						.values({
+							platformId: args.platformId,
+							name: args.name,
+							doNotTrack: args.doNotTrack
+						})
+						.returning();
+
+					return playerQuery.length > 0;
+				} catch (err) {
+					console.error(err);
+					return false;
+				}
+			}
+		}),
+		createBan: t.boolean({
+			authScopes: {
+				server: true
+			},
+			args: {
+				author: t.arg.string({
+					required: true
+				}),
+				target: t.arg.string({
+					required: true
+				}),
+				reason: t.arg.string({
+					required: true
+				}),
+				duration: t.arg.int({
+					required: true
+				})
+			},
+			resolve: async (_root, args) => {
+				try {
+					const userQuery = await db.query.user.findFirst({
+						where: (user, { eq, inArray }) =>
+							inArray(
+								user.id,
+								db
+									.select({ id: dbschema.player.uuid })
+									.from(dbschema.player)
+									.where(eq(dbschema.player.platformId, args.author))
+							)
+					});
+
+					if (!userQuery) {
+						return false;
+					}
+
+					const targetQuery = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, args.target)
+					});
+
+					if (!targetQuery) {
+						return false;
+					}
+
+					const ban = await db
+						.insert(dbschema.playerBans)
+						.values({
+							authorId: userQuery.id,
+							victimId: targetQuery.uuid,
+							reason: args.reason,
+							expiresAt: new Date(Date.now() + args.duration * 1000),
+							type: args.duration === 0 ? 'permanent' : 'temporary',
+							active: true
+						})
+						.returning();
+
+					return ban.length > 0;
+				} catch (err) {
+					console.error(err);
+					return false;
 				}
 			}
 		})
