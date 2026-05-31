@@ -7,3 +7,5 @@ name pending duh, also you know what they say (they don't), all roads lead to SC
 ## Problems
 
 So, before going out on graphql I didn't think to check how many graphql clients there are for C#, there is one that works on .netstandard/framework but it hasn't been updated in 2 years it also doesn't support automatic schema generation so i'll have to still write a decent bit of handling logic manually, wish me luck lmao
+
+But yes I will most likely end up using [this client](https://www.nuget.org/packages/GraphQL.Client/)
