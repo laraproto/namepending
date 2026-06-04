@@ -1,6 +1,6 @@
 import SchemaBuilder from '@pothos/core';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
-import { DateResolver } from 'graphql-scalars';
+import { DateResolver, BigIntResolver } from 'graphql-scalars';
 
 import { auth } from '@modules/auth';
 import type { UserSelect, ServerSelect } from '@modules/db/schema';
@@ -20,6 +20,10 @@ export const builder = new SchemaBuilder<{
 			Input: Date;
 			Output: Date;
 		};
+		BigInt: {
+			Input: bigint;
+			Output: bigint;
+		};
 	};
 }>({
 	plugins: [ScopeAuthPlugin],
@@ -33,3 +37,4 @@ export const builder = new SchemaBuilder<{
 });
 
 builder.addScalarType('Date', DateResolver);
+builder.addScalarType('BigInt', BigIntResolver);
