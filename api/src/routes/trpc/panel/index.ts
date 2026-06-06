@@ -4,10 +4,12 @@ import { JointFlags, platformRegex } from '@namepending/shared/user';
 import { z } from 'zod';
 import { moderationRouter } from './moderation';
 import { administrationRouter } from './administration';
+import { userRouter } from './user';
 
 export const panelRouter = router({
 	moderation: moderationRouter,
 	administration: administrationRouter,
+	user: userRouter,
 	getProfile: permsProcedure
 		.meta({
 			permissionsRequired: async (ctx, input: unknown) => {

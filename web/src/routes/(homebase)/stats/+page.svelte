@@ -7,11 +7,6 @@
 
 <Head title="Player Stats" />
 
-<p>
-	This page primarily serves debug purposes, initially there was player stats stuff in the database
-	schema but I don't think I have time to ship it before May 14th
-</p>
-
 {#if sidebar.user}
 	<p>
 		Logged in as {sidebar.user.name} (id: {sidebar.user.id})

@@ -445,6 +445,15 @@ builder.mutationType({
 						})
 						.returning();
 
+					if (playerQuery[0]) {
+						await db
+							.insert(dbschema.playerStats)
+							.values({
+								playerId: playerQuery[0].uuid
+							})
+							.returning();
+					}
+
 					return playerQuery.length > 0;
 				} catch (err) {
 					console.error(err);

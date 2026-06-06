@@ -142,6 +142,7 @@ export const playerStats = pgTable('playerStats', {
 	uuid: uuid('id').primaryKey().defaultRandom(),
 	playerId: uuid('player_id')
 		.notNull()
+		.unique()
 		.references(() => player.uuid, { onDelete: 'cascade' }),
 	timeTotal: bigint('time_total', { mode: 'number' }).notNull().default(0),
 	timeThisWeek: integer('time_this_week').notNull().default(0),
