@@ -13,6 +13,7 @@
 				items: [
 					{
 						title: 'Dashboard',
+						permRequired: 'USER', // Making this just require USER makes it just show for logged in users, side effect of how the perms system works
 						url: '/stats'
 					},
 					/*{

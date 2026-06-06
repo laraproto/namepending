@@ -10,7 +10,8 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 		};
 	} catch {
 		return {
-			localUser: null
+			localUser: null,
+			sidebarOpen: cookies.get(SIDEBAR_COOKIE_NAME) === 'true'
 		};
 	}
 };

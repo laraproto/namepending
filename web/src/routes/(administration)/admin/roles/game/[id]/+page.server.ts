@@ -57,7 +57,7 @@ export const actions: Actions = {
 					message: updateResult.message || 'Failed to create game group.'
 				});
 			}
-			return message(form, `Your game group has been created`);
+			return message(form, updateResult.message);
 		} catch (err) {
 			console.error('Error creating game group:', err);
 			return fail(500, {

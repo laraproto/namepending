@@ -1,7 +1,3 @@
-<script module>
-	export { booleanBadge };
-</script>
-
 <script lang="ts">
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -36,36 +32,6 @@
 		invalidateAll();
 	}}
 />
-
-{#snippet booleanBadge({
-	bool,
-	colorInverse = false,
-	trueText = 'Yes',
-	falseText = 'No'
-}: {
-	bool: boolean;
-	colorInverse?: boolean;
-	trueText?: string;
-	falseText?: string;
-})}
-	<Badge
-		variant="secondary"
-		class={colorInverse
-			? [
-					!bool && 'bg-lime-500 dark:bg-lime-600',
-					bool && 'bg-red-500 dark:bg-red-600',
-					'text-white'
-				]
-			: [
-					bool && 'bg-lime-500 dark:bg-lime-600',
-					!bool && 'bg-red-500 dark:bg-red-600',
-					'text-white'
-				]}
-	>
-		{#if bool}<BadgeCheckIcon />{:else}<BadgeXIcon />{/if}
-		{bool ? trueText : falseText}
-	</Badge>
-{/snippet}
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>

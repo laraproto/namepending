@@ -74,7 +74,7 @@ export const actions: Actions = {
 					message: updateResult.message || 'Failed to update panel group.'
 				});
 			}
-			return message(form, `Your panel group has been updated`);
+			return message(form, updateResult.message);
 		} catch (err) {
 			console.error('Error updating panel group:', err);
 			return fail(500, {
