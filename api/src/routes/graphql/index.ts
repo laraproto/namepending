@@ -12,6 +12,7 @@ import type {
 } from '@modules/db/schema';
 import * as dbschema from '@modules/db/schema';
 import db from '@modules/db';
+import { eq } from 'drizzle-orm';
 import type { LookupOutput, LinkOutput } from './types';
 import { BanType, WarnType } from './types';
 import * as token from '@modules/token';
@@ -445,7 +446,7 @@ builder.mutationType({
 						})
 						.returning();
 
-					if (playerQuery[0]) {
+					if (playerQuery[0] && !playerQuery[0].doNotTrack) {
 						await db
 							.insert(dbschema.playerStats)
 							.values({
@@ -455,6 +456,79 @@ builder.mutationType({
 					}
 
 					return playerQuery.length > 0;
+				} catch (err) {
+					console.error(err);
+					return false;
+				}
+			}
+		}),
+		updatePlayer: t.boolean({
+			authScopes: {
+				server: true
+			},
+			args: {
+				platformId: t.arg.string({
+					required: true
+				}),
+				name: t.arg.string({
+					required: false
+				}),
+				doNotTrack: t.arg.boolean({
+					required: false
+				}),
+				timeSpent: t.arg.int({
+					required: true,
+					defaultValue: 0
+				})
+			},
+			resolve: async (_root, args) => {
+				try {
+					const playerQuery = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, args.platformId)
+					});
+
+					if (!playerQuery) {
+						return false;
+					}
+
+					const updatedPlayer = await db
+						.update(dbschema.player)
+						.set({
+							name: args.name ?? playerQuery.name,
+							doNotTrack: args.doNotTrack ?? playerQuery.doNotTrack
+						})
+						.where(eq(dbschema.player.uuid, playerQuery.uuid))
+						.returning();
+
+					if (!args.doNotTrack) {
+						const statsQuery = await db.query.playerStats.findFirst({
+							where: (stats, { eq }) => eq(stats.playerId, playerQuery.uuid)
+						});
+
+						await db
+							.insert(dbschema.playerStats)
+							.values({
+								playerId: playerQuery.uuid,
+								uuid: statsQuery?.uuid ?? undefined,
+								timeThisWeek: statsQuery?.timeThisWeek
+									? statsQuery.timeThisWeek + args.timeSpent
+									: (args.timeSpent ?? 0)
+							})
+							.onConflictDoUpdate({
+								target: dbschema.playerStats.playerId,
+								set: {
+									timeThisWeek: statsQuery?.timeThisWeek
+										? statsQuery.timeThisWeek + args.timeSpent
+										: (args.timeSpent ?? 0)
+								}
+							});
+					} else {
+						await db
+							.delete(dbschema.playerStats)
+							.where(eq(dbschema.playerStats.playerId, playerQuery.uuid));
+					}
+
+					return updatedPlayer.length > 0;
 				} catch (err) {
 					console.error(err);
 					return false;

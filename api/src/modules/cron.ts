@@ -27,8 +27,12 @@ cron('* * * * *', async () => {
 		where: (lookupKeys, { lte }) => lte(lookupKeys.expiresAt, now)
 	});
 
+	const expiredLinkCodes = await db.query.accountLinkCodes.findMany({
+		where: (accountLinkCodes, { lte }) => lte(accountLinkCodes.expiresAt, now)
+	});
+
 	console.log(
-		`Found ${expiredWarns.length} expired warns, ${expiredBans.length} expired bans and ${expiredLookups.length} expired lookup keys.`
+		`Found ${expiredWarns.length} expired warns, ${expiredBans.length} expired bans, ${expiredLookups.length} expired lookup keys and ${expiredLinkCodes.length} account link codes.`
 	);
 
 	for await (const warn of expiredWarns) {
@@ -47,5 +51,23 @@ cron('* * * * *', async () => {
 
 	for await (const lookup of expiredLookups) {
 		await db.delete(schema.lookupKeys).where(eq(schema.lookupKeys.uuid, lookup.uuid));
+	}
+
+	for await (const codes of expiredLinkCodes) {
+		await db.delete(schema.accountLinkCodes).where(eq(schema.accountLinkCodes.uuid, codes.uuid));
+	}
+});
+
+Bun.cron('0 0 * * 1', async () => {
+	const statQueries = await db.query.playerStats.findMany();
+
+	for await (const stat of statQueries) {
+		await db
+			.update(schema.playerStats)
+			.set({
+				timeThisWeek: 0,
+				timeLastWeek: stat.timeThisWeek
+			})
+			.where(eq(schema.playerStats.uuid, stat.uuid));
 	}
 });
