@@ -11,11 +11,11 @@
 		"build": "bun build index.ts --outfile ../setup.js --production --format esm --minify --target=node"
 	},
 	"peerDependencies": {
-		"typescript": "^5.9.2"
+		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@clack/prompts": "^1.1.0",
-		"commander": "^14.0.3",
+		"@clack/prompts": "^1.5.1",
+		"commander": "^15.0.0",
 		"picocolors": "^1.1.1",
 		"zod": "catalog:"
 	}
