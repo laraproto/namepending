@@ -50,6 +50,13 @@
       "when": 1780040029944,
       "tag": "0006_tan_eternity",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1781808151994,
+      "tag": "0007_kind_taskmaster",
+      "breakpoints": true
     }
   ]
 }

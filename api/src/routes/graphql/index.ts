@@ -512,6 +512,9 @@ builder.mutationType({
 								uuid: statsQuery?.uuid ?? undefined,
 								timeThisWeek: statsQuery?.timeThisWeek
 									? statsQuery.timeThisWeek + args.timeSpent
+									: (args.timeSpent ?? 0),
+								timeTotal: statsQuery?.timeTotal
+									? statsQuery.timeTotal + args.timeSpent
 									: (args.timeSpent ?? 0)
 							})
 							.onConflictDoUpdate({
@@ -519,6 +522,9 @@ builder.mutationType({
 								set: {
 									timeThisWeek: statsQuery?.timeThisWeek
 										? statsQuery.timeThisWeek + args.timeSpent
+										: (args.timeSpent ?? 0),
+									timeTotal: statsQuery?.timeTotal
+										? statsQuery.timeTotal + args.timeSpent
 										: (args.timeSpent ?? 0)
 								}
 							});

@@ -4,13 +4,14 @@ import trpc from '$lib/server/trpc-server';
 import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ locals }) => {
-	if (!locals.session) {
+	if (!locals.session || !locals.localUser) {
 		redirect(302, '/auth/login');
 	}
 
 	const stats = await trpc.panel.user.getStats.query();
 
 	return {
-		stats
+		stats,
+		user: locals.localUser
 	};
 }) satisfies PageServerLoad;
