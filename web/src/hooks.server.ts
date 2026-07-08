@@ -1,6 +1,7 @@
 import authServer from '$lib/server/auth-server';
 import type { Handle } from '@sveltejs/kit';
 import trpc from '$lib/server/trpc-server';
+import { isTRPCClientError } from '$lib/trpc-client';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	try {
@@ -8,7 +9,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		if (session.error) {
 			console.error('Error fetching session:', session.error);
-		}
+    }
 
 		if (session.data) {
 			event.locals.session = session.data.session;
@@ -22,9 +23,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		const response = await resolve(event);
 		return response;
-	} catch (err) {
+  } catch (err) {
+    if (isTRPCClientError(err) && err.data?.code === 'UNAUTHORIZED') {
+      const response = await resolve(event);
+      return response;
+    } else {
 		console.error('Error in handle function:', err);
 		const response = await resolve(event);
-		return response;
+      return response;
+    }
 	}
 };

@@ -9,6 +9,7 @@
 <Head title="Player Stats" />
 
 <div class="flex flex-1 flex-col gap-4 p-4">
+    {#if data.stats}
 	<div class="grid auto-rows-min gap-4 md:grid-cols-3">
 		<Card.Root class="bg-muted/50 aspect-video rounded-xl">
 			<Card.Header class="text-center font-bold text-2xl">Playtime Total</Card.Header>
@@ -48,6 +49,9 @@
 		</Card.Root>
 	</div>
 	<div class="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min"></div>
+	{:else}
+	No linked account found
+	{/if}
 </div>
 
 <p>
