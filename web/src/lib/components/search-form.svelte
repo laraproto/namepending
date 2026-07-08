@@ -28,6 +28,12 @@
 			<Label for="search" class="sr-only">Search</Label>
 			<Sidebar.Input
 				oninput={(e) => sidebar.setSearchValue((e.target as HTMLInputElement).value)}
+				onkeydown={(e) => {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						sidebar.setSearchValue((e.target as HTMLInputElement).value);
+					}
+				}}
 				value={sidebar.searchValue}
 				id="search"
 				placeholder="Search"

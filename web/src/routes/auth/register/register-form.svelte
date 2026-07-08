@@ -12,6 +12,7 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { type ComponentProps } from 'svelte';
 	import authClient from '$lib/auth-client';
+	import { page } from '$app/state';
 
 	let {
 		data,
@@ -94,10 +95,17 @@
 							<Button
 								variant="outline"
 								type="button"
-								onclick={() =>
+								onclick={() => {
+									const url = new URL(
+										decodeURIComponent(page.url.searchParams.get('return') || '/'),
+										page.url.origin
+									);
+									url.searchParams.set('code', 'logged-in');
 									authClient.signIn.social({
-										provider: 'discord'
-									})}
+										provider: 'discord',
+										callbackURL: url.toString()
+									});
+								}}
 							>
 								Sign up with Discord
 							</Button>

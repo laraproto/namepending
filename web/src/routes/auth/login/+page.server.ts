@@ -33,6 +33,12 @@ export const actions: Actions = {
 			return setError(form, '', result.error.message || 'An error occurred during login');
 		}
 
-		redirect(303, '/?code=logged-in');
+		const returnPath = decodeURIComponent(event.url.searchParams.get('return') || '/');
+
+		const url = new URL(returnPath, event.url.origin);
+
+		url.searchParams.set('code', 'logged-in');
+
+		redirect(303, url.toString());
 	}
 };

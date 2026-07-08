@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Component, ComponentProps } from "svelte";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import type { Component, ComponentProps } from 'svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 
 	let {
 		items,
@@ -21,7 +21,7 @@
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton size="sm">
 						{#snippet child({ props })}
-						<!-- eslint-disable-next-line -->
+							<!-- eslint-disable-next-line -->
 							<a href={item.url} {...props}>
 								<item.icon />
 								<span>{item.title}</span>

@@ -12,6 +12,8 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { type ComponentProps } from 'svelte';
 	import authClient from '$lib/auth-client';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { page } from '$app/state';
 
 	let {
 		data,
@@ -26,6 +28,12 @@
 	);
 
 	const { form: formData, enhance, errors } = $derived(form);
+
+	const sidebar = Sidebar.useSidebar();
+
+	const returnUrl = $derived(
+		`${page.url.pathname}?q=${encodeURIComponent(sidebar.searchValue)}&page=${sidebar.page}`
+	);
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm" {...restProps}>
@@ -73,7 +81,17 @@
 					<Button
 						variant="outline"
 						class="w-full"
-						onclick={() => authClient.signIn.social({ provider: 'discord' })}
+						onclick={() => {
+							const url = new URL(
+								decodeURIComponent(page.url.searchParams.get('return') || '/'),
+								page.url.origin
+							);
+							url.searchParams.set('code', 'logged-in');
+							authClient.signIn.social({
+								provider: 'discord',
+								callbackURL: url.toString()
+							});
+						}}
 					>
 						Login with Discord
 					</Button>

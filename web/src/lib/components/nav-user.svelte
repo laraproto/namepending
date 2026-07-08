@@ -12,8 +12,13 @@
 	import { resolve } from '$app/paths';
 	import authClient from '$lib/auth-client';
 	import { invalidateAll } from '$app/navigation';
+	import { page } from '$app/state';
 
 	const sidebar = Sidebar.useSidebar();
+
+	const returnUrl = $derived(
+		`${page.url.pathname}?q=${encodeURIComponent(sidebar.searchValue)}&page=${sidebar.page}`
+	);
 </script>
 
 <Sidebar.Menu>
@@ -71,7 +76,6 @@
 					<DropdownMenu.Group>
 						<DropdownMenu.Item class="cursor-pointer">
 							{#snippet child({ props })}
-								<!-- eslint-disable-next-line -->
 								<a href={resolve('/profile/[id]', { id: sidebar.user!.id! })} {...props}>
 									<BadgeCheckIcon />
 									Account
@@ -106,7 +110,8 @@
 					variant="outline"
 					size="sm"
 					class="w-full hover:cursor-pointer"
-					href={resolve('/auth/login')}>Sign in</Button
+					disabled={page.url.pathname === '/auth/login'}
+					href={resolve(`/auth/login?return=${encodeURIComponent(returnUrl)}`)}>Sign in</Button
 				>
 			</Sidebar.MenuButton>
 		{/if}
