@@ -22,9 +22,7 @@ const envSchema = z.object({
 		.string()
 		.min(8)
 		.default(crypto.getRandomValues(new Uint8Array(32)).toHex()),
-	traefik_dashboard: z.boolean().default(false),
-	traefik_dashboard_port: z.int().min(1024).max(65535).default(8781),
-	traefik_web_port: z.int().min(1024).max(65535).default(8778),
+	web_port: z.int().min(1024).max(65535).default(8778),
 	app_secret: z
 		.string()
 		.min(32)
@@ -113,40 +111,16 @@ async function main() {
 		process.exit(0);
 	}
 
-	const traefik_dashboard = await p.confirm({
-		message: 'Do you want to enable the Traefik dashboard?',
-		initialValue: false
-	});
-
-	if (p.isCancel(traefik_dashboard)) {
-		p.cancel('Setup cancelled');
-		process.exit(0);
-	}
-
-	const traefik_dashboard_port = await p.text({
-		message: 'Port for Traefik dashboard (default: 8781)',
-		initialValue: '8781',
-		validate(value) {
-			const errorValidate = envSchema.shape.traefik_dashboard_port.safeParse(Number(value));
-			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
-		}
-	});
-
-	if (p.isCancel(traefik_dashboard_port)) {
-		p.cancel('Setup cancelled');
-		process.exit(0);
-	}
-
-	const traefik_web_port = await p.text({
-		message: 'Port for Traefik web entrypoint (default: 8778)',
+	const web_port = await p.text({
+		message: 'Port for web entrypoint (default: 8778)',
 		initialValue: '8778',
 		validate(value) {
-			const errorValidate = envSchema.shape.traefik_web_port.safeParse(Number(value));
+			const errorValidate = envSchema.shape.web_port.safeParse(Number(value));
 			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
 		}
 	});
 
-	if (p.isCancel(traefik_web_port)) {
+	if (p.isCancel(web_port)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
 	}
@@ -156,9 +130,7 @@ async function main() {
 		postgres_pass,
 		minio_user,
 		minio_pass,
-		traefik_dashboard,
-		traefik_dashboard_port: Number(traefik_dashboard_port),
-		traefik_web_port: Number(traefik_web_port)
+		web_port: Number(web_port)
 	});
 
 	fs.writeFile(

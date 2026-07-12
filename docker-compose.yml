@@ -15,26 +15,12 @@ services:
       MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_PASS:?Please set the MINIO_PASS environment variable or run setup tool}
       MINIO_BROWSER_REDIRECT_URL: 'http://admin.s3.localhost'
-    labels:
-      - 'traefik.http.routers.minio.rule=Host(`s3.localhost`)'
-      - 'traefik.http.routers.minio.service=minio-service'
-      - 'traefik.http.services.minio-service.loadbalancer.server.port=9000'
-      - 'traefik.http.routers.minio-admin.rule=Host(`admin.s3.localhost`)'
-      - 'traefik.http.routers.minio-admin.service=minio-admin-service'
-      - 'traefik.http.services.minio-admin-service.loadbalancer.server.port=9001'
   traefik:
-    image: docker.io/traefik:v3.6
-    command:
-      - '--api.dashboard=${TRAEFIK_DASHBOARD:-false}'
-      - '--api.insecure=false'
-      - '--providers.docker=true'
-      - '--entrypoints.web.address=:80'
-      - '--entrypoints.web.forwardedHeaders.trustedIPs=10.88.0.0/8,127.0.0.1/32,172.18.0.1/32'
+    image: docker.io/caddy:alpine
     ports:
-      - '${TRAEFIK_WEB_PORT:-8778}:80'
-      - '${TRAEFIK_DASHBOARD_PORT:-8781}:8080'
+      - '${WEB_PORT:-8778}:80'
     volumes:
-      - /var/run/user/1000/podman/podman.sock:/var/run/docker.sock
+      - ./conf:/etc/caddy
     networks:
       - proxy
   db:
@@ -42,14 +28,12 @@ services:
     restart: unless-stopped
     expose:
       - 5432
-    ports:
-      - '8782:5432'
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASS:?Please set the POSTGRES_PASS environment variable or run setup tool}
     volumes:
       - pgdata:/var/lib/postgresql
       - postgres-socket:/var/run/postgresql
-      - ./initrunner.sh:/docker-entrypoint-initdb.d/initrunner.sh:ro
+      - ./conf/initrunner.sh:/docker-entrypoint-initdb.d/initrunner.sh:ro
     networks:
       - proxy
     healthcheck:
@@ -70,8 +54,6 @@ services:
       - PGDATABASE=namepending
     volumes:
       - postgres-socket:/var/run/postgresql
-    labels:
-      - 'traefik.enable=false'
   api:
     depends_on:
       migrate:
@@ -95,8 +77,6 @@ services:
       - NAME=${NAME:-namepending}
     volumes:
       - postgres-socket:/var/run/postgresql
-    labels:
-      - 'traefik.http.routers.api.rule=PathPrefix(`/api`)'
   web:
     build:
       context: .
@@ -111,14 +91,6 @@ services:
       - PUBLIC_URL=${URL:?Please set the URL environment variable or run setup tool}
       - NAME=${NAME:-namepending}
       - PUBLIC_NAME=${NAME:-namepending}
-    labels:
-      - 'traefik.http.routers.web.rule=PathPrefix(`/`)'
-  whoami:
-    image: traefik/whoami
-    networks:
-      - proxy
-    labels:
-      - 'traefik.http.routers.whoami.rule=Host(`whoami.localhost`)'
 volumes:
   minio:
   pgdata:

@@ -7,10 +7,8 @@ import superjson from 'superjson';
 export type RouterInput = inferRouterInputs<AppRouter>;
 export type RouterOutput = inferRouterOutputs<AppRouter>;
 
-export function isTRPCClientError(
-  cause: unknown,
-): cause is TRPCClientError<AppRouter> {
-  return cause instanceof TRPCClientError;
+export function isTRPCClientError(cause: unknown): cause is TRPCClientError<AppRouter> {
+	return cause instanceof TRPCClientError;
 }
 
 const trpc = createTRPCClient<AppRouter>({

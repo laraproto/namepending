@@ -6,11 +6,17 @@ import { z } from 'zod';
 export const userRouter = router({
 	getStats: authedProcedure.query(async ({ ctx }) => {
 		const stats = await db.query.playerStats.findMany({
-			where: inArray(schema.playerStats.playerId, db.select({ id: schema.player.uuid }).from(schema.player).where(eq(schema.player.userId, ctx.user.id)))
-    });
+			where: inArray(
+				schema.playerStats.playerId,
+				db
+					.select({ id: schema.player.uuid })
+					.from(schema.player)
+					.where(eq(schema.player.userId, ctx.user.id))
+			)
+		});
 
-    if (stats.length === 0) {
-      return null
+		if (stats.length === 0) {
+			return null;
 		}
 
 		const summedStats = stats.reduce((acc, stat) => {

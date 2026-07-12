@@ -9,7 +9,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		if (session.error) {
 			console.error('Error fetching session:', session.error);
-    }
+		}
 
 		if (session.data) {
 			event.locals.session = session.data.session;
@@ -23,14 +23,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		const response = await resolve(event);
 		return response;
-  } catch (err) {
-    if (isTRPCClientError(err) && err.data?.code === 'UNAUTHORIZED') {
-      const response = await resolve(event);
-      return response;
-    } else {
-		console.error('Error in handle function:', err);
-		const response = await resolve(event);
-      return response;
-    }
+	} catch (err) {
+		if (isTRPCClientError(err) && err.data?.code === 'UNAUTHORIZED') {
+			const response = await resolve(event);
+			return response;
+		} else {
+			console.error('Error in handle function:', err);
+			const response = await resolve(event);
+			return response;
+		}
 	}
 };

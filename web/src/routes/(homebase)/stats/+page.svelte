@@ -9,48 +9,48 @@
 <Head title="Player Stats" />
 
 <div class="flex flex-1 flex-col gap-4 p-4">
-    {#if data.stats}
-	<div class="grid auto-rows-min gap-4 md:grid-cols-3">
-		<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-			<Card.Header class="text-center font-bold text-2xl">Playtime Total</Card.Header>
-			<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
-				>{formatDuration(
-					{ hours: secondsToHours(data.stats.timeTotal) },
-					{
-						zero: true,
-						format: ['hours']
-					}
-				)}</Card.Content
-			>
-		</Card.Root>
-		<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-			<Card.Header class="text-center font-bold text-2xl">Playtime This Week</Card.Header>
-			<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
-				>{formatDuration(
-					{ hours: secondsToHours(data.stats.timeThisWeek) },
-					{
-						zero: true,
-						format: ['hours']
-					}
-				)}</Card.Content
-			>
-		</Card.Root>
-		<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-			<Card.Header class="text-center font-bold text-2xl">Playtime Last Week</Card.Header>
-			<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
-				>{formatDuration(
-					{ hours: secondsToHours(data.stats.timeLastWeek) },
-					{
-						zero: true,
-						format: ['hours']
-					}
-				)}</Card.Content
-			>
-		</Card.Root>
-	</div>
-	<div class="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min"></div>
+	{#if data.stats}
+		<div class="grid auto-rows-min gap-4 md:grid-cols-3">
+			<Card.Root class="bg-muted/50 aspect-video rounded-xl">
+				<Card.Header class="text-center font-bold text-2xl">Playtime Total</Card.Header>
+				<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
+					>{formatDuration(
+						{ hours: secondsToHours(data.stats.timeTotal) },
+						{
+							zero: true,
+							format: ['hours']
+						}
+					)}</Card.Content
+				>
+			</Card.Root>
+			<Card.Root class="bg-muted/50 aspect-video rounded-xl">
+				<Card.Header class="text-center font-bold text-2xl">Playtime This Week</Card.Header>
+				<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
+					>{formatDuration(
+						{ hours: secondsToHours(data.stats.timeThisWeek) },
+						{
+							zero: true,
+							format: ['hours']
+						}
+					)}</Card.Content
+				>
+			</Card.Root>
+			<Card.Root class="bg-muted/50 aspect-video rounded-xl">
+				<Card.Header class="text-center font-bold text-2xl">Playtime Last Week</Card.Header>
+				<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
+					>{formatDuration(
+						{ hours: secondsToHours(data.stats.timeLastWeek) },
+						{
+							zero: true,
+							format: ['hours']
+						}
+					)}</Card.Content
+				>
+			</Card.Root>
+		</div>
+		<div class="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min"></div>
 	{:else}
-	No linked account found
+		No linked account found
 	{/if}
 </div>
 
