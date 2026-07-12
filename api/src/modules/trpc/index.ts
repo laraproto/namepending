@@ -13,9 +13,7 @@ interface TRPCContext {
 
 interface Meta {
 	permissionsRequired?:
-		| JointFlagKeys
-		| JointFlagKeys[]
-		| ((ctx: TRPCContext, input: unknown) => Promise<boolean>);
+		JointFlagKeys | JointFlagKeys[] | ((ctx: TRPCContext, input: unknown) => Promise<boolean>);
 }
 
 const t = initTRPC.context<TRPCContext>().meta<Meta>().create({
