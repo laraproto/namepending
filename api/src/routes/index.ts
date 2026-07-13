@@ -7,6 +7,8 @@ import sessionMiddleware from '@middleware/sessionMiddleware';
 import { appRouter } from './trpc';
 import type { UserSelect, ServerSelect } from '@modules/db/schema';
 import { yoga } from '@modules/yoga';
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
+import type { CookieOptions } from 'hono/utils/cookie';
 
 const app = new Hono<{
 	Variables: {
@@ -30,7 +32,7 @@ app.use(
 	})
 );
 
-app.on(['POST', 'GET'], '/auth/*', (c) => {
+app.use('/auth/*', (c) => {
 	return auth.handler(c.req.raw);
 });
 
@@ -53,7 +55,11 @@ app.use(
 		router: appRouter,
 		createContext: (opts, c) => ({
 			session: c.get('session'),
-			user: c.get('user')
+			user: c.get('user'),
+			setCookie: (name: string, value: string, options: CookieOptions) =>
+				setCookie(c, name, value, options),
+			getCookie: (name: string) => getCookie(c, name),
+			deleteCookie: (name: string, options?: CookieOptions) => deleteCookie(c, name, options)
 		})
 	})
 );

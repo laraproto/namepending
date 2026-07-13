@@ -5,15 +5,22 @@ import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
 import { auth } from '@modules/auth';
 import superjson from 'superjson';
 import type { UserSelect } from '../db/schema';
+import type { CookieOptions } from 'hono/utils/cookie';
 
 interface TRPCContext {
 	session: typeof auth.$Infer.Session.session | null;
 	user: UserSelect | null;
+	setCookie: (name: string, value: string, options: CookieOptions) => void;
+	getCookie: (name: string) => string | undefined;
+	deleteCookie: (name: string, options?: CookieOptions) => void;
 }
 
 interface Meta {
 	permissionsRequired?:
-		JointFlagKeys | JointFlagKeys[] | ((ctx: TRPCContext, input: unknown) => Promise<boolean>);
+		| JointFlagKeys
+		| JointFlagKeys[]
+		| bigint
+		| ((ctx: TRPCContext, input: unknown) => Promise<boolean>);
 }
 
 const t = initTRPC.context<TRPCContext>().meta<Meta>().create({

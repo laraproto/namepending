@@ -5,7 +5,6 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-
 </script>
 
 <Head title={data.player ? `Player ${data.player.name}` : 'Player Not Found'} />

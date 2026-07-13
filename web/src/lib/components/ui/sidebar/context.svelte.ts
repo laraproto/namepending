@@ -74,7 +74,7 @@ class SidebarState {
 		this.showSearch = value;
 	};
 
-  setToolbar = <T>(snippet: Snippet<[T]> | null, data: T) => {
+	setToolbar = <T>(snippet: Snippet<[T]> | null, data: T) => {
 		this.toolbar = snippet;
 		this.toolbarData = data;
 	};

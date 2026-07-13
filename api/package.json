@@ -34,6 +34,7 @@
 		"@pothos/plugin-scope-auth": "^4.1.7",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
+		"arctic": "^3.7.0",
 		"better-auth": "catalog:",
 		"drizzle-orm": "^0.45.2",
 		"drizzle-zod": "^0.8.3",
