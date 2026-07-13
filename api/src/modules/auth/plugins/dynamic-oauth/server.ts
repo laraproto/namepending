@@ -1,6 +1,9 @@
-import type { BetterAuthPlugin } from "better-auth";
+import type { BetterAuthPlugin } from 'better-auth';
 
 export const dynamicOAuthPlugin = () =>
-  ({
-    id: "dynamicOAuthPlugin",
-  } satisfies BetterAuthPlugin);
+	({
+		id: 'dynamicOAuthPlugin',
+    endpoints: {
+
+		}
+	}) satisfies BetterAuthPlugin;
