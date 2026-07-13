@@ -57,6 +57,13 @@
 			"when": 1781808151994,
 			"tag": "0007_kind_taskmaster",
 			"breakpoints": true
+		},
+		{
+			"idx": 8,
+			"version": "7",
+			"when": 1783955142674,
+			"tag": "0008_loving_mister_fear",
+			"breakpoints": true
 		}
 	]
 }

@@ -13,6 +13,6 @@ process.on('SIGINT', () => {
 });
 
 export default {
-  ...app,
-  hostname: HOST
+	...app,
+	hostname: HOST
 };

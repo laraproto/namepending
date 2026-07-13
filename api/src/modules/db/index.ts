@@ -4,6 +4,8 @@ import * as schema from './schema';
 
 const db = drizzle({ client: sql, schema });
 
+db.insert(schema.config).values({});
+
 export { schema };
 
 export default db;

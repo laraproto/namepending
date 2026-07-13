@@ -63,7 +63,7 @@
 					{
 						title: 'Settings',
 						url: '/admin/settings',
-						permRequired: 'SUPERADMIN'
+						permRequired: 'SETTINGS'
 					},
 					{
 						title: 'Role Management',

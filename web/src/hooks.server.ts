@@ -11,6 +11,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			console.error('Error fetching session:', session.error);
 		}
 
+		event.locals.config = await trpc.config.query();
+
 		if (session.data) {
 			event.locals.session = session.data.session;
 			event.locals.user = session.data.user;

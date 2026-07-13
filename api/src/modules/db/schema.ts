@@ -16,6 +16,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
 import z from 'zod';
 import { type Permission } from '@namepending/shared/sl';
+import type { Config } from '@/types/config';
 
 const timeData = {
 	createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
@@ -279,6 +280,12 @@ export const serversRelations = relations(servers, ({ one }) => ({
 		references: [auth.user.id]
 	})
 }));
+
+export const config = pgTable('config', {
+	uuid: uuid('id').primaryKey().defaultRandom(),
+	dynamic: jsonb('dynamic').$type<Config>().notNull().default({}),
+	...timeData
+});
 
 export const userSelectMinimal = createSelectSchema(auth.user);
 

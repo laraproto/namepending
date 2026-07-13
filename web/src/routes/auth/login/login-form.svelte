@@ -30,10 +30,6 @@
 	const { form: formData, enhance, errors } = $derived(form);
 
 	const sidebar = Sidebar.useSidebar();
-
-	const returnUrl = $derived(
-		`${page.url.pathname}?q=${encodeURIComponent(sidebar.searchValue)}&page=${sidebar.page}`
-	);
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm" {...restProps}>
@@ -78,23 +74,25 @@
 				</Form.Field>
 				<Field.Field>
 					<Button type="submit" class="w-full">Login</Button>
-					<Button
-						variant="outline"
-						class="w-full"
-						onclick={() => {
-							const url = new URL(
-								decodeURIComponent(page.url.searchParams.get('return') || '/'),
-								page.url.origin
-							);
-							url.searchParams.set('code', 'logged-in');
-							authClient.signIn.social({
-								provider: 'discord',
-								callbackURL: url.toString()
-							});
-						}}
-					>
-						Login with Discord
-					</Button>
+					{#if sidebar.config.discord}
+						<Button
+							variant="outline"
+							class="w-full"
+							onclick={() => {
+								const url = new URL(
+									decodeURIComponent(page.url.searchParams.get('return') || '/'),
+									page.url.origin
+								);
+								url.searchParams.set('code', 'logged-in');
+								authClient.signIn.social({
+									provider: 'discord',
+									callbackURL: url.toString()
+								});
+							}}
+						>
+							Login with Discord
+						</Button>
+					{/if}
 					<Field.Description class="text-center">
 						Don't have an account? <a href={resolve('/auth/register')}>Sign up</a>
 					</Field.Description>

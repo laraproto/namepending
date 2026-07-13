@@ -3,7 +3,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as NavigationMenu from '$lib/components/ui/navigation-menu/index.js';
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { hasPermSync } from '$lib/perm-utils';
 
@@ -11,7 +11,7 @@
 
 	let { data, children }: LayoutProps = $props();
 
-	onMount(() => {
+	$effect(() => {
 		if (data.player) {
 			sidebar.setToolbar(profileToolbar, data.player);
 		}

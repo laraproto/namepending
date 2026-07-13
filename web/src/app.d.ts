@@ -10,6 +10,7 @@ declare global {
 			session: typeof authClient.$Infer.Session.session | null;
 			user: typeof authClient.$Infer.Session.user | null;
 			localUser: RouterOutput['getSelf'] | null;
+			config: RouterOutput['config'];
 		}
 		// interface PageData {}
 		// interface PageState {}

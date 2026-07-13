@@ -23,7 +23,7 @@ export const auth = betterAuth({
 	},
 	plugins: [
 		steamOpenId({
-			steamApiKey: process.env.STEAM_API_KEY!,
+			steamApiKey: (await db.query.config.findFirst({}))?.dynamic.steam_api_key as string,
 			failureRedirect: '/auth/fail',
 			successRedirect: '/'
 		}),
@@ -31,8 +31,9 @@ export const auth = betterAuth({
 	],
 	socialProviders: {
 		discord: {
-			clientId: process.env.DISCORD_CLIENT_ID as string,
-			clientSecret: process.env.DISCORD_CLIENT_SECRET as string
+			clientId: (await db.query.config.findFirst({}))?.dynamic.oauth?.discord?.clientId as string,
+			clientSecret: (await db.query.config.findFirst({}))?.dynamic.oauth?.discord
+				?.clientSecret as string
 		}
 	},
 	hooks: {

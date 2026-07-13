@@ -4,11 +4,13 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { SIDEBAR_COOKIE_NAME, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './constants.js';
 	import { setSidebar } from './context.svelte.js';
+	import type { RouterOutput } from '$lib/trpc-client.js';
 
 	let {
 		ref = $bindable(null),
 		open = $bindable(false),
 		user = null,
+		config,
 		onOpenChange = () => {},
 		class: className,
 		style,
@@ -17,6 +19,7 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		open?: boolean;
 		user?: import('@namepending/api/db').UserSelect | null;
+		config: RouterOutput['config'];
 		onOpenChange?: (open: boolean) => void;
 	} = $props();
 
@@ -29,7 +32,8 @@
 			// This sets the cookie to keep the sidebar state.
 			cookieStore.set(SIDEBAR_COOKIE_NAME, String(open));
 		},
-		user: () => user
+		user: () => user,
+		config: () => config
 	});
 </script>
 

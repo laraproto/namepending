@@ -81,7 +81,10 @@ export const Permissions = {
 	// Manage ban appeals
 	MANAGE_BAN_APPEALS: 1n << 37n,
 
-	MANAGE_SERVERS: 1n << 38n
+  MANAGE_SERVERS: 1n << 38n,
+
+  // Panel settings
+  SETTINGS: 1n << 39n
 } as const;
 
 export const UserFlags = {
