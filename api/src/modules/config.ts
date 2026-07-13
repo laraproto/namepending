@@ -15,3 +15,5 @@ export const APP_SECRET = (() => {
 
 	return Bun.env.APP_SECRET;
 })();
+
+export const HOST = isUndefinedOrEmpty(Bun.env.HOST, 'localhost');

@@ -1,21 +1,28 @@
 version: '3'
 services:
-  minio:
-    image: docker.io/coollabsio/minio:RELEASE.2025-10-15T17-29-55Z
-    command: server /data --console-address ":9001"
+  storage:
+    image: dxflrs/garage:v2.3.0
+    command: /garage server --single-node --default-bucket
     restart: unless-stopped
     expose:
-      - 9000
-      - 9001
+      - 3900
+      - 3901
+      - 3903
     volumes:
-      - minio:/data
+      - garage:/data
+      - ./conf/garage.toml:/etc/garage.toml:ro
     networks:
       - proxy
     environment:
-      MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_PASS:?Please set the MINIO_PASS environment variable or run setup tool}
-      MINIO_BROWSER_REDIRECT_URL: 'http://admin.s3.localhost'
-  traefik:
+      - GARAGE_DEFAULT_ACCESS_KEY=${GARAGE_ACCESS_KEY:?Please set the GARAGE_ACCESS_KEY environment variable or run setup tool}
+      - GARAGE_DEFAULT_SECRET_KEY=${GARAGE_SECRET_KEY:?Please set the GARAGE_SECRET_KEY environment variable or run setup tool}
+      - GARAGE_DEFAULT_BUCKET=namepending-bucket
+    secrets:
+      - source: garage-rpc-secret
+        mode: 0600
+      - source: garage-admin-token
+        mode: 0600
+  proxy:
     image: docker.io/caddy:alpine
     ports:
       - '${WEB_PORT:-8778}:80'
@@ -30,14 +37,15 @@ services:
       - 5432
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASS:?Please set the POSTGRES_PASS environment variable or run setup tool}
+      POSTGRES_USER: root
+      POSTGRES_DB: namepending
     volumes:
       - pgdata:/var/lib/postgresql
       - postgres-socket:/var/run/postgresql
-      - ./conf/initrunner.sh:/docker-entrypoint-initdb.d/initrunner.sh:ro
     networks:
       - proxy
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      test: ['CMD-SHELL', 'pg_isready -U root -d namepending']
       interval: 1s
       timeout: 5s
       retries: 10
@@ -48,10 +56,10 @@ services:
     build:
       context: .
       target: migrate
+    networks:
+      - proxy
     environment:
-      - PGHOST=/var/run/postgresql
-      - PGUSER=root
-      - PGDATABASE=namepending
+      - DATABASE_URL=postgres://root:${POSTGRES_PASS}@db:5432/namepending
     volumes:
       - postgres-socket:/var/run/postgresql
   api:
@@ -67,9 +75,8 @@ services:
     networks:
       - proxy
     environment:
-      - PGHOST=/var/run/postgresql
-      - PGUSER=root
-      - PGDATABASE=namepending
+      - HOST=0.0.0.0
+      - DATABASE_URL=postgres://root:${POSTGRES_PASS}@db:5432/namepending
       - APP_SECRET=${APP_SECRET:?Please set the APP_SECRET environment variable or run setup tool}
       - BETTER_AUTH_SECRET=${APP_SECRET:?Please set the APP_SECRET environment variable or run setup tool}
       - BETTER_AUTH_URL=${URL:?Please set the URL environment variable or run setup tool}
@@ -92,8 +99,13 @@ services:
       - NAME=${NAME:-namepending}
       - PUBLIC_NAME=${NAME:-namepending}
 volumes:
-  minio:
+  garage:
   pgdata:
   postgres-socket:
 networks:
   proxy:
+secrets:
+  garage-rpc-secret:
+    environment: GARAGE_PASS
+  garage-admin-token:
+    environment: GARAGE_PASS

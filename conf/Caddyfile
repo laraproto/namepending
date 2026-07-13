@@ -18,4 +18,15 @@
         header_up X-Forwarded-Port {server_port}
         header_up X-Forwarded-Proto {scheme}
     }
+
+    reverse_proxy /namepending-bucket/* http://storage:3900 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Port {server_port}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+s3.localhost:80 {
+    reverse_proxy /* http://storage:3900
 }

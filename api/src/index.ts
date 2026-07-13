@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import apiRouter from '@routes/index.ts';
 import '@modules/cron';
+import { HOST } from './modules/config';
 
 const app = new Hono();
 
@@ -11,4 +12,7 @@ process.on('SIGINT', () => {
 	process.exit();
 });
 
-export default app;
+export default {
+  ...app,
+  hostname: HOST
+};

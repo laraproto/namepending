@@ -6,7 +6,7 @@ import * as p from '@clack/prompts';
 import * as fs from 'node:fs/promises';
 
 const envSchema = z.object({
-	name: z.string().min(1).default('namepending'),
+	name: z.string().min(1).optional().default('namepending'),
 	public_url: z.string().default('$URL'),
 	public_name: z.string().default('$NAME'),
 	url: z.url({
@@ -16,16 +16,28 @@ const envSchema = z.object({
 	postgres_pass: z
 		.string()
 		.min(8)
+		.optional()
 		.default(crypto.getRandomValues(new Uint8Array(32)).toHex()),
-	minio_user: z.string().default('minioadmin'),
-	minio_pass: z
+	garage_access_key: z
 		.string()
 		.min(8)
+		.optional()
+		.default(`GK${crypto.getRandomValues(new Uint8Array(32)).toHex()}`),
+	garage_secret_key: z
+		.string()
+		.min(8)
+		.optional()
+		.default(`GS${crypto.getRandomValues(new Uint8Array(32)).toHex()}`),
+	garage_pass: z
+		.string()
+		.min(8)
+		.optional()
 		.default(crypto.getRandomValues(new Uint8Array(32)).toHex()),
-	web_port: z.int().min(1024).max(65535).default(8778),
+	web_port: z.int().min(1024).max(65535).optional().default(8778),
 	app_secret: z
 		.string()
 		.min(32)
+		.optional()
 		.default(crypto.getRandomValues(new Uint8Array(32)).toHex())
 });
 
@@ -43,10 +55,7 @@ async function main() {
 
 	const name = await p.text({
 		message: 'What is the name of your panel?',
-		validate(value) {
-			const errorValidate = envSchema.shape.name.safeParse(value);
-			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
-		}
+		validate: envSchema.shape.name
 	});
 
 	if (p.isCancel(name)) {
@@ -56,10 +65,7 @@ async function main() {
 
 	const url = await p.text({
 		message: 'What is the URL of the panel',
-		validate(value) {
-			const errorValidate = envSchema.shape.url.safeParse(value);
-			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
-		}
+		validate: envSchema.shape.url
 	});
 
 	if (p.isCancel(url)) {
@@ -71,10 +77,7 @@ async function main() {
 		message: 'Password for Postgres (will be generated if empty)',
 		mask: '*',
 		clearOnError: true,
-		validate(value) {
-			const errorValidate = envSchema.shape.postgres_pass.safeParse(value);
-			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
-		}
+		validate: envSchema.shape.postgres_pass
 	});
 
 	if (p.isCancel(postgres_pass)) {
@@ -82,31 +85,38 @@ async function main() {
 		process.exit(0);
 	}
 
-	const minio_user = await p.text({
-		message: 'Username for Minio (default: minioadmin)',
-		initialValue: 'minioadmin',
-		validate(value) {
-			const errorValidate = envSchema.shape.minio_user.safeParse(value);
-			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
-		}
+	const garage_pass = await p.password({
+		message: 'Admin password for Garage (will be generated if empty)',
+		mask: '*',
+		clearOnError: true,
+		validate: envSchema.shape.garage_pass
 	});
 
-	if (p.isCancel(minio_user)) {
+	if (p.isCancel(garage_pass)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
 	}
 
-	const minio_pass = await p.password({
-		message: 'Password for Minio (will be generated if empty)',
+	const garage_access_key = await p.password({
+		message: 'Access key for S3 on Garage (will be generated if empty)',
 		mask: '*',
 		clearOnError: true,
-		validate(value) {
-			const errorValidate = envSchema.shape.minio_pass.safeParse(value);
-			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
-		}
+		validate: envSchema.shape.garage_access_key
 	});
 
-	if (p.isCancel(minio_pass)) {
+	if (p.isCancel(garage_access_key)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
+
+	const garage_secret_key = await p.password({
+		message: 'Secret key for S3 on Garage (will be generated if empty)',
+		mask: '*',
+		clearOnError: true,
+		validate: envSchema.shape.garage_secret_key
+	});
+
+	if (p.isCancel(garage_secret_key)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
 	}
@@ -126,10 +136,12 @@ async function main() {
 	}
 
 	const envValue = envSchema.parse({
+		name: name.length > 0 ? name : undefined,
 		url,
-		postgres_pass,
-		minio_user,
-		minio_pass,
+		postgres_pass: postgres_pass.length > 0 ? postgres_pass : undefined,
+		garage_pass: garage_pass.length > 0 ? garage_pass : undefined,
+		garage_access_key: garage_access_key.length > 0 ? garage_access_key : undefined,
+		garage_secret_key: garage_secret_key.length > 0 ? garage_secret_key : undefined,
 		web_port: Number(web_port)
 	});
 
