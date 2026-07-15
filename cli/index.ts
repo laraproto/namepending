@@ -5,6 +5,8 @@ import * as p from '@clack/prompts';
 
 import * as fs from 'node:fs/promises';
 
+const snowflake = z.stringFormat('snowflake', /[1-9][0-9]{5,19}/)
+
 const envSchema = z.object({
 	name: z.string().min(1).optional().default('namepending'),
 	public_url: z.string().default('$URL'),
@@ -12,7 +14,10 @@ const envSchema = z.object({
 	url: z.url({
 		protocol: /^https?$/,
 		hostname: z.regexes.domain
-	}),
+  }),
+  steam_api_key: z.string().min(1),
+  discord_client_id: snowflake.min(1),
+	discord_client_secret: z.string().min(1),
 	postgres_pass: z
 		.string()
 		.min(8)
@@ -54,7 +59,7 @@ async function main() {
 	p.intro(pc.inverse('Namepending Setup'));
 
 	const name = await p.text({
-		message: 'What is the name of your panel?',
+		message: 'What is the name of your panel (default: namepending)?',
 		validate: envSchema.shape.name
 	});
 
@@ -64,11 +69,45 @@ async function main() {
 	}
 
 	const url = await p.text({
-		message: 'What is the URL of the panel',
+		message: 'What is the URL of the panel?',
 		validate: envSchema.shape.url
 	});
 
 	if (p.isCancel(url)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+  }
+
+  const discord_client_id = await p.text({
+		message: 'Client Id for your discord application (obtained from making an app on https://discord.com/developers/applications)',
+		validate: envSchema.shape.url
+	});
+
+	if (p.isCancel(discord_client_id)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+  }
+
+  const discord_client_secret = await p.password({
+		message: 'Client secret for your Discord application',
+		mask: '*',
+		clearOnError: true,
+		validate: envSchema.shape.discord_client_secret
+	});
+
+	if (p.isCancel(discord_client_secret)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+  }
+
+  const steam_api_key = await p.password({
+		message: 'Steam API key (obtained from https://steamcommunity.com/dev/apikey)',
+		mask: '*',
+		clearOnError: true,
+		validate: envSchema.shape.steam_api_key
+	});
+
+	if (p.isCancel(steam_api_key)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
 	}
@@ -137,7 +176,10 @@ async function main() {
 
 	const envValue = envSchema.parse({
 		name: name.length > 0 ? name : undefined,
-		url,
+    url,
+    discord_client_id,
+    discord_client_secret,
+    steam_api_key,
 		postgres_pass: postgres_pass.length > 0 ? postgres_pass : undefined,
 		garage_pass: garage_pass.length > 0 ? garage_pass : undefined,
 		garage_access_key: garage_access_key.length > 0 ? garage_access_key : undefined,

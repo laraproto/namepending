@@ -6,14 +6,6 @@ import db, { schema } from '@modules/db';
 import { count, or, ilike, isNotNull, and } from 'drizzle-orm';
 
 export const appRouter = router({
-	config: publicProcedure.query(async () => {
-		const config = await db.query.config.findFirst({});
-
-		return {
-			steam: !!config?.dynamic.steam_api_key,
-			discord: !!config?.dynamic.oauth?.discord
-		};
-	}),
 	permsDebug: authedProcedure.query(({ ctx }) => {
 		const flagList: { [key in JointFlagKeys]: boolean } = {} as { [key in JointFlagKeys]: boolean };
 		for (const flag in JointFlags) {

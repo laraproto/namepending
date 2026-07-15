@@ -8,10 +8,10 @@
 	},
 	"scripts": {
 		"start": "bun ./index.ts",
-		"build": "bun build index.ts --outfile ../setup.js --production --format esm --minify --target=node"
+		"build": "bun build index.ts --banner \"#!/usr/bin/env node\" --outfile ../setup.js --production --format esm --minify --target=node && chmod +x ../setup.js"
 	},
 	"peerDependencies": {
-		"typescript": ":catalog"
+		"typescript": "catalog:"
 	},
 	"dependencies": {
 		"@clack/prompts": "^1.7.0",

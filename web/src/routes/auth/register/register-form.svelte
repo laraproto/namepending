@@ -9,7 +9,6 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { registerSchema, type RegisterSchema } from '../schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { type ComponentProps } from 'svelte';
 	import authClient from '$lib/auth-client';
@@ -26,8 +25,6 @@
 			validators: zod4Client(registerSchema)
 		})
 	);
-
-	const sidebar = Sidebar.useSidebar();
 
 	const { form: formData, enhance, errors } = $derived(form);
 </script>
@@ -95,7 +92,6 @@
 					<Field.Group>
 						<Field.Field>
 							<Button type="submit">Create Account</Button>
-							{#if sidebar.config.discord}
 								<Button
 									variant="outline"
 									type="button"
@@ -113,7 +109,6 @@
 								>
 									Sign up with Discord
 								</Button>
-							{/if}
 							<Field.Description class="px-6 text-center">
 								Already have an account? <a href={resolve('/auth/login')}>Sign in</a>
 							</Field.Description>

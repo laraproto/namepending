@@ -12,7 +12,6 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { type ComponentProps } from 'svelte';
 	import authClient from '$lib/auth-client';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { page } from '$app/state';
 
 	let {
@@ -29,7 +28,6 @@
 
 	const { form: formData, enhance, errors } = $derived(form);
 
-	const sidebar = Sidebar.useSidebar();
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm" {...restProps}>
@@ -74,7 +72,6 @@
 				</Form.Field>
 				<Field.Field>
 					<Button type="submit" class="w-full">Login</Button>
-					{#if sidebar.config.discord}
 						<Button
 							variant="outline"
 							class="w-full"
@@ -92,7 +89,6 @@
 						>
 							Login with Discord
 						</Button>
-					{/if}
 					<Field.Description class="text-center">
 						Don't have an account? <a href={resolve('/auth/register')}>Sign up</a>
 					</Field.Description>

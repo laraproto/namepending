@@ -5,8 +5,5 @@ export const steamOpenIdClient = () => {
 	return {
 		id: 'steam',
 		$InferServerPlugin: {} as ReturnType<typeof steamOpenId>,
-		pathMethods: {
-			'/steam/redirect': 'POST'
-		}
 	} satisfies BetterAuthClientPlugin;
 };

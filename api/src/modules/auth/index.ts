@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth/minimal';
 import { bearer } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import db, { schema } from '@modules/db';
-import { APP_SECRET, APP_URL } from '../config';
+import { APP_SECRET, APP_URL, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, STEAM_API_KEY } from '../config';
 import { steamOpenId } from './plugins/steam/server';
 import { createAuthMiddleware } from 'better-auth/api';
 import { count, eq } from 'drizzle-orm';
@@ -23,17 +23,17 @@ export const auth = betterAuth({
 	},
 	plugins: [
 		steamOpenId({
-			steamApiKey: (await db.query.config.findFirst({}))?.dynamic.steam_api_key as string,
+			steamApiKey: STEAM_API_KEY,
 			failureRedirect: '/auth/fail',
-			successRedirect: '/'
+      successRedirect: '/',
+      allowSignIn: false,
 		}),
 		bearer()
 	],
 	socialProviders: {
 		discord: {
-			clientId: (await db.query.config.findFirst({}))?.dynamic.oauth?.discord?.clientId as string,
-			clientSecret: (await db.query.config.findFirst({}))?.dynamic.oauth?.discord
-				?.clientSecret as string
+			clientId: DISCORD_CLIENT_ID,
+			clientSecret: DISCORD_CLIENT_SECRET
 		}
 	},
 	hooks: {

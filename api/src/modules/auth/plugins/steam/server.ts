@@ -1,5 +1,5 @@
 import type { BetterAuthPlugin } from 'better-auth';
-import { createAuthEndpoint, createAuthMiddleware, getSessionFromCtx } from 'better-auth/api';
+import { createAuthEndpoint, createAuthMiddleware, getSessionFromCtx, sessionMiddleware } from 'better-auth/api';
 import { setSessionCookie } from 'better-auth/cookies';
 
 const STEAM_OPENID_URL = 'https://steamcommunity.com/openid/login';
@@ -68,7 +68,7 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions) => {
 
 			linkCallback: createAuthEndpoint(
 				'/steam/link-callback',
-				{ method: 'GET', requireRequest: true },
+				{ method: 'GET', requireRequest: true, use: [sessionMiddleware] },
 				async (ctx) => {
 					const params = Object.fromEntries(new URL(ctx.request.url).searchParams);
 
@@ -96,12 +96,6 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions) => {
 						return ctx.redirect(`${options.failureRedirect}?error=steam_no_id`);
 					}
 
-					// Get session from cookie
-					const session = await getSessionFromCtx(ctx);
-					if (!session?.user) {
-						return ctx.redirect(`${options.failureRedirect}?error=no_session`);
-					}
-
 					if (await ctx.context.internalAdapter.findAccountByProviderId(steamId, 'steam')) {
 						return ctx.redirect(`${options.failureRedirect}?error=steam_already_linked`);
 					}
@@ -109,7 +103,7 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions) => {
 					await ctx.context.internalAdapter.linkAccount({
 						createdAt: new Date(),
 						updatedAt: new Date(),
-						userId: session!.user.id,
+						userId: ctx.context.session.user.id,
 						providerId: 'steam',
 						accountId: steamId
 					});

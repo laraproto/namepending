@@ -6,7 +6,6 @@ import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import type { Pathname } from '$app/types';
 import type { UserSelect } from '@namepending/api/db';
-import type { RouterOutput } from '$lib/trpc-client.js';
 
 type Getter<T> = () => T;
 
@@ -20,7 +19,6 @@ export type SidebarStateProps = {
 
 	user: Getter<UserSelect | null>;
 
-	config: Getter<RouterOutput['config']>;
 
 	/**
 	 * A function that sets the open state of the sidebar. To support `bind:open`, we need
@@ -38,7 +36,6 @@ class SidebarState {
 	page = $state(Number(page.url.searchParams.get('page') ?? 0));
 	openMobile = $state(false);
 	user: UserSelect | null = $derived.by(() => this.props.user());
-	config: RouterOutput['config'] = $derived.by(() => this.props.config());
 	setOpen: SidebarStateProps['setOpen'];
 	#isMobile: IsMobile;
 	state = $derived.by(() => (this.open ? 'expanded' : 'collapsed'));

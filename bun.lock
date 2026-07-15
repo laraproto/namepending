@@ -63,7 +63,7 @@
         "@types/bun": "catalog:",
       },
       "peerDependencies": {
-        "typescript": ":catalog",
+        "typescript": "catalog:",
       },
     },
     "shared": {

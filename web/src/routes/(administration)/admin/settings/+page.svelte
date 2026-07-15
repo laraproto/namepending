@@ -11,9 +11,6 @@
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Settings</Card.Title>
-			<Card.Description
-				>Pretty much all the settings here require a restart, sorry!</Card.Description
-			>
 		</Card.Header>
 		<Card.Content>
 			<p>UwU</p>

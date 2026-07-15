@@ -18,7 +18,6 @@
 		class="flex flex-col"
 		user={data.localUser}
 		open={data.sidebarOpen}
-		config={data.config}
 	>
 		<SiteHeader />
 		<div class="flex flex-1">

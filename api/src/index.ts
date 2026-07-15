@@ -5,7 +5,7 @@ import apiRouter from '@routes/index.ts';
 import '@modules/cron';
 import { HOST } from './modules/config';
 
-const app = new Hono();
+export const app = new Hono();
 
 app.route('/', apiRouter);
 

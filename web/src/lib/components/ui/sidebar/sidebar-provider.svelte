@@ -10,7 +10,6 @@
 		ref = $bindable(null),
 		open = $bindable(false),
 		user = null,
-		config,
 		onOpenChange = () => {},
 		class: className,
 		style,
@@ -19,7 +18,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		open?: boolean;
 		user?: import('@namepending/api/db').UserSelect | null;
-		config: RouterOutput['config'];
 		onOpenChange?: (open: boolean) => void;
 	} = $props();
 
@@ -33,7 +31,6 @@
 			cookieStore.set(SIDEBAR_COOKIE_NAME, String(open));
 		},
 		user: () => user,
-		config: () => config
 	});
 </script>
 
