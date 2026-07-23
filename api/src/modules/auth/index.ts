@@ -2,7 +2,13 @@ import { betterAuth } from 'better-auth/minimal';
 import { bearer } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import db, { schema } from '@modules/db';
-import { APP_SECRET, APP_URL, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, STEAM_API_KEY } from '../config';
+import {
+	APP_SECRET,
+	APP_URL,
+	DISCORD_CLIENT_ID,
+	DISCORD_CLIENT_SECRET,
+	STEAM_API_KEY
+} from '../config';
 import { steamOpenId } from './plugins/steam/server';
 import { createAuthMiddleware } from 'better-auth/api';
 import { count, eq } from 'drizzle-orm';
@@ -19,14 +25,15 @@ export const auth = betterAuth({
 		enabled: true
 	},
 	advanced: {
+		useSecureCookies: true,
 		cookiePrefix: 'namepending'
 	},
 	plugins: [
 		steamOpenId({
 			steamApiKey: STEAM_API_KEY,
 			failureRedirect: '/auth/fail',
-      successRedirect: '/',
-      allowSignIn: false,
+			successRedirect: '/',
+			allowSignIn: false
 		}),
 		bearer()
 	],
