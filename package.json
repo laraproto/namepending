@@ -28,7 +28,7 @@
 	"scripts": {
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"dev": "bun -b run --parallel --filter \"*\" dev"
+		"dev": "bun -b run --env-file .env --parallel --filter \"*\" dev"
 	},
 	"type": "module",
 	"workspaces": [

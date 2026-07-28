@@ -9,9 +9,11 @@ export const load = (async ({ locals }) => {
 	}
 
 	const stats = await trpc.panel.user.getStats.query();
+	const players = await trpc.panel.user.getPlayers.query();
 
 	return {
 		stats,
+		players,
 		user: locals.localUser
 	};
 }) satisfies PageServerLoad;
