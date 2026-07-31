@@ -437,6 +437,14 @@ builder.mutationType({
 			},
 			resolve: async (_root, args) => {
 				try {
+					const existingPlayer = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, args.platformId)
+					});
+
+					if (existingPlayer) {
+						return false;
+					}
+
 					const playerQuery = await db
 						.insert(dbschema.player)
 						.values({
