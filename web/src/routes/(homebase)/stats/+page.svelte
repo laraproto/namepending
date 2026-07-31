@@ -1,17 +1,13 @@
-<script>
+<script lang="ts">
 	import Head from '$lib/components/Head.svelte';
 	import * as Card from '$lib/components/ui/card';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import trpc from '$lib/trpc-client';
 	import { formatDuration, secondsToHours } from 'date-fns';
 
 	let { data } = $props();
 
-	let selectedPlayer = $state('');
-
-	let triggerView = $derived(
-		data.players.find((player) => player.uuid === selectedPlayer) ?? 'Select player'
-	);
+	let playerSelect = $derived(data.players[0]?.uuid);
 </script>
 
 <Head title="Player Stats" />
@@ -56,24 +52,85 @@
 				>
 			</Card.Root>
 		</div>
-		<div class="bg-muted/50 min-h-screen flex-1 rounded-xl lg:min-h-min">
-			<div class="items-center flex">
-				<Select.Root type="single" bind:value={selectedPlayer}>
-					<Select.Trigger
-						>{typeof triggerView === 'string' ? triggerView : triggerView.name}</Select.Trigger
-					>
-					<Select.Content>
-						<Select.Group>
-							<Select.Label>Linked Profiles</Select.Label>
-							{#each data.players as player (player.uuid)}
-								<Select.Item value={player.uuid}>{player.name}</Select.Item>
-							{/each}
-						</Select.Group>
-					</Select.Content>
-				</Select.Root>
-			</div>
-			<Separator class="my-4" />
-		</div>
+		<Tabs.Root bind:value={playerSelect} class="min-h-screen flex-1 rounded-xl lg:min-h-min">
+			<Tabs.List>
+				{#each data.players as player (player.uuid)}
+					<Tabs.Trigger value={player.uuid}>{player.name}</Tabs.Trigger>
+				{/each}
+			</Tabs.List>
+			{#each data.players as player (player.uuid)}
+				<Tabs.Content value={player.uuid}>
+					<Card.Root class="bg-muted/50 min-h-screen flex-1 rounded-xl lg:min-h-min">
+						{const playerStatPromise = trpc.panel.user.getStatsForPlayer.query({
+							playerId: playerSelect
+						})}
+						<Card.Header>
+							<Card.Title>Stats for {player.name}</Card.Title>
+							<Card.Description
+								>I really thought showing per linked player as well woulda been good</Card.Description
+							>
+						</Card.Header>
+						<Card.Content>
+							{#await playerStatPromise}
+								<p>Loading stats...</p>
+							{:then playerStat}
+								{#if playerStat && playerStat.stats}
+									<div class="grid auto-rows-min gap-4 lg:grid-cols-3">
+										<Card.Root class="bg-muted/50 aspect-video rounded-xl">
+											<Card.Header class="text-center font-bold text-2xl"
+												>Playtime Total</Card.Header
+											>
+											<Card.Content
+												class="flex flex-1 items-center justify-center text-5xl font-bold"
+												>{formatDuration(
+													{ hours: secondsToHours(playerStat.stats.timeTotal) },
+													{
+														zero: true,
+														format: ['hours']
+													}
+												)}</Card.Content
+											>
+										</Card.Root>
+										<Card.Root class="bg-muted/50 aspect-video rounded-xl">
+											<Card.Header class="text-center font-bold text-2xl"
+												>Playtime This Week</Card.Header
+											>
+											<Card.Content
+												class="flex flex-1 items-center justify-center text-5xl font-bold"
+												>{formatDuration(
+													{ hours: secondsToHours(playerStat.stats.timeThisWeek) },
+													{
+														zero: true,
+														format: ['hours']
+													}
+												)}</Card.Content
+											>
+										</Card.Root>
+										<Card.Root class="bg-muted/50 aspect-video rounded-xl">
+											<Card.Header class="text-center font-bold text-2xl"
+												>Playtime Last Week</Card.Header
+											>
+											<Card.Content
+												class="flex flex-1 items-center justify-center text-5xl font-bold"
+												>{formatDuration(
+													{ hours: secondsToHours(playerStat.stats.timeLastWeek) },
+													{
+														zero: true,
+														format: ['hours']
+													}
+												)}</Card.Content
+											>
+										</Card.Root>
+									</div>
+								{:else}
+									No stats found for this player
+								{/if}
+							{/await}
+						</Card.Content>
+					</Card.Root>
+				</Tabs.Content>
+			{/each}
+		</Tabs.Root>
 	{:else}
 		No linked account found
 	{/if}
