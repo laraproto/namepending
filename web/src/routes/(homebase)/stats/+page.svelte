@@ -66,9 +66,6 @@
 						})}
 						<Card.Header>
 							<Card.Title>Stats for {player.name}</Card.Title>
-							<Card.Description
-								>I really thought showing per linked player as well woulda been good</Card.Description
-							>
 						</Card.Header>
 						<Card.Content>
 							{#await playerStatPromise}

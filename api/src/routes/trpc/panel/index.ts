@@ -100,7 +100,8 @@ export const panelRouter = router({
 										}
 									}
 								}
-							}
+							},
+							stats: true
 						}
 					});
 
@@ -148,7 +149,9 @@ export const panelRouter = router({
 										}
 									}
 								}
-							}
+							},
+
+							stats: true
 						}
 					});
 
