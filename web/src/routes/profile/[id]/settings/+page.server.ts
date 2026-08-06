@@ -50,7 +50,10 @@ export const actions = {
 		try {
 			await trpc.panel.administration.setRole.mutate({
 				user: event.params.id,
-				role: form.data.role === 'none' || form.data.role === '' ? null : form.data.role
+				role:
+					form.data.role === 'none' || form.data.role === '' || form.data.role === undefined
+						? null
+						: form.data.role
 			});
 		} catch (err) {
 			console.error(err);
