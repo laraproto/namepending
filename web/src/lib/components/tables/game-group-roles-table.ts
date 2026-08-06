@@ -3,7 +3,7 @@ import { formatDistance } from 'date-fns';
 import RoleTableActions from './role-table-actions.svelte';
 import { renderComponent } from '$lib/components/ui/data-table/index.js';
 
-import type { RouterOutput } from '$lib/trpc-client';
+import type { RouterOutput } from '$lib/trpc';
 
 type ListUserOutput = RouterOutput['panel']['administration']['getGameRoles'];
 

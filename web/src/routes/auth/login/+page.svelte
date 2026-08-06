@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Head from '$lib/components/Head.svelte';
-	import type { PageData } from './$types.js';
+	import type { PageData } from './$types';
 	import LoginForm from './login-form.svelte';
 
 	let { data }: { data: PageData } = $props();

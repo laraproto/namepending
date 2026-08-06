@@ -3,7 +3,7 @@ import { renderComponent } from '$lib/components/ui/data-table/index.js';
 import { formatDistance } from 'date-fns';
 import StaffTableActions from './staff-table-actions.svelte';
 
-import type { RouterOutput } from '$lib/trpc-client';
+import type { RouterOutput } from '$lib/trpc';
 
 type ListUserOutput = RouterOutput['panel']['moderation']['searchUser'];
 

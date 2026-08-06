@@ -103,7 +103,7 @@
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
 	import { resolve } from '$app/paths';
-	import { env } from '$env/dynamic/public';
+	import { NAME } from '$app/env/public';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
@@ -125,7 +125,7 @@
 								<img src={lara} class="size-8" alt="logo" />
 							</div>
 							<div class="grid flex-1 text-start text-lg leading-tight">
-								<span class="truncate font-medium">{env.PUBLIC_NAME ?? 'Namepending'}</span>
+								<span class="truncate font-medium">{NAME ?? 'Namepending'}</span>
 							</div>
 						</a>
 					{/snippet}

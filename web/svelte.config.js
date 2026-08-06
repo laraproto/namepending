@@ -6,12 +6,17 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			'@modules': '../api/src/modules',
-			'@routes': '../api/src/routes'
+			$routes: 'src/routes'
+		},
+		experimental: {
+			remoteFunctions: true,
+			explicitEnvironmentVariables: true,
+			handleRenderingErrors: true
 		}
 	},
 	extensions: ['.svelte', '.svx', '.md'],
-	preprocess: mdsvex()
+	preprocess: mdsvex(),
+	compilerOptions: { experimental: { async: true } }
 };
 
 export default config;

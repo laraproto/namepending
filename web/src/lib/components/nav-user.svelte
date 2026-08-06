@@ -10,7 +10,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import Button from './ui/button/button.svelte';
 	import { resolve } from '$app/paths';
-	import authClient from '$lib/auth-client';
+	import authClient from '$lib/auth';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 

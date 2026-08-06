@@ -1,7 +1,7 @@
 <script lang="ts">
 	import RegisterForm from './register-form.svelte';
 	import Head from '$lib/components/Head.svelte';
-	import type { PageData } from './$types.js';
+	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 </script>
 

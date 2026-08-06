@@ -1,0 +1,14 @@
+import { createAuthClient } from 'better-auth/svelte';
+import { inferAdditionalFields } from 'better-auth/client/plugins';
+
+import { steamOpenIdClient } from '$lib/auth/plugins';
+
+import type { Auth } from '$lib/server/auth';
+import { URL } from '$app/env/public';
+
+const authClient = createAuthClient({
+	baseURL: URL,
+	plugins: [steamOpenIdClient(), inferAdditionalFields<Auth>()]
+});
+
+export default authClient;

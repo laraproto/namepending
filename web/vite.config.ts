@@ -3,21 +3,9 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
-console.log(process.env.URL);
-
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 	server: {
-		proxy: {
-			'/api': {
-				target: 'http://localhost:3000',
-				changeOrigin: false,
-				secure: false
-			}
-		},
-		allowedHosts: [new URL(process.env.URL!).host],
-		watch: {
-			ignored: ['../api']
-		}
+		allowedHosts: [new URL(process.env.URL!).host]
 	}
 });
