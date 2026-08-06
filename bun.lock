@@ -51,6 +51,7 @@
       "name": "@namepending/web",
       "version": "0.0.1",
       "devDependencies": {
+        "@better-auth/drizzle-adapter": "^1.6.26",
         "@fontsource-variable/inter": "^5.3.0",
         "@internationalized/date": "^3.12.3",
         "@lucide/svelte": "^1.28.0",

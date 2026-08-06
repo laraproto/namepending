@@ -13,7 +13,7 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import Head from '$lib/components/Head.svelte';
-	import trpc from '$lib/trpc-client';
+	import trpc from '$lib/trpc';
 	import type { PaginationState } from '@tanstack/table-core';
 
 	let { data }: PageProps = $props();

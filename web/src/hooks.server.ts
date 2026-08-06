@@ -87,4 +87,4 @@ export const sessionHandle: Handle = async ({ event, resolve }) => {
 	}
 };
 
-export const handle: Handle = sequence(authHandle, sessionHandle);
+export const handle: Handle = sequence(sessionHandle, authHandle);

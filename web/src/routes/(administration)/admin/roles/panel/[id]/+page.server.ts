@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import trpcServer from '$lib/server/trpc-server';
+import trpcServer from '$lib/server/trpc/client';
 import { hasPermSync } from '$lib/perm-utils';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -56,7 +56,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			if (!event.locals.localUser || !hasPermSync(event.locals.localUser, 'CREATE_EDIT_ROLES'))
+			if (!event.locals.user || !hasPermSync(event.locals.user, 'CREATE_EDIT_ROLES'))
 				fail(401, 'Unauthorized');
 
 			const updateResult = await trpcServer.panel.administration.editPanelGroup.mutate({

@@ -10,7 +10,9 @@ const trpc = createTRPCClient<AppRouter>({
 			url: `${URL}/api/trpc`,
 			transformer: superjson,
 			headers() {
-				return getRequestEvent().request.headers;
+				const event = getRequestEvent();
+				event.request.headers.delete('content-type');
+				return event.request.headers;
 			}
 		})
 	]

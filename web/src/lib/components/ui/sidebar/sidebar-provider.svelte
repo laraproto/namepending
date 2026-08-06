@@ -4,7 +4,7 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { SIDEBAR_COOKIE_NAME, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './constants.js';
 	import { setSidebar } from './context.svelte.js';
-	import type { RouterOutput } from '$lib/trpc-client.js';
+	import type { RouterOutput } from '$lib/trpc';
 
 	let {
 		ref = $bindable(null),
@@ -30,7 +30,7 @@
 			// This sets the cookie to keep the sidebar state.
 			cookieStore.set(SIDEBAR_COOKIE_NAME, String(open));
 		},
-		user: () => user,
+		user: () => user
 	});
 </script>
 
