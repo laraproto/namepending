@@ -1,11 +1,11 @@
-import authServer from '$lib/server/auth-server';
+import auth from '$lib/server/auth-server';
 import type { Handle } from '@sveltejs/kit';
 import trpc from '$lib/server/trpc-server';
 import { isTRPCClientError } from '$lib/trpc-client';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	try {
-		const session = await authServer.getSession();
+		const session = await auth.getSession();
 
 		if (session.error) {
 			console.error('Error fetching session:', session.error);

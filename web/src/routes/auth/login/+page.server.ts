@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { loginSchema } from '../schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import authServer from '$lib/server/auth-server';
+import auth from '$lib/server/auth-server';
 import { redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -24,7 +24,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const result = await authServer.signIn.email({
+		const result = await auth.signIn.email({
 			email: form.data.email,
 			password: form.data.password
 		});

@@ -1,31 +1,14 @@
-import { createAuthClient } from 'better-auth/client';
+import { betterAuth } from 'better-auth';
+import { sveltekitCookies } from 'better-auth/svelte-kit';
 
-import { steamOpenIdClient } from '@namepending/api/auth-plugins';
+import { steamOpenId } from '@namepending/api/auth-plugins';
 
 import { env } from '$env/dynamic/public';
 import { getRequestEvent } from '$app/server';
 
-const authServer = createAuthClient({
+const auth = betterAuth({
 	baseURL: env.PUBLIC_URL,
-	plugins: [steamOpenIdClient()],
-	fetchOptions: {
-		onSuccess: (ctx) => {
-			const authToken = ctx.response.headers.get('set-auth-token'); // get the token from the response headers
-			if (authToken) {
-				getRequestEvent().cookies.set('__Secure-namepending.session_token', authToken, {
-					httpOnly: true,
-					secure: true,
-					sameSite: 'lax',
-					path: '/',
-					maxAge: 60 * 60 * 24 * 7 // 7 days
-				});
-			}
-		},
-		auth: {
-			type: 'Bearer',
-			token: () => getRequestEvent().cookies.get('__Secure-namepending.session_token')
-		}
-	}
+	plugins: [steamOpenId(), sveltekitCookies(getRequestEvent)]
 });
 
-export default authServer;
+export default auth;
