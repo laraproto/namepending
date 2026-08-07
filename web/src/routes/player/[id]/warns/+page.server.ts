@@ -1,18 +1,18 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import trpcServer from '$lib/server/trpc-server';
+import trpcServer from '$lib/server/trpc/client';
 import { hasPermSync } from '$lib/perm-utils';
 import { superValidate, message } from 'sveltekit-superforms';
 import { warnSchema } from '../schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
-export const load: PageServerLoad = async ({ parent, url }) => {
-	const { player, localUser } = await parent();
+export const load: PageServerLoad = async ({ parent, url, locals }) => {
+	const { player } = await parent();
 	const page = Number(url.searchParams.get('page') ?? '0');
 	const query = url.searchParams.get('q') ?? '';
 
-	if (!localUser || !hasPermSync(localUser, 'VIEW_WARNINGS')) redirect(302, '/');
+	if (!locals.user || !hasPermSync(locals.user, 'VIEW_WARNINGS')) redirect(302, '/');
 
 	if (!player) {
 		redirect(302, '/');
@@ -44,7 +44,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			if (!event.locals.localUser || !hasPermSync(event.locals.localUser, 'CREATE_WARNINGS'))
+			if (!event.locals.user || !hasPermSync(event.locals.user, 'CREATE_WARNINGS'))
 				fail(401, 'Unauthorized');
 
 			const updateResult = await trpcServer.panel.moderation.player.createWarn.mutate({

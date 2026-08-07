@@ -1,4 +1,4 @@
-import trpc from '$lib/server/trpc-server';
+import trpc from '$lib/server/trpc/client';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 

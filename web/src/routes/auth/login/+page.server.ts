@@ -2,7 +2,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { loginSchema } from '../schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import authServer from '$lib/server/auth-server';
+import auth from '$lib/server/auth';
+import { isAPIError } from 'better-auth/api';
 import { redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -24,13 +25,17 @@ export const actions: Actions = {
 			});
 		}
 
-		const result = await authServer.signIn.email({
-			email: form.data.email,
-			password: form.data.password
-		});
-
-		if (result.error) {
-			return setError(form, '', result.error.message || 'An error occurred during login');
+		try {
+			await auth.api.signInEmail({
+				body: {
+					email: form.data.email,
+					password: form.data.password
+				}
+			});
+		} catch (error) {
+			if (isAPIError(error)) {
+				setError(form, '', error.message || 'An error occurred during login');
+			}
 		}
 
 		const returnPath = decodeURIComponent(event.url.searchParams.get('return') || '/');

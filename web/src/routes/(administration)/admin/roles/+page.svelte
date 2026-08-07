@@ -2,7 +2,7 @@
 	import Head from '$lib/components/Head.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import RoleTable from '$lib/components/tables/player-table.svelte';
-	import trpc from '$lib/trpc-client';
+	import trpc from '$lib/trpc';
 	import { goto } from '$app/navigation';
 	import { columns as columnsGame } from '$lib/components/tables/game-group-roles-table.js';
 	import { columns as columnsPanel } from '$lib/components/tables/panel-group-roles-table.js';

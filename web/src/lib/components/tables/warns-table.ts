@@ -4,7 +4,7 @@ import { formatDistance } from 'date-fns';
 import { booleanBadge } from './player-table-actions.svelte';
 import PunishmentTableActions from './punishment-table-actions.svelte';
 
-import type { RouterOutput } from '$lib/trpc-client';
+import type { RouterOutput } from '$lib/trpc';
 
 type WarnsOutput = RouterOutput['panel']['moderation']['warns'];
 

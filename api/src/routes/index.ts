@@ -4,7 +4,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { trpcServer } from '@hono/trpc-server';
 import sessionMiddleware from '@middleware/sessionMiddleware';
-import { appRouter } from './trpc';
+import { appRouter } from '../../../web/src/routes/api/trpc';
 import type { UserSelect, ServerSelect } from '@modules/db/schema';
 import { yoga } from '@modules/yoga';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';

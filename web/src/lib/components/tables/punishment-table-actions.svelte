@@ -2,10 +2,7 @@
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import trpc from '$lib/trpc-client';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
-	import BadgeXIcon from '@lucide/svelte/icons/badge-x';
+	import trpc from '$lib/trpc';
 	import { invalidateAll } from '$app/navigation';
 	import DeleteConfirmDialog from '$lib/components/delete-confirm-dialog.svelte';
 	import { hasPermSync } from '$lib/perm-utils';

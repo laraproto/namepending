@@ -2,7 +2,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import Head from '$lib/components/Head.svelte';
 	import { onMount, onDestroy } from 'svelte';
-	import trpc from '$lib/trpc-client';
+	import trpc from '$lib/trpc';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import WarnsTable from '$lib/components/tables/player-table.svelte';
 	import { columns } from '$lib/components/tables/warns-table.js';

@@ -11,7 +11,7 @@
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { type ComponentProps } from 'svelte';
-	import authClient from '$lib/auth-client';
+	import authClient from '$lib/auth';
 	import { page } from '$app/state';
 
 	let {
@@ -27,7 +27,6 @@
 	);
 
 	const { form: formData, enhance, errors } = $derived(form);
-
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm" {...restProps}>
@@ -72,23 +71,23 @@
 				</Form.Field>
 				<Field.Field>
 					<Button type="submit" class="w-full">Login</Button>
-						<Button
-							variant="outline"
-							class="w-full"
-							onclick={() => {
-								const url = new URL(
-									decodeURIComponent(page.url.searchParams.get('return') || '/'),
-									page.url.origin
-								);
-								url.searchParams.set('code', 'logged-in');
-								authClient.signIn.social({
-									provider: 'discord',
-									callbackURL: url.toString()
-								});
-							}}
-						>
-							Login with Discord
-						</Button>
+					<Button
+						variant="outline"
+						class="w-full"
+						onclick={() => {
+							const url = new URL(
+								decodeURIComponent(page.url.searchParams.get('return') || '/'),
+								page.url.origin
+							);
+							url.searchParams.set('code', 'logged-in');
+							authClient.signIn.social({
+								provider: 'discord',
+								callbackURL: url.toString()
+							});
+						}}
+					>
+						Login with Discord
+					</Button>
 					<Field.Description class="text-center">
 						Don't have an account? <a href={resolve('/auth/register')}>Sign up</a>
 					</Field.Description>

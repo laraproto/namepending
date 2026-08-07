@@ -2,7 +2,7 @@
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import trpc from '$lib/trpc-client';
+	import trpc from '$lib/trpc';
 	import { invalidateAll } from '$app/navigation';
 	import DeleteConfirmDialog from '$lib/components/delete-confirm-dialog.svelte';
 	import { hasPermSync } from '$lib/perm-utils';

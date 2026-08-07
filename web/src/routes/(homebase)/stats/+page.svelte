@@ -2,7 +2,7 @@
 	import Head from '$lib/components/Head.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import trpc from '$lib/trpc-client';
+	import trpc from '$lib/trpc';
 	import { formatDuration, secondsToHours } from 'date-fns';
 
 	let { data } = $props();

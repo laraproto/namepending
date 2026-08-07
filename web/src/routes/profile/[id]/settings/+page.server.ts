@@ -2,8 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
-import type { RouterOutput } from '$lib/trpc-client';
-import trpc from '$lib/server/trpc-server';
+import type { RouterOutput } from '$lib/trpc';
+import trpc from '$lib/server/trpc/client';
 import { updateRoleSchema } from '../schema';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -50,7 +50,10 @@ export const actions = {
 		try {
 			await trpc.panel.administration.setRole.mutate({
 				user: event.params.id,
-				role: form.data.role === 'none' || form.data.role === '' ? null : form.data.role
+				role:
+					form.data.role === 'none' || form.data.role === '' || form.data.role === undefined
+						? null
+						: form.data.role
 			});
 		} catch (err) {
 			console.error(err);

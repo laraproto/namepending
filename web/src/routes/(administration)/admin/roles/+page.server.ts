@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import trpcServer from '$lib/server/trpc-server';
+import trpcServer from '$lib/server/trpc/client';
 import { hasPermSync } from '$lib/perm-utils';
 export const load: PageServerLoad = async ({ parent }) => {
 	const { localUser } = await parent();

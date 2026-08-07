@@ -2,7 +2,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { registerSchema } from '../schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import authServer from '$lib/server/auth-server';
+import auth from '$lib/server/auth';
+import { isAPIError } from 'better-auth/api';
 import { redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -24,14 +25,18 @@ export const actions: Actions = {
 			});
 		}
 
-		const result = await authServer.signUp.email({
-			email: form.data.email,
-			password: form.data.password,
-			name: form.data.name
-		});
-
-		if (result.error) {
-			return setError(form, '', result.error.message || 'An error occurred during registration');
+		try {
+			await auth.api.signUpEmail({
+				body: {
+					email: form.data.email,
+					password: form.data.password,
+					name: form.data.name
+				}
+			});
+		} catch (error) {
+			if (isAPIError(error)) {
+				setError(form, '', error.message || 'An error occurred during registration');
+			}
 		}
 
 		const returnPath = decodeURIComponent(event.url.searchParams.get('return') || '/');

@@ -18,7 +18,7 @@
 	import { cn } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import Head from '$lib/components/Head.svelte';
-	import trpc from '$lib/trpc-client';
+	import trpc from '$lib/trpc';
 	import type { PaginationState } from '@tanstack/table-core';
 	import { hasPermSync } from '$lib/perm-utils';
 

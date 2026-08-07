@@ -1,10 +1,10 @@
 import type { PageServerLoad } from './$types';
 
-import trpc from '$lib/server/trpc-server';
+import trpc from '$lib/server/trpc/client';
 import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ locals }) => {
-	if (!locals.session || !locals.localUser) {
+	if (!locals.session || !locals.user) {
 		redirect(302, '/auth/login');
 	}
 
@@ -14,6 +14,6 @@ export const load = (async ({ locals }) => {
 	return {
 		stats,
 		players,
-		user: locals.localUser
+		user: locals.user
 	};
 }) satisfies PageServerLoad;
