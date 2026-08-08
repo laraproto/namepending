@@ -17,24 +17,24 @@ export const APP_SECRET = (() => {
 })();
 
 export const STEAM_API_KEY = (() => {
-  if (!isUndefinedOrEmpty(Bun.env.STEAM_API_KEY))
-    throw new Error('STEAM_API_KEY environment variable is required');
+	if (!isUndefinedOrEmpty(Bun.env.STEAM_API_KEY))
+		throw new Error('STEAM_API_KEY environment variable is required');
 
-  return Bun.env.STEAM_API_KEY as string;
+	return Bun.env.STEAM_API_KEY as string;
 })();
 
 export const DISCORD_CLIENT_ID = (() => {
-  if (!isUndefinedOrEmpty(Bun.env.DISCORD_CLIENT_ID))
-    throw new Error('DISCORD_CLIENT_ID environment variable is required');
+	if (!isUndefinedOrEmpty(Bun.env.DISCORD_CLIENT_ID))
+		throw new Error('DISCORD_CLIENT_ID environment variable is required');
 
-  return Bun.env.DISCORD_CLIENT_ID as string;
+	return Bun.env.DISCORD_CLIENT_ID as string;
 })();
 
 export const DISCORD_CLIENT_SECRET = (() => {
-  if (!isUndefinedOrEmpty(Bun.env.DISCORD_CLIENT_SECRET))
-    throw new Error('DISCORD_CLIENT_SECRET environment variable is required');
+	if (!isUndefinedOrEmpty(Bun.env.DISCORD_CLIENT_SECRET))
+		throw new Error('DISCORD_CLIENT_SECRET environment variable is required');
 
-  return Bun.env.DISCORD_CLIENT_SECRET as string;
+	return Bun.env.DISCORD_CLIENT_SECRET as string;
 })();
 
 export const HOST = isUndefinedOrEmpty(Bun.env.HOST, 'localhost');

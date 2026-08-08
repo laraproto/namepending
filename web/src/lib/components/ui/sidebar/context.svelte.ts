@@ -19,7 +19,6 @@ export type SidebarStateProps = {
 
 	user: Getter<UserSelect | null>;
 
-
 	/**
 	 * A function that sets the open state of the sidebar. To support `bind:open`, we need
 	 * a source of truth for changing the open state to ensure it will be synced throughout

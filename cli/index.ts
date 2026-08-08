@@ -5,7 +5,7 @@ import * as p from '@clack/prompts';
 
 import * as fs from 'node:fs/promises';
 
-const snowflake = z.stringFormat('snowflake', /[1-9][0-9]{5,19}/)
+const snowflake = z.stringFormat('snowflake', /[1-9][0-9]{5,19}/);
 
 const envSchema = z.object({
 	name: z.string().min(1).optional().default('namepending'),
@@ -14,9 +14,9 @@ const envSchema = z.object({
 	url: z.url({
 		protocol: /^https?$/,
 		hostname: z.regexes.domain
-  }),
-  steam_api_key: z.string().min(1),
-  discord_client_id: snowflake.min(1),
+	}),
+	steam_api_key: z.string().min(1),
+	discord_client_id: snowflake.min(1),
 	discord_client_secret: z.string().min(1),
 	postgres_pass: z
 		.string()
@@ -76,19 +76,20 @@ async function main() {
 	if (p.isCancel(url)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
-  }
+	}
 
-  const discord_client_id = await p.text({
-		message: 'Client Id for your discord application (obtained from making an app on https://discord.com/developers/applications)',
+	const discord_client_id = await p.text({
+		message:
+			'Client Id for your discord application (obtained from making an app on https://discord.com/developers/applications)',
 		validate: envSchema.shape.url
 	});
 
 	if (p.isCancel(discord_client_id)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
-  }
+	}
 
-  const discord_client_secret = await p.password({
+	const discord_client_secret = await p.password({
 		message: 'Client secret for your Discord application',
 		mask: '*',
 		clearOnError: true,
@@ -98,9 +99,9 @@ async function main() {
 	if (p.isCancel(discord_client_secret)) {
 		p.cancel('Setup cancelled');
 		process.exit(0);
-  }
+	}
 
-  const steam_api_key = await p.password({
+	const steam_api_key = await p.password({
 		message: 'Steam API key (obtained from https://steamcommunity.com/dev/apikey)',
 		mask: '*',
 		clearOnError: true,
@@ -176,10 +177,10 @@ async function main() {
 
 	const envValue = envSchema.parse({
 		name: name.length > 0 ? name : undefined,
-    url,
-    discord_client_id,
-    discord_client_secret,
-    steam_api_key,
+		url,
+		discord_client_id,
+		discord_client_secret,
+		steam_api_key,
 		postgres_pass: postgres_pass.length > 0 ? postgres_pass : undefined,
 		garage_pass: garage_pass.length > 0 ? garage_pass : undefined,
 		garage_access_key: garage_access_key.length > 0 ? garage_access_key : undefined,
