@@ -8,6 +8,8 @@
 
 <Head title="Login" />
 
-<div class="flex flex-1 items-center justify-center px-4">
-	<LoginForm {data} />
+<div class="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
+	<div class="w-full max-w-sm md:max-w-md">
+		<LoginForm {data} />
+	</div>
 </div>

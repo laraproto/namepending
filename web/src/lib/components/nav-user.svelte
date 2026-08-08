@@ -11,7 +11,7 @@
 	import Button from './ui/button/button.svelte';
 	import { resolve } from '$app/paths';
 	import authClient from '$lib/auth';
-	import { invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
 	const sidebar = Sidebar.useSidebar();
@@ -91,8 +91,10 @@
 					<DropdownMenu.Item
 						class="cursor-pointer"
 						onclick={async () => {
-							authClient.signOut();
-							await invalidateAll();
+							await authClient.signOut();
+							await goto(resolve(`/auth/login?return=${encodeURIComponent(returnUrl)}`), {
+								invalidateAll: true
+							});
 						}}
 					>
 						<LogOutIcon />

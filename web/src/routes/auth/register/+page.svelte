@@ -7,6 +7,8 @@
 
 <Head title="Register" />
 
-<div class="flex w-full flex-1 items-center justify-center p-6 md:p-10">
-	<RegisterForm {data} />
+<div class="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
+	<div class="w-full max-w-sm md:max-w-md">
+		<RegisterForm {data} />
+	</div>
 </div>
