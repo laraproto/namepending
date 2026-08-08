@@ -1,13 +1,14 @@
 import type { AppRouter } from '$routes/api/trpc';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
-import { URL } from '$app/env/public';
 import superjson from 'superjson';
 import { getRequestEvent } from '$app/server';
 
 const trpc = createTRPCClient<AppRouter>({
 	links: [
 		httpBatchLink({
-			url: `${URL}/api/trpc`,
+			url: `/api/trpc`,
+			fetch: (input: RequestInfo | URL | string, init?: RequestInit) =>
+				getRequestEvent().fetch(input, init),
 			transformer: superjson,
 			headers() {
 				const event = getRequestEvent();

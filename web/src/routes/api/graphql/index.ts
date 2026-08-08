@@ -10,12 +10,14 @@ import type {
 	ServerSelect,
 	PlayerSelectMinimal
 } from '$lib/server/db/schema';
+import auth from '$lib/server/auth';
 import * as dbschema from '$lib/server/db/schema';
 import db from '$lib/server/db';
 import { eq } from 'drizzle-orm';
 import type { LookupOutput, LinkOutput } from './types';
 import { BanType, WarnType } from './types';
 import * as token from '$lib/server/token';
+import type { OAuthClient } from '@better-auth/oauth-provider';
 
 const GroupRef = builder.objectRef<PanelGroupSelect>('Group');
 const GameGroupRef = builder.objectRef<GameGroupSelectMinimal>('GameGroup');
@@ -28,6 +30,7 @@ const WarnRef = builder.objectRef<WarnsSelect>('Warn');
 
 const LookupOutputRef = builder.objectRef<LookupOutput>('LookupOutput');
 const LinkOutputRef = builder.objectRef<LinkOutput>('LinkOutput');
+const OAuthClientRef = builder.objectRef<OAuthClient>('OAuthClient');
 
 const BanTypeRef = builder.enumType(BanType, {
 	name: 'BanType'
@@ -155,6 +158,32 @@ LinkOutputRef.implement({
 		key: t.exposeString('key'),
 		expires: t.expose('expires', {
 			type: 'Date'
+		})
+	})
+});
+
+OAuthClientRef.implement({
+	description: 'An OAuth client',
+	fields: (t) => ({
+		client_id: t.field({
+			type: 'String',
+			resolve: (client) => client.client_id
+		}),
+		client_secret: t.field({
+			type: 'String',
+			resolve: (client) => client.client_secret
+		}),
+		redirect_uris: t.field({
+			type: ['String'],
+			resolve: (client) => client.redirect_uris
+		}),
+		skip_consent: t.field({
+			type: 'Boolean',
+			resolve: (client) => client.skip_consent
+		}),
+		enable_end_session: t.field({
+			type: 'Boolean',
+			resolve: (client) => client.enable_end_session
 		})
 	})
 });
@@ -365,6 +394,42 @@ builder.queryType({
 
 builder.mutationType({
 	fields: (t) => ({
+		createOAuthClient: t.field({
+			type: OAuthClientRef,
+			authScopes: {
+				perm: 'SETTINGS'
+			},
+			args: {
+				uris: t.arg.stringList({
+					required: true
+				}),
+				skipConsent: t.arg.boolean({
+					defaultValue: false,
+					required: true
+				}),
+				enableEndSession: t.arg.boolean({
+					defaultValue: false,
+					required: true
+				})
+			},
+			resolve: async (_root, args, ctx) => {
+				try {
+					const client = await auth.api.adminCreateOAuthClient({
+						headers: ctx.request.headers,
+						body: {
+							redirect_uris: args.uris,
+							skip_consent: args.skipConsent,
+							enable_end_session: args.enableEndSession
+						}
+					});
+
+					return client;
+				} catch (err) {
+					console.error(err);
+					return null;
+				}
+			}
+		}),
 		createLookup: t.field({
 			type: LookupOutputRef,
 			authScopes: {

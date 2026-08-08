@@ -1,6 +1,7 @@
 import SchemaBuilder from '@pothos/core';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import { DateResolver, BigIntResolver } from 'graphql-scalars';
+import { type PermRequired, hasPermSync } from '$lib/perm-utils';
 
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -9,6 +10,7 @@ export const builder = new SchemaBuilder<{
 	AuthScopes: {
 		user: boolean;
 		server: boolean;
+		perm: PermRequired;
 	};
 	Scalars: {
 		Date: {
@@ -26,7 +28,8 @@ export const builder = new SchemaBuilder<{
 		authorizeOnSubscribe: true,
 		authScopes: async (context) => ({
 			user: !!context.locals.user,
-			server: !!context.locals.server
+			server: !!context.locals.server,
+			perm: (perm) => hasPermSync(context.locals.user, perm)
 		})
 	}
 });
