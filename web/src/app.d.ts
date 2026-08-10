@@ -1,6 +1,5 @@
 import authClient from '$lib/auth';
-import { type RouterOutput } from '$lib/trpc';
-import type { ServerSelect } from '$lib/server/db/schema';
+import type { ServerSelect, UserSelect } from '$lib/server/db/schema';
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -9,7 +8,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			session: typeof authClient.$Infer.Session.session | null;
-			user: RouterOutput['getSelf'] | null;
+			user: UserSelect | null;
 			server: ServerSelect | null;
 		}
 		// interface PageData {}

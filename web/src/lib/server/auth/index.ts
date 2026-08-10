@@ -23,6 +23,16 @@ const auth = betterAuth({
 		allowedHosts: [new URL(APP_URL!).host]
 	},
 	secret: APP_SECRET,
+	user: {
+		additionalFields: {
+			theme: {
+				type: 'string',
+				defaultValue: 'system',
+				required: false,
+				input: true
+			}
+		}
+	},
 	plugins: [
 		jwt(),
 		steamOpenId({

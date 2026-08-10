@@ -28,13 +28,13 @@
 					>
 				</Card.Root>
 			</div>
-			<div class="lg:col-span-2 flex flex-col">
-				<Card.Root class="h-full flex flex-1 justify-center">
+			<div class="flex flex-col lg:col-span-2">
+				<Card.Root class="flex h-full flex-1 justify-center">
 					<Card.Content>
 						{#if data.player.stats}
-							<div class="grid auto-rows-min gap-4 grid-cols-3">
-								<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-									<Card.Header class="text-center font-bold text-xl">Playtime Total</Card.Header>
+							<div class="grid auto-rows-min grid-cols-3 gap-4">
+								<Card.Root class=" rounded-xl bg-muted/50">
+									<Card.Header class="text-center text-xl font-bold">Playtime Total</Card.Header>
 									<Card.Content class="flex flex-1 items-center justify-center text-2xl font-bold"
 										>{formatDuration(
 											{ hours: secondsToHours(data.player.stats.timeTotal) },
@@ -45,8 +45,8 @@
 										)}</Card.Content
 									>
 								</Card.Root>
-								<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-									<Card.Header class="text-center font-bold text-xl">Playtime This Week</Card.Header
+								<Card.Root class="rounded-xl bg-muted/50">
+									<Card.Header class="text-center text-xl font-bold">Playtime This Week</Card.Header
 									>
 									<Card.Content class="flex flex-1 items-center justify-center text-2xl font-bold"
 										>{formatDuration(
@@ -58,8 +58,8 @@
 										)}</Card.Content
 									>
 								</Card.Root>
-								<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-									<Card.Header class="text-center font-bold text-xl">Playtime Last Week</Card.Header
+								<Card.Root class="rounded-xl bg-muted/50">
+									<Card.Header class="text-center text-xl font-bold">Playtime Last Week</Card.Header
 									>
 									<Card.Content class="flex flex-1 items-center justify-center text-2xl font-bold"
 										>{formatDuration(

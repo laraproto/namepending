@@ -4,7 +4,7 @@ import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
 
 import auth from '$lib/server/auth';
 import superjson from 'superjson';
-import type { UserSelect } from '@namepending/api/db';
+import type { UserSelect } from '$lib/server/db/schema';
 import type { Cookies } from '@sveltejs/kit';
 
 export type CookieSetOptions = Parameters<Cookies['set']>[2];

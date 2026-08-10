@@ -12,6 +12,7 @@ export const user = pgTable('user', {
 	updatedAt: timestamp('updated_at')
 		.$onUpdate(() => new Date())
 		.notNull(),
+	theme: text('theme').default('system'),
 	flags: bigint({ mode: 'bigint' })
 		.notNull()
 		.default(sql`1::bigint`),

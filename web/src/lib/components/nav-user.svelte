@@ -1,9 +1,8 @@
 <script lang="ts">
 	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
-	import BellIcon from '@lucide/svelte/icons/bell';
+	import SettingsIcon from '@lucide/svelte/icons/settings';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import LogOutIcon from '@lucide/svelte/icons/log-out';
-	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -64,27 +63,19 @@
 					<DropdownMenu.Group>
 						<DropdownMenu.Item class="cursor-pointer">
 							{#snippet child({ props })}
-								<!-- eslint-disable-next-line -->
-								<a href="https://youtu.be/dQw4w9WgXcQ" {...props}>
-									<SparklesIcon />
-									Upgrade to Pro
-								</a>
-							{/snippet}
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Group>
-						<DropdownMenu.Item class="cursor-pointer">
-							{#snippet child({ props })}
 								<a href={resolve('/profile/[id]', { id: sidebar.user!.id! })} {...props}>
 									<BadgeCheckIcon />
 									Account
 								</a>
 							{/snippet}
 						</DropdownMenu.Item>
-						<DropdownMenu.Item disabled>
-							<BellIcon />
-							Notifications
+						<DropdownMenu.Item class="cursor-pointer">
+							{#snippet child({ props })}
+								<a href={resolve('/settings')} {...props}>
+									<SettingsIcon />
+									Settings
+								</a>
+							{/snippet}
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />

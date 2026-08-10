@@ -1,5 +1,6 @@
 <script lang="ts">
 	import './layout.css';
+	import '$lib/theme.scss';
 	import { ModeWatcher } from 'mode-watcher';
 	import favicon from '$lib/assets/lara.png';
 
