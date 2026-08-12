@@ -11,7 +11,7 @@
 	let { children, data } = $props();
 </script>
 
-<ModeWatcher />
+<ModeWatcher defaultTheme={data.localUser?.theme ?? undefined} />
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div class="[--header-height:calc(--spacing(14))]">
