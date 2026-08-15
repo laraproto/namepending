@@ -13,7 +13,10 @@ declare global {
 		}
 		// interface PageData {}
 		// interface PageState {}
-		// interface Platform {}
+    interface Platform {
+      server: Bun.Server;
+      request: Request;
+		}
 	}
 	interface BigInt {
 		toJSON(): number | string;
