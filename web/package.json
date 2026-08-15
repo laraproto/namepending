@@ -23,8 +23,6 @@
 		"@internationalized/date": "^3.12.3",
 		"@lucide/svelte": "^1.28.0",
 		"@namepending/shared": "workspace:*",
-		"@oslojs/crypto": "^1.0.1",
-		"@oslojs/encoding": "^1.1.0",
 		"@pothos/core": "^4.13.1",
 		"@pothos/plugin-scope-auth": "^4.1.7",
 		"@risk-tolerance/svelte-adapter-bun": "^1.8.1",
