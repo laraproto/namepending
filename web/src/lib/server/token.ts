@@ -1,21 +1,27 @@
-import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
+import { CryptoHasher } from 'bun';
 import db, { schema } from '$lib/server/db';
+
+const hasher = new CryptoHasher('sha256');
+
+function sha256(data: Uint8Array): Uint8Array {
+  hasher.update(data);
+  return hasher.digest();
+}
 
 export function generateSessionToken() {
 	const bytes = crypto.getRandomValues(new Uint8Array(18));
-	const token = encodeBase64url(bytes);
+	const token = bytes.toBase64();
 	return token;
 }
 
 export function createAccountLinkCode() {
 	const bytes = crypto.getRandomValues(new Uint8Array(8));
-	const code = encodeBase64url(bytes);
+	const code = bytes.toBase64();
 	return code;
 }
 
 export async function createServerApiKey(token: string, userId: string, description: string) {
-	const sessionKey = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const sessionKey = sha256(new TextEncoder().encode(token)).toHex();
 	const apiKey: schema.ServerInsert = {
 		key: sessionKey,
 		creatorId: userId,
@@ -28,7 +34,7 @@ export async function createServerApiKey(token: string, userId: string, descript
 }
 
 export async function validateServerApiKey(token: string) {
-	const apikey = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const apikey = sha256(new TextEncoder().encode(token)).toHex();
 	const result = await db.query.servers.findFirst({
 		where: (serversTable, { eq }) => eq(serversTable.key, apikey),
 		with: {
@@ -46,7 +52,7 @@ export async function validateServerApiKey(token: string) {
 }
 
 export async function createLookupKey(token: string, userId: string) {
-	const sessionKey = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const sessionKey = sha256(new TextEncoder().encode(token)).toHex();
 
 	const player = await db.query.player.findFirst({
 		where: (players, { eq }) => eq(players.platformId, userId)
@@ -68,7 +74,7 @@ export async function createLookupKey(token: string, userId: string) {
 }
 
 export async function validateLookupKey(token: string) {
-	const lookupKey = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const lookupKey = sha256(new TextEncoder().encode(token)).toHex();
 
 	const result = await db.query.lookupKeys.findFirst({
 		where: (lookupKeys, { eq }) => eq(lookupKeys.code, lookupKey),
@@ -81,7 +87,7 @@ export async function validateLookupKey(token: string) {
 }
 
 export async function createLinkEntry(code: string, playerId: string) {
-	const sessionKey = encodeHexLowerCase(sha256(new TextEncoder().encode(code)));
+	const sessionKey = sha256(new TextEncoder().encode(code)).toHex();
 	const linkCode = {
 		code: sessionKey,
 		playerId,
@@ -94,7 +100,7 @@ export async function createLinkEntry(code: string, playerId: string) {
 }
 
 export async function validateLinkEntry(code: string) {
-	const apikey = encodeHexLowerCase(sha256(new TextEncoder().encode(code)));
+	const apikey = sha256(new TextEncoder().encode(code)).toHex();
 	const result = await db.query.accountLinkCodes.findFirst({
 		where: (accountLinkCode, { eq }) => eq(accountLinkCode.code, apikey),
 		with: {

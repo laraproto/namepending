@@ -13,7 +13,7 @@ FROM docker.io/oven/bun:1.3-distroless AS base
 
 EXPOSE 3000
 
-FROM base as web
+FROM base AS web
 
 COPY --from=build /app/web/build /app
 COPY --from=build /app/web/drizzle /app/drizzle

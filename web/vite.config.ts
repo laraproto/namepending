@@ -6,6 +6,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 	server: {
-		allowedHosts: [new URL(process.env.URL!).host]
+		allowedHosts: process.env.URL ? [new URL(process.env.URL!).host] : undefined
 	}
 });
