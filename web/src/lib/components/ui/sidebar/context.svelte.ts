@@ -5,7 +5,7 @@ import { replaceState } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import type { Pathname } from '$app/types';
-import type { UserSelect } from '@namepending/api/db';
+import type { UserSelect } from '$lib/server/db/schema';
 
 type Getter<T> = () => T;
 

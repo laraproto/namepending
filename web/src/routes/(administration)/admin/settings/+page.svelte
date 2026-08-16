@@ -13,7 +13,7 @@
 			<Card.Title>Settings</Card.Title>
 		</Card.Header>
 		<Card.Content>
-			<p>UwU</p>
+			<p>I have no idea what I wanted to do with this settings page, if you wish to change any settings, edit the .env and recreate the containers</p>
 		</Card.Content>
 	</Card.Root>
 </div>

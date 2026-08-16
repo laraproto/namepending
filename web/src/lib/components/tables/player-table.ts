@@ -1,8 +1,9 @@
 import type { ColumnDef } from '@tanstack/table-core';
-import { renderComponent, renderSnippet } from '$lib/components/ui/data-table/index.js';
+import BooleanBadge from '$lib/components/boolean-badge.svelte';
+import { renderComponent } from '$lib/components/ui/data-table/index.js';
 import { formatDistance } from 'date-fns';
-import PlayerTableActions, { booleanBadge } from './player-table-actions.svelte';
-import type { PlayerSelectMinimal } from '@namepending/api/db';
+import PlayerTableActions from './player-table-actions.svelte';
+import type { PlayerSelectMinimal } from '$lib/server/db/schema';
 
 export const columns: ColumnDef<PlayerSelectMinimal>[] = [
 	{
@@ -16,7 +17,7 @@ export const columns: ColumnDef<PlayerSelectMinimal>[] = [
 	{
 		accessorKey: 'doNotTrack',
 		cell: ({ row }) => {
-			return renderSnippet(booleanBadge, { bool: row.original.doNotTrack, colorInverse: true });
+			return renderComponent(BooleanBadge, { bool: row.original.doNotTrack, colorInverse: true });
 		},
 		header: 'Do Not Track'
 	},

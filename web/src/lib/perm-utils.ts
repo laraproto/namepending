@@ -1,5 +1,5 @@
 import { JointFlags, type JointFlagKeys } from '@namepending/shared/user';
-import type { UserSelect } from '@namepending/api/db';
+import type { UserSelect } from '$lib/server/db/schema';
 
 export type PermRequired =
 	| JointFlagKeys

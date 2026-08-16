@@ -4,7 +4,6 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { SIDEBAR_COOKIE_NAME, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './constants.js';
 	import { setSidebar } from './context.svelte.js';
-	import type { RouterOutput } from '$lib/trpc';
 
 	let {
 		ref = $bindable(null),
@@ -17,7 +16,7 @@
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		open?: boolean;
-		user?: import('@namepending/api/db').UserSelect | null;
+		user?: import('$lib/server/db/schema').UserSelect | null;
 		onOpenChange?: (open: boolean) => void;
 	} = $props();
 

@@ -1,7 +1,7 @@
 import type { ColumnDef } from '@tanstack/table-core';
-import { renderComponent, renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { renderComponent } from '$lib/components/ui/data-table/index.js';
 import { formatDistance } from 'date-fns';
-import { booleanBadge } from './player-table-actions.svelte';
+import BooleanBadge from '$lib/components/boolean-badge.svelte';
 import PunishmentTableActions from './punishment-table-actions.svelte';
 
 import type { RouterOutput } from '$lib/trpc';
@@ -54,7 +54,7 @@ export const columns: ColumnDef<WarnsOutput['data'][number]>[] = [
 	},
 	{
 		cell: ({ row }) =>
-			renderSnippet(booleanBadge, {
+			renderComponent(BooleanBadge, {
 				bool: row.original.active,
 				colorInverse: true,
 				trueText: 'Active',
