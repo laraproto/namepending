@@ -2,10 +2,7 @@ on:
   push:
     tags:
       - 'v*'
-    paths:
-      - 'web/**'
-      - 'Dockerfile'
-      - '.github/workflows/build.yml'
+      - 'test'
 
 jobs:
   build:
