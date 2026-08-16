@@ -20,7 +20,7 @@ const auth = betterAuth({
 		provider: 'pg'
 	}),
 	baseURL: {
-		allowedHosts: APP_URL ? [new URL(APP_URL!).host] : []
+		allowedHosts: APP_URL ? [new URL(APP_URL!).host] : ['localhost:3000'],
 	},
 	secret: APP_SECRET,
 	user: {
