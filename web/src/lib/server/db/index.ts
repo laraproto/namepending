@@ -1,4 +1,5 @@
 import { drizzle } from 'drizzle-orm/bun-sql';
+import { building } from '$app/environment';
 import { migrate } from 'drizzle-orm/bun-sql/migrator';
 import { sql } from 'bun';
 import { DRIZZLE_MIGRATION_DIR } from '$app/env/private';
@@ -7,7 +8,7 @@ import * as schema from './schema';
 
 const db = drizzle({ client: sql, schema });
 
-await migrate(db, { migrationsFolder: DRIZZLE_MIGRATION_DIR ?? path.join(import.meta.dirname, '../../../../drizzle')})
+if (!building) { await migrate(db, { migrationsFolder: DRIZZLE_MIGRATION_DIR ?? path.join(import.meta.dirname, '../../../../drizzle') }) }
 
 export { schema };
 
