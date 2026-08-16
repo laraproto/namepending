@@ -8,6 +8,7 @@ import { steamOpenId } from '$lib/auth/plugins';
 
 import { STEAM_API_KEY, APP_SECRET, DISCORD_CLIENT_SECRET } from '$app/env/private';
 import { URL as APP_URL, DISCORD_CLIENT_ID } from '$app/env/public';
+import { building } from '$app/environment';
 
 import { getRequestEvent } from '$app/server';
 import db, { schema } from '$lib/server/db';
@@ -20,9 +21,9 @@ const auth = betterAuth({
 		provider: 'pg'
 	}),
 	baseURL: {
-		allowedHosts: APP_URL ? [new URL(APP_URL!).host] : ['localhost:3000'],
+		allowedHosts: !building ? [new URL(APP_URL!).host] : ['localhost:3000'],
 	},
-	secret: APP_SECRET,
+	secret: !building ? APP_SECRET : crypto.randomUUID(),
 	user: {
 		additionalFields: {
 			theme: {
