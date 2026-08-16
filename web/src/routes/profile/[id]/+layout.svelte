@@ -12,8 +12,8 @@
 	let { data, children }: LayoutProps = $props();
 
 	onMount(() => {
-		if (data.user) {
-			sidebar.setToolbar(profileToolbar, data.user);
+		if (data.userProfile) {
+			sidebar.setToolbar(profileToolbar, data.userProfile);
 		}
 	});
 
@@ -22,7 +22,7 @@
 	});
 </script>
 
-{#snippet profileToolbar(user: NonNullable<LayoutProps['data']['user']>)}
+{#snippet profileToolbar(user: NonNullable<LayoutProps['data']['userProfile']>)}
 	<div class="flex w-full items-center gap-2">
 		<NavigationMenu.Root>
 			<NavigationMenu.List>
@@ -43,10 +43,10 @@
 						<NavigationMenu.Link>
 							{#snippet child()}
 								<a
-									href={resolve('/profile/[id]/settings', {
+									href={resolve('/profile/[id]/administrative', {
 										id: user.id
 									})}
-									class={navigationMenuTriggerStyle()}>Settings</a
+									class={navigationMenuTriggerStyle()}>Administrative</a
 								>
 							{/snippet}
 						</NavigationMenu.Link>

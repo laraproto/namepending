@@ -9,9 +9,9 @@
 	let { data }: PageProps = $props();
 </script>
 
-<Head title={data.user ? `${data.user.name}'s Profile` : 'User Not Found'} />
+<Head title={data.userProfile ? `${data.userProfile.name}'s Profile` : 'User Not Found'} />
 
-{#if data.user}
+{#if data.userProfile}
 	<div class="container mx-auto my-8 flex flex-col gap-4 px-4">
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 			<div class="lg:col-span-1">
@@ -19,12 +19,12 @@
 					<Card.Content>
 						<div class="flex flex-col items-center space-y-4">
 							<Avatar.Root class="h-32 w-32">
-								<Avatar.Image src={data.user.image} alt={data.user.name} />
-								<Avatar.Fallback class="text-4xl">{data.user.name}</Avatar.Fallback>
+								<Avatar.Image src={data.userProfile.image} alt={data.userProfile.name} />
+								<Avatar.Fallback class="text-4xl">{data.userProfile.name}</Avatar.Fallback>
 							</Avatar.Root>
 							<div class="text-center">
-								<h2 class="text-xl font-semibold">{data.user.name}</h2>
-								<p class="text-sm text-muted-foreground">{data.user.id}</p>
+								<h2 class="text-xl font-semibold">{data.userProfile.name}</h2>
+								<p class="text-sm text-muted-foreground">{data.userProfile.id}</p>
 							</div>
 						</div></Card.Content
 					>
@@ -41,7 +41,7 @@
 				<Card.Title>Player Profiles</Card.Title>
 			</Card.Header>
 			<Card.Content>
-				<PlayerTable data={data.user.players || []} {columns} />
+				<PlayerTable data={data.userProfile.players || []} {columns} />
 			</Card.Content>
 		</Card.Root>
 	</div>

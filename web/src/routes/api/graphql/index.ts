@@ -473,7 +473,16 @@ builder.mutationType({
 			resolve: async (_root, args) => {
 				try {
 					const key = token.createAccountLinkCode();
-					const link = await token.createLinkEntry(key, args.platformId);
+
+					const player = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, args.platformId)
+					});
+
+					if (!player) {
+						return null;
+					}
+
+					const link = await token.createLinkEntry(key, player.uuid);
 
 					return {
 						key,

@@ -5,14 +5,13 @@
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
 	import { onDestroy } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { hasPermSync } from '$lib/perm-utils';
 
 	const sidebar = Sidebar.useSidebar();
 
 	let { children }: LayoutProps = $props();
 
 	$effect(() => {
-		sidebar.setToolbar(profileToolbar);
+		sidebar.setToolbar(profileToolbar, null);
 	});
 
 	onDestroy(() => {
@@ -27,7 +26,7 @@
 				<NavigationMenu.Item>
 					<NavigationMenu.Link>
 						{#snippet child()}
-							<a href={resolve('/settings')} class={navigationMenuTriggerStyle()}>Preferences</a>
+							<a href={resolve('/settings')} class={navigationMenuTriggerStyle()}>General</a>
 						{/snippet}
 					</NavigationMenu.Link>
 				</NavigationMenu.Item>

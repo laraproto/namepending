@@ -13,7 +13,7 @@
 		data: {
 			updateRoleForm: SuperValidated<Infer<UpdateRoleSchema>>;
 			roles: PageProps['data']['roles'];
-			user: PageProps['data']['user'];
+			userProfile: PageProps['data']['userProfile'];
 		};
 	} = $props();
 
@@ -54,13 +54,13 @@
 										<Select.Item
 											value={role.value}
 											label={role.label}
-											disabled={role.value === data.user.group?.uuid}
+											disabled={role.value === data.userProfile.group?.uuid}
 										>
 											{role.label}
 										</Select.Item>
 									{/each}
 									<Select.Separator />
-									<Select.Item value="none" label="None" disabled={!data.user.group}
+									<Select.Item value="none" label="None" disabled={!data.userProfile.group}
 										>None</Select.Item
 									>
 								</Select.Group>
@@ -72,7 +72,7 @@
 			</Form.Field>
 		</Card.Content>
 		<Card.Footer class="flex flex-col items-center">
-			<Form.Button disabled={$formData.role === data.user.group?.uuid}>Submit</Form.Button>
+			<Form.Button disabled={$formData.role === data.userProfile.group?.uuid}>Submit</Form.Button>
 		</Card.Footer>
 	</form>
 </Card.Root>

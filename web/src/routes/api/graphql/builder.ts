@@ -36,3 +36,5 @@ export const builder = new SchemaBuilder<{
 
 builder.addScalarType('Date', DateResolver);
 builder.addScalarType('BigInt', BigIntResolver);
+
+import('./index');

@@ -4,9 +4,12 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  envDir: '../',
-  plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
+	envDir: '../',
+	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 	server: {
 		allowedHosts: process.env.URL ? [new URL(process.env.URL!).host] : undefined
-  },
+	},
+	ssr: {
+		noExternal: ['@pothos/core', '@pothos/plugin-scope-auth']
+	}
 });

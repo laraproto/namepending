@@ -5,16 +5,16 @@ import { resolve } from '$app/paths';
 import type { RouterOutput } from '$lib/trpc';
 import trpc from '$lib/server/trpc/client';
 import { updateRoleSchema } from '../schema';
-import { superValidate } from 'sveltekit-superforms';
+import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { hasPerm } from '$lib/perm-utils';
 
 type RolesOutput = RouterOutput['panel']['administration']['getPanelRoles'];
 
-export const load = (async ({ parent, params }) => {
-	const { user, localUser } = await parent();
+export const load = (async ({ parent, params, locals }) => {
+	const { userProfile } = await parent();
 
-	if (!user) {
+	if (!userProfile) {
 		redirect(
 			302,
 			resolve('/profile/[id]', {
@@ -25,14 +25,14 @@ export const load = (async ({ parent, params }) => {
 
 	let roles: RolesOutput | null = null;
 
-	if (await hasPerm(localUser, 'VIEW_ROLES')) {
+	if (await hasPerm(locals.user, 'VIEW_ROLES')) {
 		roles = await trpc.panel.administration.getPanelRoles.query();
 	}
 	return {
-		user,
+		userProfile,
 		roles,
 		updateRoleForm: await superValidate(
-			{ role: user.group?.uuid ?? undefined },
+			{ role: userProfile.group?.uuid ?? undefined },
 			zod4(updateRoleSchema)
 		)
 	};
@@ -48,6 +48,10 @@ export const actions = {
 		}
 
 		try {
+			if (!(await hasPerm(event.locals.user, ['VIEW_USERS', 'VIEW_ROLES', 'CREATE_EDIT_ROLES']))) {
+				setError(form, 'role', 'You do not have permission to update user roles.');
+			}
+
 			await trpc.panel.administration.setRole.mutate({
 				user: event.params.id,
 				role:

@@ -8,11 +8,11 @@ export const load = (async ({ params, locals }) => {
 		redirect(302, '/auth/login');
 	}
 	try {
-		return { user: await trpc.panel.getProfile.query(params.id) };
+		return { userProfile: await trpc.panel.getProfile.query(params.id) };
 	} catch (err) {
 		if (isTRPCClientError(err)) {
 			if (err.name === 'FORBIDDEN') {
-				return { user: null };
+				return { userProfile: null };
 			}
 		}
 		throw err;

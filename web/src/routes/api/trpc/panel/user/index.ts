@@ -2,6 +2,7 @@ import db, { schema } from '$lib/server/db';
 import { eq, inArray, and } from 'drizzle-orm';
 import { authedProcedure, router } from '$lib/server/trpc';
 import { z } from 'zod';
+import * as token from '$lib/server/token';
 
 export const userRouter = router({
 	getStats: authedProcedure.query(async ({ ctx }) => {
@@ -63,5 +64,45 @@ export const userRouter = router({
 				success: true,
 				stats
 			};
-		})
+		}),
+	linkPlayer: authedProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+		const linkCode = await token.validateLinkEntry(input);
+
+		if (!linkCode) {
+			return {
+				success: false,
+				message: 'Invalid link code'
+			};
+		}
+
+		if (linkCode.expiresAt < new Date()) {
+			return {
+				success: false,
+				message: 'Link code has expired'
+			};
+		}
+
+		const player = await db.query.player.findFirst({
+			where: eq(schema.player.uuid, linkCode.playerId)
+		});
+
+		if (!player) {
+			return {
+				success: false,
+				message: 'Player not found'
+			};
+		}
+
+		await db
+			.update(schema.player)
+			.set({ userId: ctx.user.id })
+			.where(eq(schema.player.uuid, player.uuid));
+
+		await db.delete(schema.accountLinkCodes).where(eq(schema.accountLinkCodes.code, linkCode.code));
+
+		return {
+			success: true,
+			message: 'Player linked successfully'
+		};
+	})
 });
