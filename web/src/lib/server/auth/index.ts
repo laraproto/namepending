@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from '@better-auth/drizzle-adapter';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
-import { jwt } from 'better-auth/plugins';
+import { jwt, bearer } from 'better-auth/plugins';
 import { oauthProvider } from '@better-auth/oauth-provider';
 
 import { steamOpenId } from '$lib/auth/plugins';
@@ -21,7 +21,7 @@ const auth = betterAuth({
 		provider: 'pg'
 	}),
 	baseURL: {
-		allowedHosts: !building ? [new URL(APP_URL!).host] : ['localhost:3000'],
+		allowedHosts: !building ? [new URL(APP_URL!).host] : ['localhost:3000']
 	},
 	secret: !building ? APP_SECRET : crypto.randomUUID(),
 	user: {
@@ -36,6 +36,7 @@ const auth = betterAuth({
 	},
 	plugins: [
 		jwt(),
+		bearer(),
 		steamOpenId({
 			steamApiKey: STEAM_API_KEY ?? '',
 			failureRedirect: '/auth/fail',
