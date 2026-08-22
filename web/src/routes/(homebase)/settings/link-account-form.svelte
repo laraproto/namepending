@@ -27,7 +27,7 @@
 
 <Card.Root class="h-full">
 	<Card.Header>
-		<Card.Title>Account Link</Card.Title>
+		<Card.Title>Player Link</Card.Title>
 		<Card.Description>Associate a player profile with your account</Card.Description>
 	</Card.Header>
 	<form method="POST" use:enhance action="?/linkAccount">
