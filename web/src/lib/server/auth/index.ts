@@ -40,7 +40,7 @@ const auth = betterAuth({
 		steamOpenId({
 			steamApiKey: STEAM_API_KEY ?? '',
 			failureRedirect: '/auth/fail',
-			successRedirect: '/',
+			successRedirect: '/settings',
 			allowSignIn: false
 		}),
 		oauthProvider({

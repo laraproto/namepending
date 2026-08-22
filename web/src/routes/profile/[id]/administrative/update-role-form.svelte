@@ -28,6 +28,7 @@
 
 	// svelte-ignore state_referenced_locally
 	const form = superForm(data.updateRoleForm, {
+		clearOnSubmit: 'none',
 		validators: zod4Client(updateRoleSchema)
 	});
 

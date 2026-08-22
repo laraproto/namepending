@@ -51,7 +51,7 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions) => {
 		endpoints: {
 			getRedirectUrl: createAuthEndpoint(
 				'/steam/redirect',
-				{ method: 'GET', requireRequest: true },
+				{ method: 'GET', requireRequest: false },
 				async (ctx) => {
 					const params = new URLSearchParams({
 						'openid.ns': 'http://specs.openid.net/auth/2.0',
@@ -62,7 +62,23 @@ export const steamOpenId = (options: SteamOpenIdPluginOptions) => {
 						'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select'
 					});
 
-					return ctx.redirect(`${STEAM_OPENID_URL}?${params.toString()}`);
+					return ctx.json({ url: `${STEAM_OPENID_URL}?${params.toString()}` });
+				}
+			),
+			linkStatus: createAuthEndpoint(
+				'/steam/link-status',
+				{ method: 'GET', requireRequest: true, use: [sessionMiddleware] },
+				async (ctx) => {
+					if (!ctx.context.session) {
+						return ctx.json({ linked: false });
+					}
+
+					const linkedAccount = await ctx.context.internalAdapter.findAccountByProviderId(
+						ctx.context.session.user.id,
+						'steam'
+					);
+
+					return ctx.json({ linked: !!linkedAccount });
 				}
 			),
 

@@ -18,6 +18,8 @@
 
 	let { data }: PageProps = $props();
 
+	const roleFlagsFiltered = Object.keys(RoleFlags).filter((flag) => flag !== 'GROUP');
+
 	const gameRoles = $derived(
 		data.gameRoles?.data.map((role) => ({
 			value: role.uuid,
@@ -31,6 +33,7 @@
 
 	// svelte-ignore state_referenced_locally
 	const form = superForm(data.panelGroupForm, {
+		clearOnSubmit: 'none',
 		validators: zod4Client(panelGroupFormSchema),
 		dataType: 'json'
 	});
@@ -127,7 +130,7 @@
 					<Form.Fieldset {form} name="permissions">
 						<Form.Legend>Permissions</Form.Legend>
 						<div class="grid grid-cols-4 gap-3">
-							{#each Object.keys(RoleFlags) as permission, i (permission)}
+							{#each roleFlagsFiltered as permission, i (permission)}
 								<Form.ElementField
 									{form}
 									name="permissions[{i}]"

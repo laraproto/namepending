@@ -3,14 +3,9 @@ import { linkSchema } from './schema';
 import { fail, setError, message, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
-import { redirect } from '@sveltejs/kit';
 import trpc from '$lib/server/trpc/client';
 
-export const load = (async ({ locals }) => {
-	if (!locals.session || !locals.user) {
-		redirect(302, '/auth/login');
-	}
-
+export const load = (async () => {
 	return {
 		linkForm: await superValidate(zod4(linkSchema))
 	};

@@ -19,6 +19,7 @@
 
 	// svelte-ignore state_referenced_locally
 	const form = superForm(data.gameGroupForm, {
+		clearOnSubmit: 'none',
 		validators: zod4Client(gameGroupFormSchema),
 		dataType: 'json'
 	});
