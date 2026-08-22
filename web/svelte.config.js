@@ -4,8 +4,8 @@ import { mdsvex } from 'mdsvex';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
-    adapter: adapter({
-      websockets: true,
+		adapter: adapter({
+			websockets: true
 		}),
 		alias: {
 			$routes: 'src/routes'

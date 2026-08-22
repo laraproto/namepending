@@ -9,4 +9,5 @@ bun.lockb
 /static/
 
 .svelte-kit
+.react-email
 setup.js

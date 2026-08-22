@@ -397,9 +397,13 @@ builder.mutationType({
 		createOAuthClient: t.field({
 			type: OAuthClientRef,
 			authScopes: {
+				user: true,
 				perm: 'SETTINGS'
 			},
 			args: {
+				name: t.arg.string({
+					required: true
+				}),
 				uris: t.arg.stringList({
 					required: true
 				}),
@@ -417,6 +421,7 @@ builder.mutationType({
 					const client = await auth.api.adminCreateOAuthClient({
 						headers: ctx.request.headers,
 						body: {
+							client_name: args.name,
 							redirect_uris: args.uris,
 							skip_consent: args.skipConsent,
 							enable_end_session: args.enableEndSession

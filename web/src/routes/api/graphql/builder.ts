@@ -29,7 +29,7 @@ export const builder = new SchemaBuilder<{
 		authScopes: async (context) => ({
 			user: !!context.locals.user,
 			server: !!context.locals.server,
-			perm: (perm) => hasPermSync(context.locals.user, perm)
+			perm: (perm) => (context.locals.user ? hasPermSync(context.locals.user, perm) : false)
 		})
 	}
 });

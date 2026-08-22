@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Head from '$lib/components/Head.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
-
-	let { data } = $props();
 </script>
 
 <Head title="Settings" />
@@ -13,7 +11,10 @@
 			<Card.Title>Settings</Card.Title>
 		</Card.Header>
 		<Card.Content>
-			<p>I have no idea what I wanted to do with this settings page, if you wish to change any settings, edit the .env and recreate the containers</p>
+			<p>
+				I have no idea what I wanted to do with this settings page, if you wish to change any
+				settings, edit the .env and recreate the containers
+			</p>
 		</Card.Content>
 	</Card.Root>
 </div>

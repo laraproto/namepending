@@ -15,8 +15,8 @@
 <div class="flex flex-1 flex-col gap-4 p-4">
 	{#if data.stats}
 		<div class="grid auto-rows-min gap-4 lg:grid-cols-3">
-			<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-				<Card.Header class="text-center font-bold text-2xl">Playtime Total</Card.Header>
+			<Card.Root class="aspect-video rounded-xl bg-muted/50">
+				<Card.Header class="text-center text-2xl font-bold">Playtime Total</Card.Header>
 				<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
 					>{formatDuration(
 						{ hours: secondsToHours(data.stats.timeTotal) },
@@ -27,8 +27,8 @@
 					)}</Card.Content
 				>
 			</Card.Root>
-			<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-				<Card.Header class="text-center font-bold text-2xl">Playtime This Week</Card.Header>
+			<Card.Root class="aspect-video rounded-xl bg-muted/50">
+				<Card.Header class="text-center text-2xl font-bold">Playtime This Week</Card.Header>
 				<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
 					>{formatDuration(
 						{ hours: secondsToHours(data.stats.timeThisWeek) },
@@ -39,8 +39,8 @@
 					)}</Card.Content
 				>
 			</Card.Root>
-			<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-				<Card.Header class="text-center font-bold text-2xl">Playtime Last Week</Card.Header>
+			<Card.Root class="aspect-video rounded-xl bg-muted/50">
+				<Card.Header class="text-center text-2xl font-bold">Playtime Last Week</Card.Header>
 				<Card.Content class="flex flex-1 items-center justify-center text-5xl font-bold"
 					>{formatDuration(
 						{ hours: secondsToHours(data.stats.timeLastWeek) },
@@ -60,7 +60,7 @@
 			</Tabs.List>
 			{#each data.players as player (player.uuid)}
 				<Tabs.Content value={player.uuid}>
-					<Card.Root class="bg-muted/50 min-h-screen flex-1 rounded-xl lg:min-h-min">
+					<Card.Root class="min-h-screen flex-1 rounded-xl bg-muted/50 lg:min-h-min">
 						{const playerStatPromise = trpc.panel.user.getStatsForPlayer.query({
 							playerId: playerSelect
 						})}
@@ -73,8 +73,8 @@
 							{:then playerStat}
 								{#if playerStat && playerStat.stats}
 									<div class="grid auto-rows-min gap-4 lg:grid-cols-3">
-										<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-											<Card.Header class="text-center font-bold text-2xl"
+										<Card.Root class="aspect-video rounded-xl bg-muted/50">
+											<Card.Header class="text-center text-2xl font-bold"
 												>Playtime Total</Card.Header
 											>
 											<Card.Content
@@ -88,8 +88,8 @@
 												)}</Card.Content
 											>
 										</Card.Root>
-										<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-											<Card.Header class="text-center font-bold text-2xl"
+										<Card.Root class="aspect-video rounded-xl bg-muted/50">
+											<Card.Header class="text-center text-2xl font-bold"
 												>Playtime This Week</Card.Header
 											>
 											<Card.Content
@@ -103,8 +103,8 @@
 												)}</Card.Content
 											>
 										</Card.Root>
-										<Card.Root class="bg-muted/50 aspect-video rounded-xl">
-											<Card.Header class="text-center font-bold text-2xl"
+										<Card.Root class="aspect-video rounded-xl bg-muted/50">
+											<Card.Header class="text-center text-2xl font-bold"
 												>Playtime Last Week</Card.Header
 											>
 											<Card.Content

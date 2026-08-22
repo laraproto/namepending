@@ -71,7 +71,7 @@
 				<Form.FieldErrors />
 			</Form.Field>
 		</Card.Content>
-		<Card.Footer class="flex flex-col items-center">
+		<Card.Footer class="flex w-full justify-end gap-2">
 			<Form.Button disabled={$formData.role === data.userProfile.group?.uuid}>Submit</Form.Button>
 		</Card.Footer>
 	</form>

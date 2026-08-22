@@ -17,7 +17,7 @@
 <Dialog.Root bind:open {...restProps}>
 	<Dialog.Content class="sm:max-w-106.25">
 		<form onsubmit={onSubmit}>
-			<Dialog.Header>
+			<Dialog.Header class="mb-4">
 				<Dialog.Title>Delete Item</Dialog.Title>
 				<Dialog.Description>
 					Are you sure you want to delete this item? This action cannot be undone.

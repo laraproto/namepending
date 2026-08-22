@@ -78,6 +78,7 @@ class SidebarState {
 	setSearchValue = (value: string) => {
 		this.searchValue = value;
 		replaceState(
+			// @ts-expect-error guh
 			resolve(`${page.url.pathname}?q=${encodeURIComponent(value)}&page=${this.page}` as Pathname),
 			page.state
 		);
@@ -87,6 +88,7 @@ class SidebarState {
 		this.page = value;
 		replaceState(
 			resolve(
+				// @ts-expect-error guh
 				`${page.url.pathname}?q=${encodeURIComponent(this.searchValue)}&page=${value}` as Pathname
 			),
 			page.state

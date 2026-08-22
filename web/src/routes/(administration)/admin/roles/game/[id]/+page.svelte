@@ -116,7 +116,7 @@
 					</Form.Fieldset>
 				</div>
 			</Card.Content>
-			<Card.Footer class="flex justify-end space-x-2">
+			<Card.Footer class="flex w-full justify-end gap-2">
 				<Button type="button" href={resolve('/admin/roles')} variant="outline">Cancel</Button>
 				<Button type="submit">Save changes</Button>
 			</Card.Footer>

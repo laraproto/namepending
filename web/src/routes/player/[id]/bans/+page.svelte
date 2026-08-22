@@ -173,7 +173,7 @@
 								<Form.FieldErrors />
 							</Form.Field>
 						</Card.Content>
-						<Card.Footer class="flex justify-end">
+						<Card.Footer class="flex w-full justify-end gap-2">
 							<Form.Button>Submit</Form.Button>
 						</Card.Footer>
 					</form>

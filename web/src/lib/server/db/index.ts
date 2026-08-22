@@ -8,7 +8,11 @@ import * as schema from './schema';
 
 const db = drizzle({ client: sql, schema });
 
-if (!building) { await migrate(db, { migrationsFolder: DRIZZLE_MIGRATION_DIR ?? path.join(import.meta.dirname, '../../../../drizzle') }) }
+if (!building) {
+	await migrate(db, {
+		migrationsFolder: DRIZZLE_MIGRATION_DIR ?? path.join(import.meta.dirname, '../../../../drizzle')
+	});
+}
 
 export { schema };
 

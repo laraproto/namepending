@@ -4,8 +4,8 @@ import db, { schema } from '$lib/server/db';
 const hasher = new CryptoHasher('sha256');
 
 function sha256(data: Uint8Array): Uint8Array {
-  hasher.update(data);
-  return hasher.digest();
+	hasher.update(data);
+	return hasher.digest();
 }
 
 export function generateSessionToken() {

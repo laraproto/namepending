@@ -27,8 +27,8 @@ export const variables = defineEnvVars({
 	},
 	DISCORD_CLIENT_SECRET: {
 		schema: building ? z.optional(z.string()) : z.string()
-  },
-  DRIZZLE_MIGRATION_DIR: {
-    schema: z.optional(z.string())
-  }
+	},
+	DRIZZLE_MIGRATION_DIR: {
+		schema: z.optional(z.string())
+	}
 });
