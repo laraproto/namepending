@@ -21,10 +21,6 @@ export const columns: ColumnDef<ListStaffOutput['data'][number]>[] = [
 		header: 'Joined'
 	},
 	{
-		accessorFn: (row) => formatDistance(row.updatedAt, new Date(), { addSuffix: true }),
-		header: 'Last Updated'
-	},
-	{
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(StaffTableActions, { id: row.original.id });

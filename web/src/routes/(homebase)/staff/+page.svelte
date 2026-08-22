@@ -4,9 +4,10 @@
 	import { onMount, onDestroy } from 'svelte';
 	import trpc from '$lib/trpc';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import StaffTable from '$lib/components/tables/staff-table.svelte';
+	import StaffTable from '$lib/components/tables/player-table.svelte';
 	import { columns } from '$lib/components/tables/staff-table.js';
 	import type { PaginationState } from '@tanstack/table-core';
+	import { hasPermSync } from '$lib/perm-utils.js';
 
 	let { data } = $props();
 
@@ -61,6 +62,7 @@
 				pageCount={staffList.pageCount}
 				rowCount={staffList.count}
 				isManualPagination={true}
+				shouldShowActions={hasPermSync(sidebar.user, 'VIEW_USERS')}
 			/>
 		</Card.Content>
 	</Card.Root>

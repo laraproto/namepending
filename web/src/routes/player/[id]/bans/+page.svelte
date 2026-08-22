@@ -10,12 +10,7 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import CalendarIcon from '@lucide/svelte/icons/calendar';
-	import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
-	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { buttonVariants } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { onMount } from 'svelte';
 	import Head from '$lib/components/Head.svelte';
 	import trpc from '$lib/trpc';
@@ -51,10 +46,6 @@
 			});
 	};
 
-	const df = new DateFormatter('en-US', {
-		dateStyle: 'long'
-	});
-
 	// svelte-ignore state_referenced_locally
 	const form = superForm(data.form, {
 		validators: zod4Client(banSchema),
@@ -63,33 +54,59 @@
 		},
 		onUpdated() {
 			$formData.uuid = data.player.uuid;
+			expiresAtChange();
 		}
 	});
 
 	const { form: formData, enhance } = form;
 
-	let dateValue = $state<DateValue | undefined>();
-	let timeValue = $state<string>();
+	let timeValue = $state<number>(2);
+	let timeUnit = $state<'minutes' | 'hours' | 'days' | 'months' | 'years'>('hours');
 
 	const expiresAtChange = () => {
-		if (dateValue && timeValue) {
-			const [hours, minutes, seconds] = timeValue.split(':').map(Number);
-			const date = new Date(
-				dateValue.year,
-				dateValue.month - 1,
-				dateValue.day,
-				hours,
-				minutes,
-				seconds
-			);
-			$formData.expiresAt = date;
+		if (timeValue && timeUnit) {
+			const now = new Date();
+			let expiresAt: Date;
+
+			switch (timeUnit) {
+				case 'minutes':
+					expiresAt = new Date(now.getTime() + timeValue * 60 * 1000);
+					break;
+				case 'hours':
+					expiresAt = new Date(now.getTime() + timeValue * 60 * 60 * 1000);
+					break;
+				case 'days':
+					expiresAt = new Date(now.getTime() + timeValue * 24 * 60 * 60 * 1000);
+					break;
+				case 'months':
+					expiresAt = new Date(
+						now.getFullYear(),
+						now.getMonth() + timeValue,
+						now.getDate(),
+						now.getHours(),
+						now.getMinutes(),
+						now.getSeconds()
+					);
+					break;
+				case 'years':
+					expiresAt = new Date(
+						now.getFullYear() + timeValue,
+						now.getMonth(),
+						now.getDate(),
+						now.getHours(),
+						now.getMinutes(),
+						now.getSeconds()
+					);
+					break;
+			}
+
+			$formData.expiresAt = expiresAt;
 		}
 	};
 
-	let contentRef = $state<HTMLElement | null>(null);
-
 	onMount(() => {
 		$formData.uuid = data.player.uuid;
+		expiresAtChange();
 	});
 </script>
 
@@ -105,7 +122,7 @@
 						<Card.Description>Add a Ban</Card.Description>
 					</Card.Header>
 					<form method="POST" use:enhance>
-						<Card.Content>
+						<Card.Content class="mb-4">
 							<Form.Field {form} name="reason">
 								<Form.Control>
 									{#snippet children({ props })}
@@ -115,51 +132,6 @@
 								</Form.Control>
 								<Form.FieldErrors />
 							</Form.Field>
-							{#if !$formData.permanent}
-								<Form.Field {form} name="expiresAt">
-									<Form.Control>
-										{#snippet children({ props })}
-											<Form.Label>Expiry</Form.Label>
-											<div class="flex flex-row gap-2">
-												<Popover.Root>
-													<Popover.Trigger
-														{...props}
-														class={cn(
-															buttonVariants({
-																variant: 'outline',
-																class: 'w-40 justify-start text-left font-normal'
-															}),
-															!dateValue && 'text-muted-foreground'
-														)}
-													>
-														<CalendarIcon />
-														{dateValue
-															? df.format(dateValue.toDate(getLocalTimeZone()))
-															: 'Pick a date'}
-													</Popover.Trigger>
-													<Popover.Content bind:ref={contentRef} class="w-auto p-0">
-														<Calendar
-															type="single"
-															bind:value={dateValue}
-															onchange={expiresAtChange}
-														/>
-													</Popover.Content>
-												</Popover.Root>
-												<Input
-													type="time"
-													step="1"
-													class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-													bind:value={timeValue}
-													onchange={expiresAtChange}
-												/>
-											</div>
-
-											<Form.FieldErrors />
-											<Input hidden value={$formData.expiresAt} name={props.name} />
-										{/snippet}
-									</Form.Control>
-								</Form.Field>
-							{/if}
 							<Form.Field {form} name="permanent">
 								<div class="flex flex-row items-start space-x-3 py-4">
 									<Form.Control>
@@ -172,6 +144,42 @@
 
 								<Form.FieldErrors />
 							</Form.Field>
+							{#if !$formData.permanent}
+								<Form.Field {form} name="expiresAt" class="flex flex-col gap-2">
+									<Form.Control>
+										{#snippet children({ props })}
+											<Form.Label>Expiry</Form.Label>
+											<div class="grid grid-cols-2 items-end gap-2">
+												<Input
+													type="number"
+													class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+													bind:value={timeValue}
+													onchange={expiresAtChange}
+												/>
+												<Select.Root
+													type="single"
+													bind:value={timeUnit}
+													name={props.name}
+													onValueChange={expiresAtChange}
+												>
+													<Select.Trigger {...props} class="w-full">
+														{timeUnit.at(0)?.toUpperCase() + timeUnit.slice(1)}
+													</Select.Trigger>
+													<Select.Content>
+														<Select.Item value="minutes" label="Minutes">Minutes</Select.Item>
+														<Select.Item value="hours" label="Hours">Hours</Select.Item>
+														<Select.Item value="days" label="Days">Days</Select.Item>
+														<Select.Item value="months" label="Months">Months</Select.Item>
+														<Select.Item value="years" label="Years">Years</Select.Item>
+													</Select.Content>
+												</Select.Root>
+											</div>
+											<Form.FieldErrors />
+											<Input hidden value={$formData.expiresAt} name={props.name} />
+										{/snippet}
+									</Form.Control>
+								</Form.Field>
+							{/if}
 						</Card.Content>
 						<Card.Footer class="flex w-full justify-end gap-2">
 							<Form.Button>Submit</Form.Button>

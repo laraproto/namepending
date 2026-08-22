@@ -49,7 +49,7 @@
 			>
 		</Card.Header>
 		<form use:enhance method="POST">
-			<Card.Content>
+			<Card.Content class="mb-4">
 				{#if $errors._errors || $message}
 					<Alert.Root variant={$errors._errors ? 'destructive' : 'default'} class="mb-4">
 						{#if $errors._errors}<AlertCircleIcon />

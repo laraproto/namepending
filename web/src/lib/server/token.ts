@@ -2,6 +2,9 @@ import { CryptoHasher } from 'bun';
 import db, { schema } from '$lib/server/db';
 
 const hasher = new CryptoHasher('sha256');
+const ACCOUNT_LINK_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+const ACCOUNT_LINK_CODE_LENGTH = 12;
+const ACCOUNT_LINK_GROUP_SIZE = 4;
 
 function sha256(data: Uint8Array): Uint8Array {
 	hasher.update(data);
@@ -15,9 +18,19 @@ export function generateSessionToken() {
 }
 
 export function createAccountLinkCode() {
-	const bytes = crypto.getRandomValues(new Uint8Array(8));
-	const code = bytes.toBase64();
-	return code;
+	const bytes = crypto.getRandomValues(new Uint8Array(ACCOUNT_LINK_CODE_LENGTH));
+	let unformattedCode = '';
+
+	for (const byte of bytes) {
+		unformattedCode += ACCOUNT_LINK_ALPHABET[byte & 31];
+	}
+
+	const codeParts = unformattedCode.match(new RegExp(`.{1,${ACCOUNT_LINK_GROUP_SIZE}}`, 'g'));
+	return codeParts?.join('-') ?? unformattedCode;
+}
+
+function normalizeAccountLinkCode(code: string) {
+	return code.trim().toUpperCase().replaceAll(/[\s-]/g, '');
 }
 
 export async function createServerApiKey(token: string, userId: string, description: string) {
@@ -87,7 +100,8 @@ export async function validateLookupKey(token: string) {
 }
 
 export async function createLinkEntry(code: string, playerId: string) {
-	const sessionKey = sha256(new TextEncoder().encode(code)).toHex();
+	const normalizedCode = normalizeAccountLinkCode(code);
+	const sessionKey = sha256(new TextEncoder().encode(normalizedCode)).toHex();
 	const linkCode = {
 		code: sessionKey,
 		playerId,
@@ -100,13 +114,26 @@ export async function createLinkEntry(code: string, playerId: string) {
 }
 
 export async function validateLinkEntry(code: string) {
-	const apikey = sha256(new TextEncoder().encode(code)).toHex();
+	const normalizedCode = normalizeAccountLinkCode(code);
+	const apikey = sha256(new TextEncoder().encode(normalizedCode)).toHex();
 	const result = await db.query.accountLinkCodes.findFirst({
 		where: (accountLinkCode, { eq }) => eq(accountLinkCode.code, apikey),
 		with: {
 			player: true
 		}
 	});
+
+	if (!result && normalizedCode !== code) {
+		const legacyKey = sha256(new TextEncoder().encode(code)).toHex();
+		return (
+			(await db.query.accountLinkCodes.findFirst({
+				where: (accountLinkCode, { eq }) => eq(accountLinkCode.code, legacyKey),
+				with: {
+					player: true
+				}
+			})) ?? null
+		);
+	}
 
 	return result ?? null;
 }

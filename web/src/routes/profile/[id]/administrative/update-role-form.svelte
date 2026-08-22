@@ -39,7 +39,7 @@
 		<Card.Title>Role Management</Card.Title>
 	</Card.Header>
 	<form method="POST" use:enhance action="?/updateRole">
-		<Card.Content class="flex flex-col items-center">
+		<Card.Content class="mb-4 flex flex-col items-center">
 			<Form.Field {form} name="role">
 				<Form.Control>
 					{#snippet children({ props })}

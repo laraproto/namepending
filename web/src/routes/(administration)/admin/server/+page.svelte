@@ -63,7 +63,7 @@
 					<Card.Title>Add Server</Card.Title>
 				</Card.Header>
 				<form method="POST" use:enhance>
-					<Card.Content>
+					<Card.Content class="mb-4">
 						{#if $errors._errors || $message}
 							<Alert.Root variant={$errors._errors ? 'destructive' : 'default'} class="mb-4">
 								{#if $errors._errors}<AlertCircleIcon />

@@ -7,13 +7,14 @@
 		class: className,
 		children,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLElement>> = $props();
+	}: WithElementRef<HTMLAttributes<HTMLUListElement>> = $props();
 </script>
 
-<nav
-	{...restProps}
+<ul
 	bind:this={ref}
-	class={cn("absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1", className)}
+	data-slot="pagination-content"
+	class={cn("gap-0.5 flex items-center", className)}
+	{...restProps}
 >
 	{@render children?.()}
-</nav>
+</ul>
