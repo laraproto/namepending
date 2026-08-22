@@ -59,7 +59,8 @@ const auth = betterAuth({
 	socialProviders: {
 		discord: {
 			clientId: DISCORD_CLIENT_ID ?? '',
-			clientSecret: DISCORD_CLIENT_SECRET
+			clientSecret: DISCORD_CLIENT_SECRET,
+			overrideUserInfoOnSignIn: true
 		}
 	},
 	hooks: {
