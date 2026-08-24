@@ -30,5 +30,20 @@ export const variables = defineEnvVars({
 	},
 	DRIZZLE_MIGRATION_DIR: {
 		schema: z.optional(z.string())
+	},
+	SMTP_HOST: {
+		schema: building ? z.optional(z.string()) : z.string()
+	},
+	SMTP_PORT: {
+		schema: building ? z.optional(z.coerce.number<string>()) : z.coerce.number<string>()
+	},
+	SMTP_USER: {
+		schema: building ? z.optional(z.string()) : z.string().optional()
+	},
+	SMTP_PASS: {
+		schema: building ? z.optional(z.string()) : z.string().optional()
+	},
+	SMTP_FROM: {
+		schema: building ? z.optional(z.string()) : z.string()
 	}
 });

@@ -6,11 +6,14 @@ import { oauthProvider } from '@better-auth/oauth-provider';
 
 import { steamOpenId } from '$lib/auth/plugins';
 
-import { STEAM_API_KEY, APP_SECRET, DISCORD_CLIENT_SECRET } from '$app/env/private';
-import { URL as APP_URL, DISCORD_CLIENT_ID } from '$app/env/public';
+import { STEAM_API_KEY, APP_SECRET, DISCORD_CLIENT_SECRET, SMTP_FROM } from '$app/env/private';
+import { URL as APP_URL, DISCORD_CLIENT_ID, NAME } from '$app/env/public';
 import { building } from '$app/environment';
 
 import { getRequestEvent } from '$app/server';
+import transporter from '$lib/server/email';
+import { ResetEmail } from '@namepending/transactional/email/reset';
+import { render } from 'react-email';
 import db, { schema } from '$lib/server/db';
 import { createAuthMiddleware } from 'better-auth/api';
 import { count, eq } from 'drizzle-orm';
@@ -61,6 +64,17 @@ const auth = betterAuth({
 			clientId: DISCORD_CLIENT_ID ?? '',
 			clientSecret: DISCORD_CLIENT_SECRET,
 			overrideUserInfoOnSignIn: true
+		}
+	},
+	emailAndPassword: {
+		enabled: true,
+		sendResetPassword: async ({ user, url }) => {
+			void transporter.sendMail({
+				from: `${NAME} <${SMTP_FROM}>`,
+				to: user.email,
+				subject: 'Password Reset Request',
+				html: await render(<ResetEmail url={url} />)
+			});
 		}
 	},
 	hooks: {

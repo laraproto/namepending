@@ -5,7 +5,7 @@
 		"dev": "email dev"
 	},
 	"exports": {
-		"./email/*": "./email/*.tsx"
+		"./email/*": "./emails/*.tsx"
 	},
 	"devDependencies": {
 		"@react-email/ui": "6.9.2",
