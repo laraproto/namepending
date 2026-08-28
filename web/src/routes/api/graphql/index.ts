@@ -102,7 +102,7 @@ BanRef.implement({
 		}),
 		reason: t.exposeString('reason'),
 		expires: t.expose('expiresAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		active: t.exposeBoolean('active'),
 		type: t.field({
@@ -110,10 +110,10 @@ BanRef.implement({
 			resolve: (ban) => ban.type as BanType
 		}),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -124,7 +124,7 @@ BanMinimalRef.implement({
 		id: t.exposeID('uuid'),
 		reason: t.exposeString('reason'),
 		expires: t.expose('expiresAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		active: t.exposeBoolean('active'),
 		type: t.field({
@@ -132,10 +132,10 @@ BanMinimalRef.implement({
 			resolve: (ban) => ban.type as BanType
 		}),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -154,7 +154,7 @@ WarnRef.implement({
 		}),
 		reason: t.exposeString('reason'),
 		expires: t.expose('expiresAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		active: t.exposeBoolean('active'),
 		type: t.field({
@@ -162,10 +162,10 @@ WarnRef.implement({
 			resolve: (warn) => warn.type as WarnType
 		}),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -176,7 +176,7 @@ WarnMinimalRef.implement({
 		id: t.exposeID('uuid'),
 		reason: t.exposeString('reason'),
 		expires: t.expose('expiresAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		active: t.exposeBoolean('active'),
 		type: t.field({
@@ -184,10 +184,10 @@ WarnMinimalRef.implement({
 			resolve: (warn) => warn.type as WarnType
 		}),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -197,7 +197,7 @@ LookupOutputRef.implement({
 	fields: (t) => ({
 		key: t.exposeString('key'),
 		expires: t.expose('expires', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -207,7 +207,7 @@ LinkOutputRef.implement({
 	fields: (t) => ({
 		key: t.exposeString('key'),
 		expires: t.expose('expires', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -248,10 +248,10 @@ UserRef.implement({
 			resolve: (user) => user.group
 		}),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -262,10 +262,10 @@ UserMinimalRef.implement({
 		name: t.exposeString('name'),
 		id: t.exposeID('id'),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -281,10 +281,10 @@ GroupRef.implement({
 			resolve: (group) => group.permissions
 		}),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		gameGroup: t.field({
 			type: GameGroupRef,
@@ -300,10 +300,10 @@ GameGroupRef.implement({
 		id: t.exposeID('uuid'),
 		description: t.exposeString('description'),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		permissions: t.exposeStringList('permissions')
 	})
@@ -318,10 +318,10 @@ PlayerMinimalRef.implement({
 		doNotTrack: t.exposeBoolean('doNotTrack'),
 		userId: t.exposeID('userId'),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -335,10 +335,10 @@ PlayerRef.implement({
 		doNotTrack: t.exposeBoolean('doNotTrack'),
 		userId: t.exposeID('userId'),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		updated: t.expose('updatedAt', {
-			type: 'Date'
+			type: 'DateTime'
 		}),
 		warns: t.field({
 			type: [WarnMinimalRef],
@@ -365,7 +365,7 @@ ServerRef.implement({
 		}),
 		id: t.exposeID('uuid'),
 		created: t.expose('createdAt', {
-			type: 'Date'
+			type: 'DateTime'
 		})
 	})
 });
@@ -405,6 +405,7 @@ builder.queryType({
 							bans: true
 						}
 					});
+					console.log(player);
 					return player;
 				} catch (err) {
 					console.error(err);
