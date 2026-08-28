@@ -340,6 +340,7 @@ export type PlayerSelectMinimal = z.infer<typeof playerSelectMinimal>;
 export type PlayerSelect = z.infer<typeof playerSelect>;
 export type BansSelectMinimal = z.infer<typeof bansSelectMinimal>;
 export type BansSelect = z.infer<typeof bansSelect>;
+export type WarnsSelectMinimal = z.infer<typeof warnsSelectMinimal>;
 export type WarnsSelect = z.infer<typeof warnsSelect>;
 export type PanelGroupSelect = z.infer<typeof panelGroupSelect>;
 export type PanelGroupSelectMinimal = z.infer<typeof panelGroupSelectMinimal>;

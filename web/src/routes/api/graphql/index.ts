@@ -8,7 +8,10 @@ import type {
 	BansSelect,
 	WarnsSelect,
 	ServerSelect,
-	PlayerSelectMinimal
+	PlayerSelectMinimal,
+	PlayerSelect,
+	BansSelectMinimal,
+	WarnsSelectMinimal
 } from '$lib/server/db/schema';
 import auth from '$lib/server/auth';
 import * as dbschema from '$lib/server/db/schema';
@@ -24,9 +27,12 @@ const GameGroupRef = builder.objectRef<GameGroupSelectMinimal>('GameGroup');
 const UserRef = builder.objectRef<UserSelect>('User');
 const UserMinimalRef = builder.objectRef<UserSelectMinimal>('UserMinimal');
 const PlayerMinimalRef = builder.objectRef<PlayerSelectMinimal>('PlayerMinimal');
+const PlayerRef = builder.objectRef<PlayerSelect>('Player');
 const ServerRef = builder.objectRef<ServerSelect>('Server');
 const BanRef = builder.objectRef<BansSelect>('Ban');
+const BanMinimalRef = builder.objectRef<BansSelectMinimal>('BanMinimal');
 const WarnRef = builder.objectRef<WarnsSelect>('Warn');
+const WarnMinimalRef = builder.objectRef<WarnsSelectMinimal>('WarnMinimal');
 
 const LookupOutputRef = builder.objectRef<LookupOutput>('LookupOutput');
 const LinkOutputRef = builder.objectRef<LinkOutput>('LinkOutput');
@@ -112,6 +118,28 @@ BanRef.implement({
 	})
 });
 
+BanMinimalRef.implement({
+	description: 'A ban with minimal information',
+	fields: (t) => ({
+		id: t.exposeID('uuid'),
+		reason: t.exposeString('reason'),
+		expires: t.expose('expiresAt', {
+			type: 'Date'
+		}),
+		active: t.exposeBoolean('active'),
+		type: t.field({
+			type: BanTypeRef,
+			resolve: (ban) => ban.type as BanType
+		}),
+		created: t.expose('createdAt', {
+			type: 'Date'
+		}),
+		updated: t.expose('updatedAt', {
+			type: 'Date'
+		})
+	})
+});
+
 WarnRef.implement({
 	description: 'A warn',
 	fields: (t) => ({
@@ -124,6 +152,28 @@ WarnRef.implement({
 			type: PlayerMinimalRef,
 			resolve: (warn) => warn.warnVictim
 		}),
+		reason: t.exposeString('reason'),
+		expires: t.expose('expiresAt', {
+			type: 'Date'
+		}),
+		active: t.exposeBoolean('active'),
+		type: t.field({
+			type: WarnTypeRef,
+			resolve: (warn) => warn.type as WarnType
+		}),
+		created: t.expose('createdAt', {
+			type: 'Date'
+		}),
+		updated: t.expose('updatedAt', {
+			type: 'Date'
+		})
+	})
+});
+
+WarnMinimalRef.implement({
+	description: 'A warn with minimal information',
+	fields: (t) => ({
+		id: t.exposeID('uuid'),
 		reason: t.exposeString('reason'),
 		expires: t.expose('expiresAt', {
 			type: 'Date'
@@ -276,6 +326,35 @@ PlayerMinimalRef.implement({
 	})
 });
 
+PlayerRef.implement({
+	description: 'A player',
+	fields: (t) => ({
+		name: t.exposeString('name'),
+		platformId: t.exposeString('platformId'),
+		id: t.exposeID('uuid'),
+		doNotTrack: t.exposeBoolean('doNotTrack'),
+		userId: t.exposeID('userId'),
+		created: t.expose('createdAt', {
+			type: 'Date'
+		}),
+		updated: t.expose('updatedAt', {
+			type: 'Date'
+		}),
+		warns: t.field({
+			type: [WarnMinimalRef],
+			resolve: (player) => player.warns
+		}),
+		bans: t.field({
+			type: [BanMinimalRef],
+			resolve: (player) => player.bans
+		}),
+		user: t.field({
+			type: UserRef,
+			resolve: (player) => player.user
+		})
+	})
+});
+
 ServerRef.implement({
 	description: 'A server',
 	fields: (t) => ({
@@ -300,6 +379,38 @@ builder.queryType({
 		server: t.field({
 			type: ServerRef,
 			resolve: (_root, _args, ctx) => ctx.locals.server
+		}),
+		player: t.field({
+			type: PlayerRef,
+			args: {
+				platformId: t.arg.string({
+					required: true
+				})
+			},
+			resolve: async (_root, args) => {
+				try {
+					const player = await db.query.player.findFirst({
+						where: (player, { eq }) => eq(player.platformId, args.platformId),
+						with: {
+							user: {
+								with: {
+									group: {
+										with: {
+											gameGroup: true
+										}
+									}
+								}
+							},
+							warns: true,
+							bans: true
+						}
+					});
+					return player;
+				} catch (err) {
+					console.error(err);
+					return null;
+				}
+			}
 		}),
 		warns: t.field({
 			type: [WarnRef],
