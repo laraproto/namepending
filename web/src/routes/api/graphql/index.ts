@@ -405,7 +405,6 @@ builder.queryType({
 							bans: true
 						}
 					});
-					console.log(player);
 					return player;
 				} catch (err) {
 					console.error(err);
@@ -757,7 +756,7 @@ builder.mutationType({
 							inArray(
 								user.id,
 								db
-									.select({ id: dbschema.player.uuid })
+									.select({ id: dbschema.player.userId })
 									.from(dbschema.player)
 									.where(eq(dbschema.player.platformId, args.input.author))
 							)
@@ -813,7 +812,7 @@ builder.mutationType({
 							inArray(
 								user.id,
 								db
-									.select({ id: dbschema.player.uuid })
+									.select({ id: dbschema.player.userId })
 									.from(dbschema.player)
 									.where(eq(dbschema.player.platformId, args.input.author))
 							)
