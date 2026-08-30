@@ -499,6 +499,20 @@ builder.queryType({
 					return [];
 				}
 			}
+		}),
+		roles: t.field({
+			type: [GroupRef],
+			authScopes: {
+				server: true
+			},
+			resolve: async () => {
+				const roles = await db.query.panelGroups.findMany({
+					with: {
+						gameGroup: true
+					}
+				});
+				return roles;
+			}
 		})
 	})
 });
