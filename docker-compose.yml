@@ -68,6 +68,11 @@ services:
       - STEAM_API_KEY=${STEAM_API_KEY:?Please set the STEAM_API_KEY environment variable or run setup tool}
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID:?Please set the DISCORD_CLIENT_ID environment variable or run setup tool}
       - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET:?Please set the DISCORD_CLIENT_SECRET environment variable or run setup tool}
+      - SMTP_HOST=${SMTP_HOST:?Please set the SMTP_HOST environment variable or run setup tool}
+      - SMTP_PORT=${SMTP_PORT:?Please set the SMTP_PORT environment variable or run setup tool
+      - SMTP_USER=${SMTP_USER:?Please set the SMTP_USER environment variable or run setup tool}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM:?Please set the SMTP_FROM environment variable or run setup tool}
       - GARAGE_ACCESS_KEY=${GARAGE_ACCESS_KEY:?Please set the GARAGE_ACCESS_KEY environment variable or run setup tool}
       - GARAGE_SECRET_KEY=${GARAGE_SECRET_KEY:?Please set the GARAGE_SECRET_KEY environment variable or run setup tool}
       - GARAGE_URL=http://storage:3900
