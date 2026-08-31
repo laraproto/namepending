@@ -64,6 +64,7 @@ services:
       - URL=${URL:?Please set the URL environment variable or run setup tool}
       - PUBLIC_URL=${URL:?Please set the URL environment variable or run setup tool}
       - NAME=${NAME:-namepending}
+      - DEMO=${DEMO:-false}
       - PUBLIC_NAME=${NAME:-namepending}
       - STEAM_API_KEY=${STEAM_API_KEY:?Please set the STEAM_API_KEY environment variable or run setup tool}
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID:?Please set the DISCORD_CLIENT_ID environment variable or run setup tool}
