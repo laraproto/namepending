@@ -1,6 +1,7 @@
 {
     servers {
-        trusted_proxies static 10.88.0.0/8 127.0.0.1/32 172.18.0.1/32
+        trusted_proxies static private_ranges
+        trusted_proxies_strict
     }
 }
 

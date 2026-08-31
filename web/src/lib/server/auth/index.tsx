@@ -61,7 +61,12 @@ const auth = betterAuth({
 	],
 	advanced: {
 		useSecureCookies: true,
-		cookiePrefix: 'namepending'
+		cookiePrefix: 'namepending',
+		trustedProxyHeaders: true,
+		ipAddress: {
+			ipAddressHeaders: ['X-Forwarded-For'],
+			trustedProxies: ['10.0.0.0/8']
+		}
 	},
 	socialProviders: {
 		discord: {
