@@ -2,8 +2,10 @@
 	import Head from '$lib/components/Head.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import trpc from '$lib/trpc';
 	import { formatDuration, secondsToHours } from 'date-fns';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 
@@ -129,16 +131,26 @@
 			{/each}
 		</Tabs.Root>
 	{:else}
-		No linked account found
+		<div class="mx-auto my-8 flex flex-1 flex-col items-center justify-center px-4">
+			<TriangleAlert size={128} class="mr-2 w-sm text-primary" />
+			<span class="text-lg"
+				>No linked accounts found, please <a
+					href={resolve('/settings')}
+					class="text-primary hover:underline">link your account here</a
+				> to view stats</span
+			>
+		</div>
 	{/if}
 </div>
 
-<p>
-	Logged in as {data.user.name} (id: {data.user.id})
-	<br />
-	Group: {data.user.group ? data.user.group.name : 'None'}
-	<br />
-	User flags: {data.user.flags} (bitwise)
-	<br />
-	Group flags: {data.user.group ? data.user.group.permissions : 'N/A'} (bitwise)
-</p>
+{#if false}
+	<p>
+		Logged in as {data.user.name} (id: {data.user.id})
+		<br />
+		Group: {data.user.group ? data.user.group.name : 'None'}
+		<br />
+		User flags: {data.user.flags} (bitwise)
+		<br />
+		Group flags: {data.user.group ? data.user.group.permissions : 'N/A'} (bitwise)
+	</p>
+{/if}
