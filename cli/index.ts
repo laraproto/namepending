@@ -81,7 +81,7 @@ async function main() {
 	const discord_client_id = await p.text({
 		message:
 			'Client Id for your discord application (obtained from making an app on https://discord.com/developers/applications)',
-		validate: envSchema.shape.url
+		validate: envSchema.shape.discord_client_id
 	});
 
 	if (p.isCancel(discord_client_id)) {
