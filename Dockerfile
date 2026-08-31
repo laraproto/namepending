@@ -1,4 +1,4 @@
-FROM docker.io/oven/bun:1.3 AS build
+FROM docker.io/oven/bun:1.4 AS build
 
 WORKDIR /app
 COPY . .
@@ -9,7 +9,7 @@ WORKDIR /app/web
 
 RUN bun run build
 
-FROM docker.io/oven/bun:1.3-distroless AS base
+FROM docker.io/oven/bun:1.4-distroless AS base
 
 EXPOSE 3000
 
