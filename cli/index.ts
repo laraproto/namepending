@@ -18,6 +18,11 @@ const envSchema = z.object({
 	steam_api_key: z.string().min(1),
 	discord_client_id: snowflake.min(1),
 	discord_client_secret: z.string().min(1),
+	smtp_host: z.string().min(1),
+	smtp_port: z.number().int().min(1).max(65535),
+	smtp_user: z.string().min(1),
+	smtp_password: z.string().min(1),
+	smtp_from: z.email(),
 	postgres_pass: z
 		.string()
 		.min(8)
@@ -113,6 +118,61 @@ async function main() {
 		process.exit(0);
 	}
 
+	const smtp_host = await p.text({
+		message: 'SMTP host (for sending emails)',
+		validate: envSchema.shape.smtp_host
+	});
+
+	if (p.isCancel(smtp_host)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
+
+	const smtp_port = await p.text({
+		message: 'SMTP port',
+		validate(value) {
+			const errorValidate = envSchema.shape.smtp_port.safeParse(Number(value));
+			return errorValidate.success ? undefined : z.prettifyError(errorValidate.error);
+		}
+	});
+
+	if (p.isCancel(smtp_port)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
+
+	const smtp_user = await p.text({
+		message: 'SMTP user',
+		validate: envSchema.shape.smtp_user
+	});
+
+	if (p.isCancel(smtp_user)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
+
+	const smtp_password = await p.password({
+		message: 'SMTP password',
+		mask: '*',
+		clearOnError: true,
+		validate: envSchema.shape.smtp_password
+	});
+
+	if (p.isCancel(smtp_password)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
+
+	const smtp_from = await p.text({
+		message: 'SMTP from email',
+		validate: envSchema.shape.smtp_from
+	});
+
+	if (p.isCancel(smtp_from)) {
+		p.cancel('Setup cancelled');
+		process.exit(0);
+	}
+
 	const postgres_pass = await p.password({
 		message: 'Password for Postgres (will be generated if empty)',
 		mask: '*',
@@ -181,6 +241,11 @@ async function main() {
 		discord_client_id,
 		discord_client_secret,
 		steam_api_key,
+		smtp_host,
+		smtp_port: Number(smtp_port),
+		smtp_user,
+		smtp_password,
+		smtp_from,
 		postgres_pass: postgres_pass.length > 0 ? postgres_pass : undefined,
 		garage_pass: garage_pass.length > 0 ? garage_pass : undefined,
 		garage_access_key: garage_access_key.length > 0 ? garage_access_key : undefined,
