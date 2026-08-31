@@ -15,7 +15,7 @@ import {
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import * as auth from './auth-schema';
 import z from 'zod';
-import { type Permission } from '@namepending/shared/sl';
+import { ColorKeys, type Permission } from '@namepending/shared/sl';
 
 const timeData = {
 	createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
@@ -77,11 +77,14 @@ export const panelGroupsRelations = relations(panelGroups, ({ one, many }) => ({
 	users: many(auth.user)
 }));
 
+export const gameGroupColors = pgEnum('gameGroupColors', ColorKeys);
+
 export const gameGroups = pgTable('gameGroups', {
 	uuid: uuid('id').primaryKey().defaultRandom(),
 	name: varchar('name', { length: 80 }).notNull(),
 	// Only shown on panel to describe what group is for
 	description: varchar('description', { length: 400 }),
+	color: gameGroupColors().notNull().default('green'),
 	// While SCP: Secret Laboratory does use bitwise permissions it will be wise to compute it as needed as I don't know if they are necessarily stable or if they will reuse indexes
 	permissions: jsonb().$type<Permission[]>(),
 	...timeData
@@ -345,7 +348,6 @@ export type WarnsSelect = z.infer<typeof warnsSelect>;
 export type PanelGroupSelect = z.infer<typeof panelGroupSelect>;
 export type PanelGroupSelectMinimal = z.infer<typeof panelGroupSelectMinimal>;
 export type GameGroupSelectMinimal = z.infer<typeof gameGroupSelectMinimal>;
-
 export type ServerSelectWithoutApiKey = z.infer<typeof serverSelectWithoutApiKey>;
 export type ServerInsert = z.infer<typeof serverInsert>;
 export type ServerSelect = z.infer<typeof serverSelect>;

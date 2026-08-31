@@ -22,6 +22,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 	const roleParsed = {
 		...role.data,
 		id: role.data.uuid,
+		color: role.data.color || 'green',
 		description: role.data.description || '',
 		permissions: role.data.permissions || ([] as Permission[])
 	};
@@ -48,6 +49,7 @@ export const actions: Actions = {
 			const updateResult = await trpcServer.panel.administration.editGameGroup.mutate({
 				id: event.params.id,
 				name: form.data.name,
+				color: form.data.color,
 				description: form.data.description,
 				permissions: form.data.permissions
 			});

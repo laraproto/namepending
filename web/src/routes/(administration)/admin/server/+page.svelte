@@ -1,6 +1,8 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as Card from '$lib/components/ui/card';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import ServersTable from '$lib/components/tables/player-table.svelte';
 	import { columns } from '$lib/components/tables/servers-table.js';
 	import type { PageProps } from './$types';
@@ -15,6 +17,8 @@
 	import Head from '$lib/components/Head.svelte';
 	import trpc from '$lib/trpc';
 	import type { PaginationState } from '@tanstack/table-core';
+
+	import { URL as URL_FUCK } from '$app/env/public';
 
 	let { data }: PageProps = $props();
 
@@ -47,13 +51,46 @@
 
 	// svelte-ignore state_referenced_locally
 	const form = superForm(data.form, {
-		validators: zod4Client(serverFormSchema)
+		validators: zod4Client(serverFormSchema),
+		onResult: ({ result }) => {
+			if (result.type === 'success') {
+				setupDialog = true;
+			}
+		}
 	});
 
 	const { form: formData, enhance, errors, message } = form;
+
+	let setupDialog = $state(false);
 </script>
 
 <Head title="Server Management" />
+
+<Dialog.Root bind:open={setupDialog}>
+	{@const setupVal = `setupnamepending ${$message ? $message.token : 'no'} ${new URL('/api/graphql', URL_FUCK)}`}
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Setup</Dialog.Title>
+		</Dialog.Header>
+		<div>
+			<Input
+				value={setupVal}
+				readonly
+				class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed"
+			/>
+		</div>
+		<Dialog.Footer>
+			<Button
+				onclick={async () => {
+					await navigator.clipboard.writeText(setupVal);
+					setupDialog = false;
+				}}
+			>
+				Copy and Close
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
 
 <div class="container mx-auto my-8 flex flex-col gap-4 px-4">
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -76,7 +113,7 @@
 											<li>{error}</li>
 										{/each}
 										{#if $message}
-											<li>{$message}</li>
+											<li>{$message.message}</li>
 										{/if}
 									</ul>
 								</Alert.Description>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Switch } from '$lib/components/ui/switch/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import Head from '$lib/components/Head.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
@@ -12,8 +13,9 @@
 	import { type PageProps } from './$types';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms';
-	import { Permissions, type Permission } from '@namepending/shared/sl';
+	import { Permissions, Colors, type Permission } from '@namepending/shared/sl';
 	import { resolve } from '$app/paths';
+	import ColorDot from '$lib/components/color-dot.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -69,8 +71,8 @@
 						<Form.FieldErrors />
 					</Form.Field>
 				</div>
-				<div class="grid gap-3">
-					<Form.Field {form} name="description">
+				<div class="grid grid-cols-3 items-end gap-3">
+					<Form.Field {form} name="description" class="col-span-2">
 						<Form.Control>
 							{#snippet children({ props })}
 								<Form.Label>Description</Form.Label>
@@ -78,6 +80,37 @@
 							{/snippet}
 						</Form.Control>
 						<Form.Description>Role description.</Form.Description>
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="color" class="col-span-1">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Color</Form.Label>
+								<Select.Root
+									type="single"
+									{...props}
+									bind:value={$formData.color}
+									name={props.name}
+								>
+									<Select.Trigger {...props} class="w-full justify-between gap-2 text-left">
+										<span class="flex items-center gap-2">
+											<ColorDot color={Colors[$formData.color as keyof typeof Colors]} />
+											{$formData.color.at(0)?.toUpperCase() + $formData.color.slice(1) ||
+												'Select a color'}
+										</span>
+									</Select.Trigger>
+									<Select.Content>
+										{#each Object.keys(Colors) as color (color)}
+											<Select.Item value={color} label={color} class="flex items-center gap-2">
+												<ColorDot color={Colors[color as keyof typeof Colors]} />
+												<span>{color.at(0)?.toUpperCase() + color.slice(1)}</span>
+											</Select.Item>
+										{/each}
+									</Select.Content>
+								</Select.Root>
+							{/snippet}
+						</Form.Control>
+						<Form.Description>Role color.</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				</div>

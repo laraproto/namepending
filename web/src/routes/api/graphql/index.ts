@@ -299,6 +299,7 @@ GameGroupRef.implement({
 		name: t.exposeString('name'),
 		id: t.exposeID('uuid'),
 		description: t.exposeString('description'),
+		color: t.exposeString('color'),
 		created: t.expose('createdAt', {
 			type: 'DateTime'
 		}),

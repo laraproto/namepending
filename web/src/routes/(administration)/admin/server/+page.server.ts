@@ -48,10 +48,10 @@ export const actions: Actions = {
 					message: updateResult.message || 'Failed to create server.'
 				});
 			}
-			return message(
-				form,
-				`Your server has been created, copy the key now as it won't be shown again: ${updateResult.token}`
-			);
+			return message(form, {
+				message: `Your server has been created, if you have the plugin set up, run the following install command: setupnamepending ${updateResult.token}`,
+				token: updateResult.token
+			});
 		} catch (err) {
 			console.error('Error creating server:', err);
 			return fail(500, {

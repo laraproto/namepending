@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { roleFlagKeys } from '@namepending/shared/user';
-import { permissionSchema } from '@namepending/shared/sl';
+import { colorSchema, permissionSchema } from '@namepending/shared/sl';
 
 export const serverFormSchema = z.object({
 	description: z.string().max(255)
@@ -10,6 +10,7 @@ export const gameGroupFormSchema = z.object({
 	id: z.uuid(),
 	name: z.string().max(50),
 	description: z.string().max(255),
+	color: colorSchema.default('green'),
 	permissions: z.array(permissionSchema)
 });
 

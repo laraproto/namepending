@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { permsProcedure, router } from '$lib/server/trpc';
 import { count, desc, eq } from 'drizzle-orm';
 import { roleFlagKeys, RoleFlags, type RoleFlagKeys } from '@namepending/shared/user';
-import { permissionSchema } from '@namepending/shared/sl';
+import { colorSchema, permissionSchema } from '@namepending/shared/sl';
 import * as token from '$lib/server/token';
 
 export const administrationRouter = router({
@@ -420,6 +420,7 @@ export const administrationRouter = router({
 				id: z.uuid(),
 				name: z.string().max(80),
 				description: z.string().max(400),
+				color: colorSchema.default('green'),
 				permissions: z.array(permissionSchema)
 			})
 		)
@@ -430,6 +431,7 @@ export const administrationRouter = router({
 					.set({
 						name: input.name,
 						description: input.description,
+						color: input.color,
 						permissions: input.permissions
 					})
 					.where(eq(schema.gameGroups.uuid, input.id))
