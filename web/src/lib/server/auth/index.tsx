@@ -7,7 +7,7 @@ import { oauthProvider } from '@better-auth/oauth-provider';
 import { steamOpenId } from '$lib/auth/plugins';
 
 import { STEAM_API_KEY, APP_SECRET, DISCORD_CLIENT_SECRET, SMTP_FROM } from '$app/env/private';
-import { URL as APP_URL, DISCORD_CLIENT_ID, NAME, NODE_ENV } from '$app/env/public';
+import { URL as APP_URL, DEMO, DISCORD_CLIENT_ID, NAME, NODE_ENV } from '$app/env/public';
 import { building } from '$app/environment';
 
 import { getRequestEvent } from '$app/server';
@@ -86,7 +86,7 @@ const auth = betterAuth({
 			switch (true) {
 				case ctx.path.startsWith('/sign-up') || ctx.path.startsWith('/callback'): {
 					const userCount = await db.select({ count: count() }).from(schema.user);
-					if (userCount[0]?.count === 1) {
+					if (userCount[0]?.count === 1 || DEMO) {
 						if (!ctx.context.newSession) {
 							break;
 						}

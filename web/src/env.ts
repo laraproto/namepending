@@ -7,6 +7,10 @@ export const variables = defineEnvVars({
 		public: true,
 		schema: building ? z.optional(z.string()) : z.string()
 	},
+	DEMO: {
+		public: true,
+		schema: z.optional(z.stringbool()).default(false)
+	},
 	NAME: {
 		public: true,
 		schema: building ? z.optional(z.string()) : z.string()
