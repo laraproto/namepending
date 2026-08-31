@@ -2,7 +2,7 @@
 	export interface NavMainProps {
 		items: {
 			title: string;
-			url: string;
+			url?: string;
 			icon: Component;
 			isActive?: boolean;
 			permRequired?: PermRequired;

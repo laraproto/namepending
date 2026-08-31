@@ -7,7 +7,6 @@
 		navMain: [
 			{
 				title: 'Homebase',
-				url: '/',
 				icon: SquareTerminalIcon,
 				isActive: true,
 				items: [
@@ -28,7 +27,6 @@
 			},
 			{
 				title: 'Moderation',
-				url: '/moderation',
 				icon: SquareTerminalIcon,
 				isActive: true,
 				items: [
@@ -56,7 +54,6 @@
 			},
 			{
 				title: 'Administration',
-				url: '/admin',
 				icon: SquareTerminalIcon,
 				isActive: true,
 				items: [
