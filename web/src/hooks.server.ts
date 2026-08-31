@@ -13,14 +13,6 @@ export const authHandle: Handle = async ({ event, resolve }) => {
 };
 
 export const sessionHandle: Handle = async ({ event, resolve }) => {
-	console.log(
-		event.request.method,
-		event.request.url,
-		event.request.headers.get('X-Forwarded-For'),
-		event.request.headers.get('X-Forwarded-Proto'),
-		event.request.headers.get('X-Real-IP'),
-		event.request.headers.get('X-Forwarded-Host')
-	);
 	try {
 		const authHeader = event.request.headers.get('Authorization') ?? '';
 
