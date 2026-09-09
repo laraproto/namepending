@@ -24,6 +24,7 @@ services:
         mode: 0600
   proxy:
     image: docker.io/caddy:alpine
+    restart: unless-stopped
     ports:
       - '${WEB_PORT:-8778}:80'
     volumes:
