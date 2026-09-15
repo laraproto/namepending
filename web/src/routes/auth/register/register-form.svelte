@@ -20,11 +20,9 @@
 	}: ComponentProps<typeof Card.Root> & { data: { form: SuperValidated<Infer<RegisterSchema>> } } =
 		$props();
 
-	const form = $derived.by(() =>
-		superForm(data.form, {
-			validators: zod4Client(registerSchema)
-		})
-	);
+	const form = superForm(data.form, {
+		validators: zod4Client(registerSchema)
+	});
 
 	const { form: formData, enhance, errors } = $derived(form);
 </script>

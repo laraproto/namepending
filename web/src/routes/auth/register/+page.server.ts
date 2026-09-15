@@ -31,11 +31,12 @@ export const actions: Actions = {
 					email: form.data.email,
 					password: form.data.password,
 					name: form.data.name
-				}
+				},
+				headers: event.request.headers
 			});
 		} catch (error) {
 			if (isAPIError(error)) {
-				setError(form, '', error.message || 'An error occurred during registration');
+				return setError(form, '', error.message || 'An error occurred during registration');
 			}
 		}
 

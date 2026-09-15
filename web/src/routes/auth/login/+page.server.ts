@@ -30,11 +30,12 @@ export const actions: Actions = {
 				body: {
 					email: form.data.email,
 					password: form.data.password
-				}
+				},
+				headers: event.request.headers
 			});
 		} catch (error) {
 			if (isAPIError(error)) {
-				setError(form, '', error.message || 'An error occurred during login');
+				return setError(form, '', error.message || 'An error occurred during login');
 			}
 		}
 
